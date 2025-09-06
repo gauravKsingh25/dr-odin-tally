@@ -1,0 +1,37 @@
+.modal-width{
+    width:100% !important
+}
+
+.submit-btn.btn-secondary{
+background-color: #313a46;
+color:white !important
+}
+
+.submit-btn.btn-secondary:hover{
+    background-color: #313a46;
+    color: white !important;
+}
+
+.submit-btn{
+    background-color: #313a46;
+    box-shadow: 0px 2px 6px 0px #313a46;
+    border-color: #313a46;
+   
+}
+
+.reset-btn{
+    background-color: #eef2f7;
+    box-shadow: 0px 2px 6px 0px #8391a2;
+    border-color:#eef2f7;
+}
+
+.reset-btn.btn-secondary{
+    background-color: #eef2f7;
+}
+
+.reset-btn.btn-secondary:hover{
+    background-color:#eef2f7;
+}
+.tableactive .table > :not(caption) > * > * {
+    padding: 0rem 0.5rem !important;
+}

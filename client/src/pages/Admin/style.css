@@ -1,0 +1,74 @@
+.custom_Input{
+    border: 1px solid #dee2e6;
+    display: flex;
+    border-radius: 5px;
+}
+.custom_Input div{
+    flex:1;
+}
+.custom_Input .inner_Input{
+    border: 0 !important;
+}
+.custom_Input .custom_Btn{
+    background: transparent;
+    border: 0;
+}
+.table_hoveWork tbody tr td .txt_showDots{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.table_hoveWork tbody tr:hover{
+    background-color:#f1f3fa;
+}
+.table_hoveWork tbody tr:hover td .txt_showDots{
+    overflow: inherit!important;
+    text-overflow: initial!important;
+    white-space: normal!important;
+}
+
+.admin_width{
+    width: 11rem;
+}
+.employee-btn{
+    border-radius: 54px 54px 9px 9px !important;
+    background-color: #eef2f7 !important;
+    box-shadow: 0px 2px 6px 0px #8391a2;
+    border-color:#eef2f7;
+    color:#313a46;
+    }
+
+.employeee{
+    border-radius: 54px 54px 9px 9px !important;
+}
+.left-employee-btn{
+    border-radius: 54px 54px 9px 9px !important;
+    background-color: #eef2f7 !important;
+    box-shadow: 0px 2px 6px 0px #8391a2;
+    border-color:#eef2f7;
+    color: #313a46 !important;
+    }
+    .employee{
+        background-color: #313a46 !important;
+        color: white !important;
+        box-shadow: 0px 2px 6px 0px #313a46 !important;
+    }
+    .create-btn{
+        background-color: #313a46 !important;
+        box-shadow: 0px 2px 6px 0px #313a46;
+        border-color: #313a46; 
+    }
+    
+    
+    .btn-secondary:hover{
+        color: #313a46;
+        border-color:white !important;
+    }
+    .employee:hover{
+        color: white;
+    }
+    
+    .create-btn:hover{
+        color: white !important;
+    }
+    

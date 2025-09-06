@@ -1,0 +1,128 @@
+
+.employee-btn{
+    border-radius: 54px 54px 9px 9px !important;
+    background-color: #eef2f7 !important;
+    box-shadow: 0px 2px 6px 0px #8391a2;
+    border-color:#eef2f7;
+    color:#313a46;
+    }
+
+.employeee{
+    border-radius: 54px 54px 9px 9px !important;
+}
+
+
+.submit-btn{
+    background-color: #313a46;
+    box-shadow: 0px 2px 6px 0px #313a46;
+    border-color: #313a46;
+}
+
+.reset-btn{
+    background-color: #eef2f7;
+    box-shadow: 0px 2px 6px 0px #8391a2;
+    border-color:#eef2f7;
+}
+.tooltip {
+     z-index:0 !important;
+}
+.spacer {
+    width: 15px;
+    /* height: 15px; */
+  }
+  .left-employee-btn{
+    border-radius: 54px 54px 9px 9px !important;
+    background-color: #eef2f7 !important;
+    box-shadow: 0px 2px 6px 0px #8391a2;
+    border-color:#eef2f7;
+    color: #313a46;
+    }
+
+.create-btn{
+    background-color: #313a46 !important;
+    box-shadow: 0px 2px 6px 0px #313a46;
+    border-color: #313a46; 
+}
+
+.employee{
+    background-color: #313a46 !important;
+    color: white;
+    box-shadow: 0px 2px 6px 0px #313a46 !important;
+}
+
+.btn-secondary:hover{
+    color: #313a46;
+    border-color:white !important;
+}
+.employee:hover{
+    color: white;
+}
+.date-range-modal > .modal-content{
+    width: 125% !important;
+}
+.img_div img {
+    width: 100px;
+    height: 100px;
+}
+.cross_div {
+    background: black;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(6px, -4px);
+    color: white;
+    border-radius: 10px;
+    width: 1rem;
+    height: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+
+/* .fontsize{
+    font-size: 14px;
+}
+.headingfontsize{
+    font-size: 16px; 
+} */
+.show-desktop{
+    display:block !important;
+}
+.show-mobile{
+    display:none!important;
+}
+@media only screen and (max-width: 768px) and (min-width:360px){
+    .show-desktop{
+        display: none !important;
+    }
+    .show-mobile{
+        display: block !important;
+    }
+    select.form-select {
+        width: 100% !important;
+    }
+    .date-range-modal > .modal-content{
+        width: 100% !important;
+    }
+    .rdrDefinedRangesWrapper {
+        font-size: 9px !important;
+        width: 95px !important;
+    }
+    .rdrCalendarWrapper {
+        font-size: 8px !important;
+        width: 67% !important;
+    }
+    .rdrInputRange {
+        align-items: center !important;
+        padding: 1px 0px !important;
+    }
+    /* .fontsize{
+        font-size: 9px;
+    }
+    .headingfontsize{
+        font-size: 11px;
+    } */
+}

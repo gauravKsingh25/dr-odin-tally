@@ -1,0 +1,15 @@
+.activetable{
+background-color:  #f1f3fa;
+}
+.month_color{
+    background-color: #313a46 !important;
+}
+.activemonthtable{
+background-color:  #f1f3fa;  
+}
+.date-range-modal > .modal-content{
+    width: 125% !important;
+}
+.rdrDefinedRangesWrapper{
+    display: none !important;
+}
