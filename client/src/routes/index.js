@@ -38,6 +38,13 @@ const LockScreen2 = React.lazy(() => import('../pages/account2/LockScreen2'));
 const EcommerceDashboard = React.lazy(() => import('../pages/dashboard/Ecommerce'));
 // const ProjectDashboard = React.lazy(() => import('../pages/dashboard/Project'));
 const EWalletDashboard = React.lazy(() => import('../pages/dashboard/E-Wallet'));
+const TallyDashboard = React.lazy(() => import('../pages/dashboard/TallyDashboard'));
+
+// Tally Dashboard Detail Pages
+const TallyVouchersDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyVouchersDetail'));
+const TallyLedgersDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyLedgersDetail'));
+const TallyStockItemsDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyStockItemsDetail'));
+const TallyComprehensiveDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyComprehensiveDetail'));
 
 // uploads 
 const UploadDashBoardPage = React.lazy(() => import('../pages/uploads/upload'));
@@ -308,6 +315,26 @@ const AllRoutes = () => {
                 {
                     path : 'dashboard',
                     element:<LoadComponent component={EcommerceDashboard}/>
+                },
+                {
+                    path : 'tally-dashboard',
+                    element:<LoadComponent component={TallyDashboard}/>
+                },
+                {
+                    path : 'tally-vouchers-detail',
+                    element:<LoadComponent component={TallyVouchersDetail}/>
+                },
+                {
+                    path : 'tally-ledgers-detail',
+                    element:<LoadComponent component={TallyLedgersDetail}/>
+                },
+                {
+                    path : 'tally-stock-items-detail',
+                    element:<LoadComponent component={TallyStockItemsDetail}/>
+                },
+                {
+                    path : 'tally-comprehensive-detail',
+                    element:<LoadComponent component={TallyComprehensiveDetail}/>
                 },
                 {
                     path : 'upload',

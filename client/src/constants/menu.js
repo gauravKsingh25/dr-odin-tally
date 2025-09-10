@@ -42,6 +42,13 @@ const MENU_ITEMS = [
         url: '/dashboard',
     },
     {
+        key: 'tally-dashboard',
+        label: 'Tally Dashboard',
+        isTitle: false,
+        icon:  "dripicons-graph-line",
+        url: '/tally-dashboard',
+    },
+    {
         key: 'upload',
         label: 'Upload',
         isTitle: false,

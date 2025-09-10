@@ -1,11 +1,12 @@
 // @flow
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 // components
 import HyperDatepicker from '../../../components/Datepicker';
+import { APICore } from '../../../helpers/api/apiCore';
 
 import Statistics from './Statistics';
 import PerformanceChart from './PerformanceChart';
@@ -29,6 +30,8 @@ import Vender from './Vender';
 const EcommerceDashboard = (): React$Element<React$FragmentType> => {
     const dispatch = useDispatch()
     const store = useSelector((state) => state)
+    const navigate = useNavigate()
+    
     const [showModel, setShowModel] = useState(false)
     const [currentMonth, setCurrentMonth] = useState(1)
     const [startDate, setStartDate] = useState("")
@@ -39,6 +42,19 @@ const EcommerceDashboard = (): React$Element<React$FragmentType> => {
     const [data, setData] = useState({ state: "", city: "" })
     const [getStateData, setStateData] = useState([])
     const [getCityData, setCityData] = useState([])
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    
+    // Check authentication before rendering anything
+    useEffect(() => {
+        const api = new APICore()
+        if (!api.isUserAuthenticated()) {
+            console.log('User not authenticated, redirecting to login...');
+            navigate('/account/login');
+            return;
+        }
+        setIsAuthenticated(true)
+    }, [navigate]);
+    
     const handleStateChange = (e) => {
         const stateIdd = e.target.value
         if (stateIdd.trim() == "") {
@@ -102,6 +118,8 @@ const EcommerceDashboard = (): React$Element<React$FragmentType> => {
         setShowModel(false)
     };
     useEffect(() => {
+        if (!isAuthenticated) return;
+        
         dispatch(getOverAllApi())
         dispatch(totalMonthSaleAction({ currentMonth: currentMonth, startDate: startDate, endDate: endDate, state: stateId, city: cityId }))
         dispatch(totalExpenditureAction())
@@ -112,17 +130,25 @@ const EcommerceDashboard = (): React$Element<React$FragmentType> => {
         dispatch(annualSaleGraphAction())
         dispatch(getSaleExecutiveReportAction({ currentMonth: currentMonth, startDate: startDate, endDate: endDate, state: stateId, city: cityId }))
         dispatch(getRevenueByLocationAction({ currentMonth: currentMonth, startDate: startDate, endDate: endDate, state: stateId, city: cityId }))
-    }, [])
+    }, [isAuthenticated, dispatch, currentMonth, startDate, endDate, stateId, cityId])
+    
     useEffect(() => {
+        if (!isAuthenticated) return;
+        
         dispatch(getCity({ id: "", skip: 1 }))
         dispatch(getState())
-
-    }, [])
+    }, [isAuthenticated, dispatch])
 
     useEffect(() => {
         setStateData(store?.getStateReducer?.data?.response)
         setCityData(store?.getCityByState?.data?.response)
     }, [store])
+    
+    // Don't render anything if not authenticated
+    if (!isAuthenticated) {
+        return <div>Loading...</div>;
+    }
+    
     return (
         <>
             <Row>

@@ -37,14 +37,18 @@ require("./routes/revenue.routes")(app);
 require("./routes/saleExecutive.routes")(app);
 
 
-// app.use('/', (req, res) => {
-//     res.send('dr_ordin BE working')
-// })
+// Start Tally cron job for hourly sync
+const TallyCronJob = require('./scripts/tally-cron');
+const tallyCronJob = new TallyCronJob();
 
 let port = process.env.PORT || 7010;
 
 app.listen(port, () => {
-    console.log(`listening on ${port}`)
+    console.log(`🚀 Server listening on port ${port}`);
+    console.log('🔄 Starting Tally integration...');
+    
+    // Start the Tally cron job
+    tallyCronJob.start();
 });
 
 // function getLongestWorld(str) {
@@ -86,3 +90,9 @@ app.listen(port, () => {
 //     return gio;
 // }
 
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to Dr.Odin application." });
+});
+
+// const str = "I am Gaurav Singh";
+// console.log(getLongestWorld(str));   
