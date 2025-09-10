@@ -43,7 +43,8 @@ const TallyVouchersDetail = () => {
             });
             
             const response = await axios.get(`http://localhost:7010/api/tally/vouchers?${params}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
+                timeout: 120000 // 120 seconds
             });
             
             if (response.data.status === 200) {
@@ -110,7 +111,8 @@ const TallyVouchersDetail = () => {
                 });
                 
                 const response = await axios.get(`http://localhost:7010/api/tally/vouchers?${params}`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: { Authorization: `Bearer ${token}` },
+                    timeout: 120000 // 120 seconds
                 });
                 
                 if (response.data.status === 200) {

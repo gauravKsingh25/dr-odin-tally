@@ -16,7 +16,7 @@ class TallyService {
         try {
             const response = await axios.post(this.tallyUrl, xmlPayload, {
                 headers: { 'Content-Type': 'application/xml' },
-                timeout: 30000,
+                timeout: 120000, // 120 seconds
             });
             
             const parsed = await this.parser.parseStringPromise(response.data);
