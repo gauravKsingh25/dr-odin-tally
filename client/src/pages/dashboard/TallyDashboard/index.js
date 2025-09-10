@@ -1,7 +1,8 @@
 // @flow
 import React, { useState, useEffect, useCallback } from 'react';
-import { Row, Col, Card, Button, Table, Badge } from 'react-bootstrap';
+import { Row, Col, Card, Button, Table, Badge, ProgressBar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Chart from 'react-apexcharts';
 import MainLoader from '../../../components/MainLoader';
 import { APICore } from '../../../helpers/api/apiCore';
@@ -16,6 +17,23 @@ const TallyDashboard = () => {
     const [connectionStatus, setConnectionStatus] = useState(null);
     const [isSyncing, setIsSyncing] = useState(false);
     const navigate = useNavigate();
+    
+    // Get theme from Redux store
+    const { layoutColor } = useSelector((state) => ({
+        layoutColor: state.Layout.layoutColor,
+    }));
+    
+    // Theme-aware chart colors
+    const getChartTheme = () => {
+        const isDark = layoutColor === 'dark';
+        return {
+            colors: isDark ? ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'] 
+                          : ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'],
+            textColor: isDark ? '#e3e6f0' : '#6c757d',
+            gridColor: isDark ? '#404954' : '#f1f3fa',
+            backgroundColor: isDark ? 'transparent' : 'transparent'
+        };
+    };
 
     // Fetch dashboard data
     const fetchDashboardData = useCallback(async () => {
@@ -835,14 +853,14 @@ const TallyDashboard = () => {
                                                     background: 'transparent'
                                                 },
                                                 theme: {
-                                                    mode: 'light'
+                                                    mode: layoutColor === 'dark' ? 'dark' : 'light'
                                                 },
                                                 labels: dashboardData.voucherSummary.map(item => item._id || 'Unknown'),
-                                                colors: ['#727cf5', '#0acf97', '#fa5c7c', '#ffbc00', '#39afd1', '#6c757d'],
+                                                colors: getChartTheme().colors,
                                                 legend: { 
                                                     position: 'bottom',
                                                     labels: {
-                                                        colors: '#6c757d'
+                                                        colors: getChartTheme().textColor
                                                     }
                                                 },
                                                 dataLabels: {
@@ -852,6 +870,15 @@ const TallyDashboard = () => {
                                                     },
                                                     formatter: function (val, opts) {
                                                         return dashboardData.voucherSummary[opts.seriesIndex].count
+                                                    }
+                                                },
+                                                tooltip: {
+                                                    theme: layoutColor === 'dark' ? 'dark' : 'light',
+                                                    y: {
+                                                        formatter: function(val, opts) {
+                                                            const summary = dashboardData.voucherSummary[opts.seriesIndex];
+                                                            return `Count: ${val}<br/>Amount: ₹${summary.totalAmount?.toLocaleString() || 0}`;
+                                                        }
                                                     }
                                                 }
                                             }}
@@ -897,24 +924,24 @@ const TallyDashboard = () => {
                                                     background: 'transparent'
                                                 },
                                                 theme: {
-                                                    mode: 'light'
+                                                    mode: layoutColor === 'dark' ? 'dark' : 'light'
                                                 },
                                                 xaxis: { 
                                                     categories: dashboardData.groupSummary.map(item => item._id || 'Other'),
                                                     labels: {
                                                         style: {
-                                                            colors: '#6c757d'
+                                                            colors: getChartTheme().textColor
                                                         }
                                                     }
                                                 },
                                                 yaxis: {
                                                     labels: {
                                                         style: {
-                                                            colors: '#6c757d'
+                                                            colors: getChartTheme().textColor
                                                         }
                                                     }
                                                 },
-                                                colors: ['#727cf5'],
+                                                colors: [getChartTheme().colors[0]],
                                                 plotOptions: {
                                                     bar: {
                                                         horizontal: false,
@@ -925,6 +952,18 @@ const TallyDashboard = () => {
                                                     enabled: true,
                                                     style: {
                                                         colors: ['#fff']
+                                                    }
+                                                },
+                                                grid: {
+                                                    borderColor: getChartTheme().gridColor
+                                                },
+                                                tooltip: {
+                                                    theme: layoutColor === 'dark' ? 'dark' : 'light',
+                                                    y: {
+                                                        formatter: function(val, opts) {
+                                                            const group = dashboardData.groupSummary[opts.dataPointIndex];
+                                                            return `Groups: ${val}<br/>Opening: ₹${group.totalOpeningBalance?.toLocaleString() || 0}<br/>Closing: ₹${group.totalClosingBalance?.toLocaleString() || 0}`;
+                                                        }
                                                     }
                                                 }
                                             }}
@@ -975,17 +1014,17 @@ const TallyDashboard = () => {
                                                     background: 'transparent'
                                                 },
                                                 theme: {
-                                                    mode: 'light'
+                                                    mode: layoutColor === 'dark' ? 'dark' : 'light'
                                                 },
                                                 xaxis: { 
                                                     categories: dashboardData.stockSummary.slice(0, 10).map(item => item._id || 'Uncategorized'),
                                                     labels: {
                                                         style: {
-                                                            colors: '#6c757d'
+                                                            colors: getChartTheme().textColor
                                                         }
                                                     }
                                                 },
-                                                colors: ['#0acf97', '#fa5c7c'],
+                                                colors: [getChartTheme().colors[2], getChartTheme().colors[3]],
                                                 plotOptions: {
                                                     bar: {
                                                         horizontal: false,
@@ -1002,16 +1041,19 @@ const TallyDashboard = () => {
                                                                val > 1000 ? (val/1000).toFixed(1) + 'K' : val;
                                                     }
                                                 },
+                                                grid: {
+                                                    borderColor: getChartTheme().gridColor
+                                                },
                                                 yaxis: [{
                                                     title: { 
                                                         text: 'Item Count',
                                                         style: {
-                                                            color: '#6c757d'
+                                                            color: getChartTheme().textColor
                                                         }
                                                     },
                                                     labels: {
                                                         style: {
-                                                            colors: '#6c757d'
+                                                            colors: getChartTheme().textColor
                                                         }
                                                     }
                                                 }, {
@@ -1019,15 +1061,28 @@ const TallyDashboard = () => {
                                                     title: { 
                                                         text: 'Total Value (₹)',
                                                         style: {
-                                                            color: '#6c757d'
+                                                            color: getChartTheme().textColor
                                                         }
                                                     },
                                                     labels: {
                                                         style: {
-                                                            colors: '#6c757d'
+                                                            colors: getChartTheme().textColor
                                                         }
                                                     }
-                                                }]
+                                                }],
+                                                tooltip: {
+                                                    theme: layoutColor === 'dark' ? 'dark' : 'light',
+                                                    y: {
+                                                        formatter: function(val, opts) {
+                                                            const stock = dashboardData.stockSummary[opts.dataPointIndex];
+                                                            if (opts.seriesIndex === 0) {
+                                                                return `Items: ${val}<br/>Total Qty: ${stock.totalQty?.toLocaleString() || 0}`;
+                                                            } else {
+                                                                return `Value: ₹${val.toLocaleString()}<br/>Avg Value: ₹${(val / stock.itemCount).toFixed(2)}`;
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }}
                                             series={[
                                                 {
@@ -1053,6 +1108,367 @@ const TallyDashboard = () => {
                             </Card>
                         </Col>
                     </Row>
+
+                    {/* Advanced Analytics Section */}
+                    {dashboardData.summary && (
+                        <Row className="fade-in">
+                            <Col lg={12}>
+                                <Card className="comprehensive-analytics-card">
+                                    <Card.Body>
+                                        <Row className="mb-4">
+                                            <Col lg={8}>
+                                                <h4 className="header-title mb-0">
+                                                    <i className="mdi mdi-chart-timeline-variant me-2"></i>
+                                                    Comprehensive Analytics Overview
+                                                </h4>
+                                                <p className="text-muted mb-0">Detailed insights from your Tally data with interactive visualizations</p>
+                                            </Col>
+                                            <Col lg={4} className="text-end">
+                                                <Button 
+                                                    variant="primary" 
+                                                    size="sm"
+                                                    onClick={() => navigate('/tally-comprehensive-detail')}
+                                                    title="View comprehensive analytics dashboard"
+                                                >
+                                                    <i className="mdi mdi-chart-timeline-variant"></i> Full Analytics
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                        
+                                        {/* Mini Analytics Cards */}
+                                        <Row className="mb-4">
+                                            <Col md={3}>
+                                                <div className="mini-stat">
+                                                    <div className="mini-stat-icon bg-primary">
+                                                        <i className="mdi mdi-database"></i>
+                                                    </div>
+                                                    <div className="mini-stat-info">
+                                                        <h6 className="mb-1">Total Records</h6>
+                                                        <h4 className="mb-0">
+                                                            {(
+                                                                (dashboardData.summary?.companies || 0) +
+                                                                (dashboardData.summary?.ledgers || 0) +
+                                                                (dashboardData.summary?.vouchers || 0) +
+                                                                (dashboardData.summary?.stockItems || 0) +
+                                                                (dashboardData.summary?.groups || 0) +
+                                                                (dashboardData.summary?.costCenters || 0) +
+                                                                (dashboardData.summary?.currencies || 0)
+                                                            ).toLocaleString()}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                            <Col md={3}>
+                                                <div className="mini-stat">
+                                                    <div className="mini-stat-icon bg-success">
+                                                        <i className="mdi mdi-trending-up"></i>
+                                                    </div>
+                                                    <div className="mini-stat-info">
+                                                        <h6 className="mb-1">Data Coverage</h6>
+                                                        <h4 className="mb-0">
+                                                            {dashboardData.summary?.ledgers > 0 && dashboardData.summary?.vouchers > 0 ? '95%' : 
+                                                             dashboardData.summary?.ledgers > 0 || dashboardData.summary?.vouchers > 0 ? '70%' : '25%'}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                            <Col md={3}>
+                                                <div className="mini-stat">
+                                                    <div className="mini-stat-icon bg-warning">
+                                                        <i className="mdi mdi-clock-outline"></i>
+                                                    </div>
+                                                    <div className="mini-stat-info">
+                                                        <h6 className="mb-1">Last Sync</h6>
+                                                        <h4 className="mb-0 small">
+                                                            {dashboardData.summary?.lastSync ? 
+                                                                new Date(dashboardData.summary.lastSync).toLocaleDateString() : 
+                                                                'Never'
+                                                            }
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                            <Col md={3}>
+                                                <div className="mini-stat">
+                                                    <div className="mini-stat-icon bg-info">
+                                                        <i className="mdi mdi-chart-pie"></i>
+                                                    </div>
+                                                    <div className="mini-stat-info">
+                                                        <h6 className="mb-1">Data Health</h6>
+                                                        <h4 className="mb-0">
+                                                            {dashboardData.summary?.vouchers > 0 && dashboardData.summary?.ledgers > 0 ? 
+                                                                'Excellent' : dashboardData.summary?.ledgers > 0 ? 'Good' : 'Needs Sync'}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                        </Row>
+
+                                        {/* Financial Balance Trends */}
+                                        {dashboardData.financialSummary && (
+                                            <Row className="mb-4">
+                                                <Col lg={6}>
+                                                    <div className="financial-insight-card">
+                                                        <h5 className="mb-3">
+                                                            <i className="mdi mdi-chart-line text-primary me-2"></i>
+                                                            Financial Balance Analysis
+                                                        </h5>
+                                                        <div className="balance-metrics">
+                                                            <div className="metric-item">
+                                                                <span className="metric-label">Opening Balance</span>
+                                                                <span className="metric-value text-info">
+                                                                    ₹{dashboardData.financialSummary.totalOpeningBalance?.toLocaleString() || '0'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="metric-item">
+                                                                <span className="metric-label">Closing Balance</span>
+                                                                <span className="metric-value text-primary">
+                                                                    ₹{dashboardData.financialSummary.totalClosingBalance?.toLocaleString() || '0'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="metric-item">
+                                                                <span className="metric-label">Net Movement</span>
+                                                                <span className={`metric-value ${
+                                                                    ((dashboardData.financialSummary.totalClosingBalance || 0) - 
+                                                                     (dashboardData.financialSummary.totalOpeningBalance || 0)) >= 0 
+                                                                    ? 'text-success' : 'text-danger'
+                                                                }`}>
+                                                                    ₹{((dashboardData.financialSummary.totalClosingBalance || 0) - 
+                                                                       (dashboardData.financialSummary.totalOpeningBalance || 0)).toLocaleString()}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                                <Col lg={6}>
+                                                    <div className="data-distribution-card">
+                                                        <h5 className="mb-3">
+                                                            <i className="mdi mdi-database-outline text-success me-2"></i>
+                                                            Data Distribution
+                                                        </h5>
+                                                        <div className="distribution-items">
+                                                            <div className="distribution-item">
+                                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                                    <span className="small">Ledgers</span>
+                                                                    <span className="small fw-bold">{dashboardData.summary?.ledgers || 0}</span>
+                                                                </div>
+                                                                <ProgressBar 
+                                                                    now={Math.min(100, (dashboardData.summary?.ledgers || 0) / 10)} 
+                                                                    variant="primary" 
+                                                                    className="mb-2" 
+                                                                    style={{height: '4px'}}
+                                                                />
+                                                            </div>
+                                                            <div className="distribution-item">
+                                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                                    <span className="small">Vouchers</span>
+                                                                    <span className="small fw-bold">{dashboardData.summary?.vouchers || 0}</span>
+                                                                </div>
+                                                                <ProgressBar 
+                                                                    now={Math.min(100, (dashboardData.summary?.vouchers || 0) / 50)} 
+                                                                    variant="success" 
+                                                                    className="mb-2" 
+                                                                    style={{height: '4px'}}
+                                                                />
+                                                            </div>
+                                                            <div className="distribution-item">
+                                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                                    <span className="small">Stock Items</span>
+                                                                    <span className="small fw-bold">{dashboardData.summary?.stockItems || 0}</span>
+                                                                </div>
+                                                                <ProgressBar 
+                                                                    now={Math.min(100, (dashboardData.summary?.stockItems || 0) / 20)} 
+                                                                    variant="warning" 
+                                                                    className="mb-2" 
+                                                                    style={{height: '4px'}}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        )}
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                    )}
+
+                    {/* Financial Trends Analysis */}
+                    {dashboardData.voucherSummary && dashboardData.voucherSummary.length > 0 && (
+                        <Row className="fade-in">
+                            <Col lg={8}>
+                                <Card className="chart-container">
+                                    <Card.Body>
+                                        <Row className="mb-3">
+                                            <Col lg={8}>
+                                                <h4 className="header-title">
+                                                    <i className="mdi mdi-chart-timeline-variant text-primary me-2"></i>
+                                                    Voucher Amount Distribution
+                                                </h4>
+                                                <p className="text-muted mb-0">Financial transaction amounts by voucher type</p>
+                                            </Col>
+                                            <Col lg={4} className="text-end">
+                                                <Button 
+                                                    variant="outline-primary" 
+                                                    size="sm"
+                                                    onClick={() => navigate('/tally-vouchers-detail')}
+                                                    title="View detailed voucher analysis"
+                                                >
+                                                    <i className="mdi mdi-chart-bar"></i> Details
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                        <Chart
+                                            options={{
+                                                chart: { 
+                                                    type: 'donut', 
+                                                    height: 300,
+                                                    background: 'transparent'
+                                                },
+                                                theme: {
+                                                    mode: layoutColor === 'dark' ? 'dark' : 'light'
+                                                },
+                                                labels: dashboardData.voucherSummary.map(item => item._id || 'Unknown'),
+                                                colors: getChartTheme().colors,
+                                                legend: { 
+                                                    position: 'bottom',
+                                                    labels: {
+                                                        colors: getChartTheme().textColor
+                                                    }
+                                                },
+                                                plotOptions: {
+                                                    pie: {
+                                                        donut: {
+                                                            size: '60%',
+                                                            labels: {
+                                                                show: true,
+                                                                name: {
+                                                                    show: true,
+                                                                    color: getChartTheme().textColor
+                                                                },
+                                                                value: {
+                                                                    show: true,
+                                                                    color: getChartTheme().textColor,
+                                                                    formatter: function (val) {
+                                                                        return '₹' + parseFloat(val).toLocaleString();
+                                                                    }
+                                                                },
+                                                                total: {
+                                                                    show: true,
+                                                                    showAlways: false,
+                                                                    color: getChartTheme().textColor,
+                                                                    formatter: function (w) {
+                                                                        const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                                                        return '₹' + total.toLocaleString();
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                dataLabels: {
+                                                    enabled: true,
+                                                    style: {
+                                                        colors: ['#fff']
+                                                    },
+                                                    formatter: function (val, opts) {
+                                                        return val.toFixed(1) + '%';
+                                                    }
+                                                },
+                                                tooltip: {
+                                                    theme: layoutColor === 'dark' ? 'dark' : 'light',
+                                                    y: {
+                                                        formatter: function(val) {
+                                                            return '₹' + val.toLocaleString();
+                                                        }
+                                                    }
+                                                }
+                                            }}
+                                            series={dashboardData.voucherSummary.map(item => item.totalAmount || 0)}
+                                            type="donut"
+                                            height={300}
+                                        />
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col lg={4}>
+                                <Card className="comprehensive-analytics-card">
+                                    <Card.Body>
+                                        <h5 className="mb-3">
+                                            <i className="mdi mdi-information-outline text-info me-2"></i>
+                                            Quick Insights
+                                        </h5>
+                                        <div className="insights-list">
+                                            <div className="insight-item">
+                                                <div className="insight-icon bg-primary">
+                                                    <i className="mdi mdi-file-document"></i>
+                                                </div>
+                                                <div className="insight-content">
+                                                    <span className="insight-label">Total Vouchers</span>
+                                                    <span className="insight-value">
+                                                        {dashboardData.summary?.vouchers?.toLocaleString() || '0'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="insight-item">
+                                                <div className="insight-icon bg-success">
+                                                    <i className="mdi mdi-cash-multiple"></i>
+                                                </div>
+                                                <div className="insight-content">
+                                                    <span className="insight-label">Total Amount</span>
+                                                    <span className="insight-value">
+                                                        ₹{dashboardData.voucherSummary.reduce((acc, item) => acc + (item.totalAmount || 0), 0).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="insight-item">
+                                                <div className="insight-icon bg-warning">
+                                                    <i className="mdi mdi-chart-bar"></i>
+                                                </div>
+                                                <div className="insight-content">
+                                                    <span className="insight-label">Avg. per Voucher</span>
+                                                    <span className="insight-value">
+                                                        ₹{(dashboardData.voucherSummary.reduce((acc, item) => acc + (item.totalAmount || 0), 0) / 
+                                                           dashboardData.voucherSummary.reduce((acc, item) => acc + (item.count || 0), 0) || 0).toFixed(0)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="insight-item">
+                                                <div className="insight-icon bg-info">
+                                                    <i className="mdi mdi-format-list-numbered"></i>
+                                                </div>
+                                                <div className="insight-content">
+                                                    <span className="insight-label">Voucher Types</span>
+                                                    <span className="insight-value">
+                                                        {dashboardData.voucherSummary.length}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="mt-4">
+                                            <h6 className="mb-2">Top Voucher Type</h6>
+                                            {dashboardData.voucherSummary[0] && (
+                                                <div className="top-voucher-info">
+                                                    <Badge 
+                                                        bg="primary" 
+                                                        className="me-2 px-3 py-2"
+                                                    >
+                                                        {dashboardData.voucherSummary[0]._id}
+                                                    </Badge>
+                                                    <div className="small text-muted mt-1">
+                                                        {dashboardData.voucherSummary[0].count} vouchers • 
+                                                        ₹{dashboardData.voucherSummary[0].totalAmount?.toLocaleString() || '0'}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                    )}
 
                     {/* Enhanced Tables Row */}
                     <Row>

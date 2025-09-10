@@ -1,4 +1,8 @@
-/* Tally Dashboard Enhancements */
+/* Tally Dashboard Enhancements - Theme Aware */
+
+/* ========================================== */
+/* LIGHT MODE STYLES (DEFAULT) */
+/* ========================================== */
 
 /* Floating Action Button */
 .tally-fab {
@@ -97,7 +101,6 @@
 
 .chart-container .card-body {
     background: transparent;
-    color: #6c757d;
 }
 
 .chart-container h4 {
@@ -105,22 +108,157 @@
     font-weight: 600;
 }
 
-/* Ensure ApexCharts uses light theme */
-.chart-container .apexcharts-canvas {
-    background: transparent !important;
+/* Comprehensive Analytics Card */
+.comprehensive-analytics-card {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    margin: 20px 0;
 }
 
-.chart-container .apexcharts-legend-text {
-    color: #6c757d !important;
+/* Mini Stats */
+.mini-stat {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
 }
 
-.chart-container .apexcharts-text {
-    fill: #6c757d !important;
+.mini-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.chart-container .apexcharts-datalabel-label,
-.chart-container .apexcharts-datalabel-value {
-    fill: #495057 !important;
+.mini-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    font-size: 20px;
+}
+
+.mini-stat-info h6 {
+    color: #6c757d;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.mini-stat-info h4 {
+    color: #495057;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+/* Financial Insight Card */
+.financial-insight-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #727cf5;
+}
+
+.balance-metrics .metric-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f3fa;
+}
+
+.balance-metrics .metric-item:last-child {
+    border-bottom: none;
+}
+
+.metric-label {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.metric-value {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Data Distribution Card */
+.data-distribution-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #0acf97;
+}
+
+.distribution-item {
+    margin-bottom: 15px;
+}
+
+.distribution-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Insights List */
+.insights-list {
+    margin-bottom: 20px;
+}
+
+.insight-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f3fa;
+}
+
+.insight-item:last-child {
+    border-bottom: none;
+}
+
+.insight-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    color: white;
+    font-size: 16px;
+}
+
+.insight-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.insight-label {
+    color: #6c757d;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.insight-value {
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.top-voucher-info {
+    padding: 10px;
+    background: #f8f9ff;
+    border-radius: 6px;
+    border-left: 3px solid #727cf5;
 }
 
 /* Badge Enhancements */
@@ -144,26 +282,6 @@
     }
     100% {
         background-position: 200% 0;
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .tally-fab {
-        bottom: 15px;
-        right: 15px;
-        width: 50px;
-        height: 50px;
-    }
-    
-    .quick-actions-card .d-flex {
-        flex-direction: column !important;
-        gap: 10px;
-    }
-    
-    .see-more-btn {
-        font-size: 10px;
-        padding: 6px 12px;
     }
 }
 
@@ -233,4 +351,164 @@
 
 .success-indicator:hover::after {
     left: 100%;
+}
+
+/* ========================================== */
+/* DARK MODE STYLES */
+/* ========================================== */
+
+body[data-layout-color="dark"] {
+    /* Chart Container Dark Mode */
+    .chart-container {
+        background: linear-gradient(135deg, var(--bs-dark) 0%, #404954 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .chart-container h4 {
+        color: var(--bs-light);
+    }
+
+    /* Comprehensive Analytics Card Dark Mode */
+    .comprehensive-analytics-card {
+        background: linear-gradient(135deg, var(--bs-dark) 0%, #404954 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Mini Stats Dark Mode */
+    .mini-stat {
+        background: var(--bs-dark);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mini-stat:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .mini-stat-info h6 {
+        color: var(--bs-secondary);
+    }
+
+    .mini-stat-info h4 {
+        color: var(--bs-light);
+    }
+
+    /* Financial Insight Card Dark Mode */
+    .financial-insight-card {
+        background: var(--bs-dark);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        border-left: 4px solid #727cf5;
+    }
+
+    .balance-metrics .metric-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .metric-label {
+        color: var(--bs-secondary);
+    }
+
+    /* Data Distribution Card Dark Mode */
+    .data-distribution-card {
+        background: var(--bs-dark);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        border-left: 4px solid #0acf97;
+    }
+
+    /* Insights List Dark Mode */
+    .insight-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .insight-label {
+        color: var(--bs-secondary);
+    }
+
+    .insight-value {
+        color: var(--bs-light);
+    }
+
+    .top-voucher-info {
+        background: rgba(114, 124, 245, 0.1);
+        border-left: 3px solid #727cf5;
+    }
+
+    /* Table Hover Dark Mode */
+    .table-hover tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.1);
+    }
+
+    /* Tally Loading Dark Mode */
+    .tally-loading {
+        background: linear-gradient(90deg, #404954 25%, #4a5766 50%, #404954 75%);
+        background-size: 200% 100%;
+        animation: tally-shimmer 1.5s infinite;
+    }
+
+    /* See More Button Dark Mode */
+    .see-more-btn {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    }
+
+    .see-more-btn:hover {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    }
+}
+
+/* ========================================== */
+/* RESPONSIVE DESIGN */
+/* ========================================== */
+
+@media (max-width: 768px) {
+    .tally-fab {
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .quick-actions-card .d-flex {
+        flex-direction: column !important;
+        gap: 10px;
+    }
+    
+    .see-more-btn {
+        font-size: 10px;
+        padding: 6px 12px;
+    }
+
+    .mini-stat {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .mini-stat-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .financial-insight-card,
+    .data-distribution-card {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .comprehensive-analytics-card {
+        margin: 10px 0;
+        border-radius: 8px;
+    }
+
+    .balance-metrics .metric-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 0;
+    }
+
+    .metric-value {
+        margin-top: 5px;
+    }
 }
