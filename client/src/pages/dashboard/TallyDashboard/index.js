@@ -16,7 +16,27 @@ const TallyDashboard = () => {
     const [syncStatus, setSyncStatus] = useState(null);
     const [connectionStatus, setConnectionStatus] = useState(null);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [expandedVoucherRows, setExpandedVoucherRows] = useState([]);
+    const [expandedLedgerRows, setExpandedLedgerRows] = useState([]);
+    const [expandedStockRows, setExpandedStockRows] = useState([]);
     const navigate = useNavigate();
+
+    // Toggle functions
+    const toggleVoucherRow = (index) => {
+        setExpandedVoucherRows((prev) =>
+            prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+        );
+    };
+    const toggleLedgerRow = (index) => {
+        setExpandedLedgerRows((prev) =>
+            prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+        );
+    };
+    const toggleStockRow = (index) => {
+        setExpandedStockRows((prev) =>
+            prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+        );
+    };
     
     // Get theme from Redux store
     const { layoutColor } = useSelector((state) => ({
@@ -502,12 +522,12 @@ const TallyDashboard = () => {
                     <Row className="mb-3 fade-in">
                         <Col xs={12}>
                             <Card className="quick-actions-card">
-                                <Card.Body>
+                                <Card.Body className="fade-in">
                                     <Row className="align-items-center">
                                         <Col md={8}>
                                             <h5 className="mb-1">
                                                 <i className="mdi mdi-view-dashboard me-2"></i>
-                                                Tally Data Overview
+                                                <span className="gradient-text">Tally Data Overview</span>
                                             </h5>
                                             <p className="mb-0" style={{ color: 'rgba(255,255,255,0.8)' }}>
                                                 Quick access to detailed views and comprehensive analytics for all your Tally data
@@ -520,7 +540,7 @@ const TallyDashboard = () => {
                                                     size="sm"
                                                     onClick={() => navigate('/tally-comprehensive-detail')}
                                                     title="Comprehensive analytics with charts and insights"
-                                                    className="slide-in-right"
+                                                    className="slide-in-right see-more-btn"
                                                 >
                                                     <i className="mdi mdi-chart-timeline-variant"></i> Analytics Hub
                                                 </Button>
@@ -529,7 +549,7 @@ const TallyDashboard = () => {
                                                     size="sm"
                                                     onClick={() => navigate('/tally-vouchers-detail')}
                                                     title="Detailed voucher management"
-                                                    className="slide-in-right"
+                                                    className="slide-in-right see-more-btn"
                                                 >
                                                     <i className="mdi mdi-file-document-multiple"></i> Vouchers
                                                 </Button>
@@ -538,7 +558,7 @@ const TallyDashboard = () => {
                                                     size="sm"
                                                     onClick={() => navigate('/tally-ledgers-detail')}
                                                     title="Ledger balance analysis"
-                                                    className="slide-in-right"
+                                                    className="slide-in-right see-more-btn"
                                                 >
                                                     <i className="mdi mdi-account-multiple"></i> Ledgers
                                                 </Button>
@@ -547,7 +567,7 @@ const TallyDashboard = () => {
                                                     size="sm"
                                                     onClick={() => navigate('/tally-stock-items-detail')}
                                                     title="Stock inventory management"
-                                                    className="slide-in-right"
+                                                    className="slide-in-right see-more-btn"
                                                 >
                                                     <i className="mdi mdi-package-variant"></i> Inventory
                                                 </Button>
@@ -563,7 +583,7 @@ const TallyDashboard = () => {
                     <Row className="fade-in">
                         <Col sm={6} xl={2}>
                             <Card className="widget-flat success-indicator">
-                                <Card.Body>
+                                <Card.Body className="fade-in">
                                     <div className="float-end">
                                         <i className="mdi mdi-office-building widget-icon bg-primary"></i>
                                     </div>
@@ -1490,53 +1510,87 @@ const TallyDashboard = () => {
                                             </Button>
                                         </Col>
                                     </Row>
-                                    <Table responsive className="table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Voucher No</th>
-                                                <th>Type</th>
-                                                <th>Party</th>
-                                                <th>Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {dashboardData.recentActivities?.vouchers && dashboardData.recentActivities.vouchers.length > 0 ? 
-                                                dashboardData.recentActivities.vouchers.map((voucher, index) => (
-                                                    <tr key={index}>
-                                                        <td>{new Date(voucher.date).toLocaleDateString()}</td>
-                                                        <td>{voucher.voucherNumber}</td>
-                                                        <td>
-                                                            <Badge bg="info" className="text-truncate">
-                                                                {voucher.voucherType}
-                                                            </Badge>
-                                                        </td>
-                                                        <td className="text-truncate" style={{maxWidth: '120px'}}>
-                                                            {voucher.party || 'N/A'}
-                                                        </td>
-                                                        <td>₹{voucher.amount?.toLocaleString() || 0}</td>
-                                                    </tr>
-                                                )) : (
-                                                    <tr>
-                                                        <td colSpan="5" className="text-center text-muted">No vouchers available</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </Table>
-                                    <div className="text-center mt-2">
-                                        <small className="text-muted">
-                                            Showing recent vouchers. 
-                                            <Button 
-                                                variant="link" 
-                                                size="sm" 
-                                                className="p-0 ms-1"
-                                                onClick={() => navigate('/tally-vouchers-detail')}
-                                            >
-                                                Click to see all with advanced filters
-                                            </Button>
-                                        </small>
-                                    </div>
+                                        <Table responsive className="table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Date</th>
+                                                    <th>Voucher No</th>
+                                                    <th>Type</th>
+                                                    <th>Party</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {dashboardData.recentActivities?.vouchers && dashboardData.recentActivities.vouchers.length > 0 ? 
+                                                    dashboardData.recentActivities.vouchers.map((voucher, index) => (
+                                                        <React.Fragment key={index}>
+                                                            <tr>
+                                                                <td>
+                                                                    <Button 
+                                                                        variant="outline-secondary" 
+                                                                        size="sm" 
+                                                                        onClick={() => toggleVoucherRow(index)}
+                                                                        title={expandedVoucherRows.includes(index) ? "Hide Details" : "Show Details"}
+                                                                    >
+                                                                        <i className={`mdi ${expandedVoucherRows.includes(index) ? 'mdi-chevron-up' : 'mdi-chevron-down'}`}></i>
+                                                                    </Button>
+                                                                </td>
+                                                                <td>{new Date(voucher.date).toLocaleDateString()}</td>
+                                                                <td>{voucher.voucherNumber}</td>
+                                                                <td>
+                                                                    <Badge bg="info" className="text-truncate" title="Voucher Type">
+                                                                        {voucher.voucherType}
+                                                                    </Badge>
+                                                                </td>
+                                                                <td className="text-truncate" style={{maxWidth: '120px'}}>
+                                                                    {voucher.party || 'N/A'}
+                                                                </td>
+                                                                <td>₹{voucher.amount?.toLocaleString() || 0}</td>
+                                                            </tr>
+                                                            {expandedVoucherRows.includes(index) && (
+                                                                <tr>
+                                                                    <td colSpan="6" className="bg-light">
+                                                                        <div className="p-2">
+                                                                            <strong>All Fields:</strong>
+                                                                            <ul className="mb-0">
+                                                                                {Object.entries(voucher).map(([key, value]) => (
+                                                                                    <li key={key}>
+                                                                                        <Badge bg="secondary" className="me-2" title={key === 'rawData' ? 'New Field' : ''}>
+                                                                                            {key}
+                                                                                        </Badge>
+                                                                                        <span title={key === 'rawData' ? 'Raw field from Tally sync' : ''}>
+                                                                                            {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                                                                                        </span>
+                                                                                    </li>
+                                                                                ))}
+                                                                            </ul>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                        </React.Fragment>
+                                                    )) : (
+                                                        <tr>
+                                                            <td colSpan="6" className="text-center text-muted">No vouchers available</td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            </tbody>
+                                        </Table>
+                                        <div className="text-center mt-2">
+                                            <small className="text-muted">
+                                                Showing recent vouchers. 
+                                                <Button 
+                                                    variant="link" 
+                                                    size="sm" 
+                                                    className="p-0 ms-1"
+                                                    onClick={() => navigate('/tally-vouchers-detail')}
+                                                >
+                                                    Click to see all with advanced filters
+                                                </Button>
+                                            </small>
+                                        </div>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -1559,57 +1613,91 @@ const TallyDashboard = () => {
                                             </Button>
                                         </Col>
                                     </Row>
-                                    <Table responsive className="table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Ledger Name</th>
-                                                <th>Parent</th>
-                                                <th>Opening Balance</th>
-                                                <th>Closing Balance</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {dashboardData.recentActivities?.ledgers && dashboardData.recentActivities.ledgers.length > 0 ? 
-                                                dashboardData.recentActivities.ledgers.map((ledger, index) => (
-                                                    <tr key={index}>
-                                                        <td className="text-truncate" style={{maxWidth: '120px'}}>
-                                                            {ledger.name}
-                                                        </td>
-                                                        <td className="text-truncate" style={{maxWidth: '100px'}}>
-                                                            {ledger.parent || 'N/A'}
-                                                        </td>
-                                                        <td>
-                                                            <span className={ledger.openingBalance >= 0 ? 'text-success' : 'text-danger'}>
-                                                                ₹{Math.abs(ledger.openingBalance || 0).toLocaleString()}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <span className={ledger.closingBalance >= 0 ? 'text-success' : 'text-danger'}>
-                                                                ₹{Math.abs(ledger.closingBalance || 0).toLocaleString()}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                )) : (
-                                                    <tr>
-                                                        <td colSpan="4" className="text-center text-muted">No ledgers available</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </Table>
-                                    <div className="text-center mt-2">
-                                        <small className="text-muted">
-                                            Showing recent ledgers. 
-                                            <Button 
-                                                variant="link" 
-                                                size="sm" 
-                                                className="p-0 ms-1"
-                                                onClick={() => navigate('/tally-ledgers-detail')}
-                                            >
-                                                View detailed balance analysis
-                                            </Button>
-                                        </small>
-                                    </div>
+                                        <Table responsive className="table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Ledger Name</th>
+                                                    <th>Parent</th>
+                                                    <th>Opening Balance</th>
+                                                    <th>Closing Balance</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {dashboardData.recentActivities?.ledgers && dashboardData.recentActivities.ledgers.length > 0 ? 
+                                                    dashboardData.recentActivities.ledgers.map((ledger, index) => (
+                                                        <React.Fragment key={index}>
+                                                            <tr>
+                                                                <td>
+                                                                    <Button 
+                                                                        variant="outline-secondary" 
+                                                                        size="sm" 
+                                                                        onClick={() => toggleLedgerRow(index)}
+                                                                        title={expandedLedgerRows.includes(index) ? "Hide Details" : "Show Details"}
+                                                                    >
+                                                                        <i className={`mdi ${expandedLedgerRows.includes(index) ? 'mdi-chevron-up' : 'mdi-chevron-down'}`}></i>
+                                                                    </Button>
+                                                                </td>
+                                                                <td className="text-truncate" style={{maxWidth: '120px'}}>
+                                                                    {ledger.name}
+                                                                </td>
+                                                                <td className="text-truncate" style={{maxWidth: '100px'}}>
+                                                                    {ledger.parent || 'N/A'}
+                                                                </td>
+                                                                <td>
+                                                                    <span className={ledger.openingBalance >= 0 ? 'text-success' : 'text-danger'}>
+                                                                        ₹{Math.abs(ledger.openingBalance || 0).toLocaleString()}
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span className={ledger.closingBalance >= 0 ? 'text-success' : 'text-danger'}>
+                                                                        ₹{Math.abs(ledger.closingBalance || 0).toLocaleString()}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                            {expandedLedgerRows.includes(index) && (
+                                                                <tr>
+                                                                    <td colSpan="5" className="bg-light">
+                                                                        <div className="p-2">
+                                                                            <strong>All Fields:</strong>
+                                                                            <ul className="mb-0">
+                                                                                {Object.entries(ledger).map(([key, value]) => (
+                                                                                    <li key={key}>
+                                                                                        <Badge bg="secondary" className="me-2" title={key === 'rawData' ? 'New Field' : ''}>
+                                                                                            {key}
+                                                                                        </Badge>
+                                                                                        <span title={key === 'rawData' ? 'Raw field from Tally sync' : ''}>
+                                                                                            {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                                                                                        </span>
+                                                                                    </li>
+                                                                                ))}
+                                                                            </ul>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                        </React.Fragment>
+                                                    )) : (
+                                                        <tr>
+                                                            <td colSpan="5" className="text-center text-muted">No ledgers available</td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            </tbody>
+                                        </Table>
+                                        <div className="text-center mt-2">
+                                            <small className="text-muted">
+                                                Showing recent ledgers. 
+                                                <Button 
+                                                    variant="link" 
+                                                    size="sm" 
+                                                    className="p-0 ms-1"
+                                                    onClick={() => navigate('/tally-ledgers-detail')}
+                                                >
+                                                    View detailed balance analysis
+                                                </Button>
+                                            </small>
+                                        </div>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -1645,80 +1733,114 @@ const TallyDashboard = () => {
                                             </div>
                                         </Col>
                                     </Row>
-                                    <Table responsive className="table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Item Name</th>
-                                                <th>Closing Qty</th>
-                                                <th>Closing Value</th>
-                                                <th>Base Units</th>
-                                                <th>Last Updated</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {dashboardData.recentActivities?.stockItems && dashboardData.recentActivities.stockItems.length > 0 ? 
-                                                dashboardData.recentActivities.stockItems.map((item, index) => (
-                                                    <tr key={index}>
-                                                        <td className="text-truncate" style={{maxWidth: '200px'}}>
-                                                            {item.name}
-                                                        </td>
-                                                        <td>
-                                                            <Badge bg={item.closingQty > 0 ? 'success' : 'warning'}>
-                                                                {item.closingQty} {item.baseUnits}
-                                                            </Badge>
-                                                        </td>
-                                                        <td>₹{item.closingValue?.toLocaleString() || 0}</td>
-                                                        <td>{item.baseUnits}</td>
-                                                        <td>{new Date(item.lastUpdated).toLocaleDateString()}</td>
-                                                        <td>
-                                                            <Badge bg={
-                                                                item.closingQty > 50 ? 'success' : 
-                                                                item.closingQty > 10 ? 'warning' : 'danger'
-                                                            }>
-                                                                {item.closingQty > 50 ? 'Good Stock' : 
-                                                                 item.closingQty > 10 ? 'Low Stock' : 'Out of Stock'}
-                                                            </Badge>
-                                                        </td>
-                                                    </tr>
-                                                )) : (
-                                                    <tr>
-                                                        <td colSpan="6" className="text-center text-muted">No stock items available</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        </tbody>
-                                    </Table>
-                                    <div className="text-center mt-3">
-                                        <Row>
-                                            <Col md={6}>
-                                                <small className="text-muted">
-                                                    Recent stock activity summary. 
-                                                    <Button 
-                                                        variant="link" 
-                                                        size="sm" 
-                                                        className="p-0 ms-1"
-                                                        onClick={() => navigate('/tally-stock-items-detail')}
-                                                    >
-                                                        View detailed inventory management
-                                                    </Button>
-                                                </small>
-                                            </Col>
-                                            <Col md={6}>
-                                                <small className="text-muted">
-                                                    Need insights? 
-                                                    <Button 
-                                                        variant="link" 
-                                                        size="sm" 
-                                                        className="p-0 ms-1"
-                                                        onClick={() => navigate('/tally-comprehensive-detail')}
-                                                    >
-                                                        Explore comprehensive analytics
-                                                    </Button>
-                                                </small>
-                                            </Col>
-                                        </Row>
-                                    </div>
+                                        <Table responsive className="table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Item Name</th>
+                                                    <th>Closing Qty</th>
+                                                    <th>Closing Value</th>
+                                                    <th>Base Units</th>
+                                                    <th>Last Updated</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {dashboardData.recentActivities?.stockItems && dashboardData.recentActivities.stockItems.length > 0 ? 
+                                                    dashboardData.recentActivities.stockItems.map((item, index) => (
+                                                        <React.Fragment key={index}>
+                                                            <tr>
+                                                                <td>
+                                                                    <Button 
+                                                                        variant="outline-secondary" 
+                                                                        size="sm" 
+                                                                        onClick={() => toggleStockRow(index)}
+                                                                        title={expandedStockRows.includes(index) ? "Hide Details" : "Show Details"}
+                                                                    >
+                                                                        <i className={`mdi ${expandedStockRows.includes(index) ? 'mdi-chevron-up' : 'mdi-chevron-down'}`}></i>
+                                                                    </Button>
+                                                                </td>
+                                                                <td className="text-truncate" style={{maxWidth: '200px'}}>
+                                                                    {item.name}
+                                                                </td>
+                                                                <td>
+                                                                    <Badge bg={item.closingQty > 0 ? 'success' : 'warning'}>
+                                                                        {item.closingQty} {item.baseUnits}
+                                                                    </Badge>
+                                                                </td>
+                                                                <td>₹{item.closingValue?.toLocaleString() || 0}</td>
+                                                                <td>{item.baseUnits}</td>
+                                                                <td>{new Date(item.lastUpdated).toLocaleDateString()}</td>
+                                                                <td>
+                                                                    <Badge bg={
+                                                                        item.closingQty > 50 ? 'success' : 
+                                                                        item.closingQty > 10 ? 'warning' : 'danger'
+                                                                    }>
+                                                                        {item.closingQty > 50 ? 'Good Stock' : 
+                                                                         item.closingQty > 10 ? 'Low Stock' : 'Out of Stock'}
+                                                                    </Badge>
+                                                                </td>
+                                                            </tr>
+                                                            {expandedStockRows.includes(index) && (
+                                                                <tr>
+                                                                    <td colSpan="7" className="bg-light">
+                                                                        <div className="p-2">
+                                                                            <strong>All Fields:</strong>
+                                                                            <ul className="mb-0">
+                                                                                {Object.entries(item).map(([key, value]) => (
+                                                                                    <li key={key}>
+                                                                                        <Badge bg="secondary" className="me-2" title={key === 'rawData' ? 'New Field' : ''}>
+                                                                                            {key}
+                                                                                        </Badge>
+                                                                                        <span title={key === 'rawData' ? 'Raw field from Tally sync' : ''}>
+                                                                                            {typeof value === 'object' ? JSON.stringify(value) : String(value)}
+                                                                                        </span>
+                                                                                    </li>
+                                                                                ))}
+                                                                            </ul>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                        </React.Fragment>
+                                                    )) : (
+                                                        <tr>
+                                                            <td colSpan="7" className="text-center text-muted">No stock items available</td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            </tbody>
+                                        </Table>
+                                        <div className="text-center mt-3">
+                                            <Row>
+                                                <Col md={6}>
+                                                    <small className="text-muted">
+                                                        Recent stock activity summary. 
+                                                        <Button 
+                                                            variant="link" 
+                                                            size="sm" 
+                                                            className="p-0 ms-1"
+                                                            onClick={() => navigate('/tally-stock-items-detail')}
+                                                        >
+                                                            View detailed inventory management
+                                                        </Button>
+                                                    </small>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <small className="text-muted">
+                                                        Need insights? 
+                                                        <Button 
+                                                            variant="link" 
+                                                            size="sm" 
+                                                            className="p-0 ms-1"
+                                                            onClick={() => navigate('/tally-comprehensive-detail')}
+                                                        >
+                                                            Explore comprehensive analytics
+                                                        </Button>
+                                                    </small>
+                                                </Col>
+                                            </Row>
+                                        </div>
                                 </Card.Body>
                             </Card>
                         </Col>

@@ -640,12 +640,187 @@ app.get('/api/trialbalance/download', async (req, res) => {
 });
 
 /* Start server */
+
+// --- Batching endpoint for vouchers ---
+// GET /api/vouchers/batch?from=YYYYMMDD&to=YYYYMMDD&batchDays=7
+app.get('/api/vouchers/batch', async (req, res) => {
+  try {
+    const from = req.query.from; // YYYYMMDD
+    const to = req.query.to;     // YYYYMMDD
+    const batchDays = parseInt(req.query.batchDays) || 7;
+    if (!from || !to) return res.status(400).json({ error: 'from and to dates required' });
+
+    // Helper to parse YYYYMMDD to Date
+    function parseYMD(s) {
+      return new Date(s.slice(0,4), s.slice(4,6)-1, s.slice(6,8));
+    }
+    // Helper to format Date to YYYYMMDD
+    function formatYMD(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}${m}${day}`;
+    }
+
+    let start = parseYMD(from);
+    let end = parseYMD(to);
+    let results = [];
+    let batchCount = 0;
+    let current = new Date(start);
+
+    while (current <= end) {
+      let batchStart = new Date(current);
+      let batchEnd = new Date(current);
+      batchEnd.setDate(batchEnd.getDate() + batchDays - 1);
+      if (batchEnd > end) batchEnd = new Date(end);
+
+      const batchFrom = formatYMD(batchStart);
+      const batchTo = formatYMD(batchEnd);
+      try {
+        const xml = vouchersPayload(batchFrom, batchTo);
+        const parsed = await fetchAndParse(xml);
+        const vouchers = normalizeVouchers(parsed);
+        results = results.concat(vouchers);
+        batchCount++;
+      } catch (err) {
+        // Log error but continue
+        console.error(`Batch ${batchFrom} to ${batchTo} failed:`, err.message);
+      }
+      current.setDate(current.getDate() + batchDays);
+    }
+    res.json({ count: results.length, batchCount, vouchers: results });
+  } catch (err) {
+    console.error('/api/vouchers/batch error', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Tally proxy running on http://localhost:${PORT}`);
   console.log(`Raw inspector: http://localhost:${PORT}/raw?type=companies`);
   console.log(`Companies: http://localhost:${PORT}/api/companies`);
   console.log(`Vouchers (example): http://localhost:${PORT}/api/vouchers?from=20240101&to=20240930`);
+  console.log(`Vouchers batch: http://localhost:${PORT}/api/vouchers/batch?from=20240101&to=20240930&batchDays=7`);
   console.log(`Stock items: http://localhost:${PORT}/api/stockitems`);
   console.log(`Trial Balance: http://localhost:${PORT}/api/trialbalance`);
+});
+
+
+// --- Product sales extraction from Tally ---
+// GET /api/products/from-tally?from=YYYYMMDD&to=YYYYMMDD
+app.get('/api/products/from-tally', async (req, res) => {
+  try {
+    const from = req.query.from;
+    const to = req.query.to;
+    if (!from || !to) return res.status(400).json({ error: 'from and to dates required' });
+    const xml = vouchersPayload(from, to);
+    const parsed = await fetchAndParse(xml);
+    const vouchers = normalizeVouchers(parsed);
+    // Extract product sales from vouchers
+    // This is a best-effort: looks for stock item info in voucher raw data
+    let products = [];
+    for (const v of vouchers) {
+      const raw = v.raw;
+      // Look for INVENTORYENTRIES.LIST or similar
+      let inventory = raw.INVENTORYENTRIES?.LIST || raw['INVENTORYENTRIES.LIST'] || [];
+      if (!Array.isArray(inventory)) inventory = [inventory];
+      for (const item of inventory) {
+        const product = {
+          date: v.date,
+          voucherNumber: v.voucherNumber,
+          voucherType: v.voucherType,
+          party: v.party,
+          productName: item.STOCKITEMNAME || item.STOCKITEM || '',
+          quantity: safeNum(item.ACTUALQTY || item.BILLEDQTY || item.QTY || 0),
+          rate: safeNum(item.RATE || 0),
+          amount: safeNum(item.AMOUNT || 0),
+          narration: v.narration
+        };
+        products.push(product);
+      }
+    }
+    res.json({ count: products.length, products });
+  } catch (err) {
+    console.error('/api/products/from-tally error', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Vendor transactions extraction from Tally ---
+// GET /api/vendors/from-tally?from=YYYYMMDD&to=YYYYMMDD
+app.get('/api/vendors/from-tally', async (req, res) => {
+  try {
+    const from = req.query.from;
+    const to = req.query.to;
+    if (!from || !to) return res.status(400).json({ error: 'from and to dates required' });
+    const xml = vouchersPayload(from, to);
+    const parsed = await fetchAndParse(xml);
+    const vouchers = normalizeVouchers(parsed);
+    // Extract vendor transactions from vouchers
+    // Best-effort: looks for voucherType = 'Purchase' or creditor ledgers
+    let vendors = [];
+    for (const v of vouchers) {
+      if ((v.voucherType && v.voucherType.toLowerCase().includes('purchase')) || (v.party && v.party)) {
+        vendors.push({
+          date: v.date,
+          voucherNumber: v.voucherNumber,
+          voucherType: v.voucherType,
+          vendorName: v.party,
+          amount: v.amount,
+          narration: v.narration
+        });
+      }
+    }
+    res.json({ count: vendors.length, vendors });
+  } catch (err) {
+    console.error('/api/vendors/from-tally error', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// --- Sales executive extraction from Tally ---
+// GET /api/sales-executives/from-tally?from=YYYYMMDD&to=YYYYMMDD
+app.get('/api/sales-executives/from-tally', async (req, res) => {
+  try {
+    const from = req.query.from;
+    const to = req.query.to;
+    if (!from || !to) return res.status(400).json({ error: 'from and to dates required' });
+    const xml = vouchersPayload(from, to);
+    const parsed = await fetchAndParse(xml);
+    const vouchers = normalizeVouchers(parsed);
+    // Try to extract sales executive info from narration or cost center
+    let executives = [];
+    for (const v of vouchers) {
+      let execName = '';
+      // Try to extract from narration (e.g., "Sales by: John Doe")
+      if (v.narration && v.narration.toLowerCase().includes('sales by')) {
+        const match = v.narration.match(/sales by[:\-]?\s*([a-zA-Z .]+)/i);
+        if (match && match[1]) execName = match[1].trim();
+      }
+      // Try to extract from cost center (if present)
+      const raw = v.raw;
+      let costCenter = '';
+      if (raw.COSTCENTRENAME) costCenter = safeStr(raw.COSTCENTRENAME);
+      else if (raw.COSTCENTRE && raw.COSTCENTRE.NAME) costCenter = safeStr(raw.COSTCENTRE.NAME);
+      if (!execName && costCenter) execName = costCenter;
+
+      if (execName) {
+        executives.push({
+          date: v.date,
+          voucherNumber: v.voucherNumber,
+          voucherType: v.voucherType,
+          party: v.party,
+          executive: execName,
+          amount: v.amount,
+          narration: v.narration
+        });
+      }
+    }
+    res.json({ count: executives.length, executives });
+  } catch (err) {
+    console.error('/api/sales-executives/from-tally error', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 

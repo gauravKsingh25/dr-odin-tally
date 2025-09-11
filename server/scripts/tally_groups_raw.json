@@ -1,0 +1,2308 @@
+{
+  "ENVELOPE": {
+    "HEADER": {
+      "VERSION": "1",
+      "STATUS": "1"
+    },
+    "BODY": {
+      "DESC": {
+        "CMPINFO": {
+          "COMPANY": "0",
+          "GROUP": "0",
+          "LEDGER": "0",
+          "COSTCATEGORY": "0",
+          "COSTCENTRE": "0",
+          "GODOWN": "0",
+          "STOCKGROUP": "0",
+          "STOCKCATEGORY": "0",
+          "STOCKITEM": "0",
+          "VOUCHERTYPE": "0",
+          "CURRENCY": "0",
+          "UNIT": "0",
+          "BUDGET": "0",
+          "CLIENTRULE": "0",
+          "SERVERRULE": "0",
+          "STATE": "0",
+          "TDSRATE": "0",
+          "TAXCLASSIFICATION": "0",
+          "STCATEGORY": "0",
+          "DEDUCTEETYPE": "0",
+          "ATTENDANCETYPE": "0",
+          "FBTCATEGORY": "0",
+          "FBTASSESSEETYPE": "0",
+          "TARIFFCLASSIFICATION": "0",
+          "EXCISEDUTYCLASSIFICATION": "0",
+          "SERIALNUMBER": "0",
+          "ADJUSTMENTCLASSIFICATION": "0",
+          "INCOMETAXSLAB": "0",
+          "INCOMETAXCLASSIFICATION": "0",
+          "LBTCLASSIFICATION": "0",
+          "TAXUNIT": "0",
+          "RETURNMASTER": "0",
+          "GSTCLASSIFICATION": "0",
+          "VOUCHERNUMBERSERIES": "0",
+          "VOUCHER": "0"
+        }
+      },
+      "DATA": {
+        "COLLECTION": {
+          "ISMSTDEPTYPE": "Yes",
+          "MSTDEPTYPE": "4",
+          "GROUP": [
+            {
+              "NAME": "Bank Accounts",
+              "RESERVEDNAME": [
+                "Bank Accounts",
+                {
+                  "_": "Bank Accounts",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000016",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 220",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9085",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 22",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "2111466.88",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "509013.48",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Bank Accounts",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Bank Accounts"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Bank OD A/c",
+              "RESERVEDNAME": [
+                "Bank OD A/c",
+                {
+                  "_": "Bank OD A/c",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000000b",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Loans (Liability)",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 110",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9074",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 11",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "4565635.14",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "4807264.13",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Bank OD A/c",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": [
+                    "Bank OD A/c",
+                    "Bank OCC A/c"
+                  ]
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Branch / Divisions",
+              "RESERVEDNAME": [
+                "Branch / Divisions",
+                {
+                  "_": "Branch / Divisions",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000007",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 70",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9064",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 7",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Branch / Divisions",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Branch / Divisions"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "CAP AND NOSE MOLD",
+              "RESERVEDNAME": "",
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-000012a6",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Fixed Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 500",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 12727",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 4774",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "CAP AND NOSE MOLD",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "CAP AND NOSE MOLD"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Capital Account",
+              "RESERVEDNAME": [
+                "Capital Account",
+                {
+                  "_": "Capital Account",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000001",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 10",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9058",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 1",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "4816745.87",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "4816745.87",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Capital Account",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Capital Account"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Cash-in-Hand",
+              "RESERVEDNAME": [
+                "Cash-in-Hand",
+                {
+                  "_": "Cash-in-Hand",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000015",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 210",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9084",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 21",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-219840.73",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-221050.73",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Cash-in-Hand",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Cash-in-Hand"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Current Assets",
+              "RESERVEDNAME": [
+                "Current Assets",
+                {
+                  "_": "Current Assets",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000006",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 60",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9063",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 6",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-39625595.30",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-67548922.20",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Current Assets",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Current Assets"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Current Liabilities",
+              "RESERVEDNAME": [
+                "Current Liabilities",
+                {
+                  "_": "Current Liabilities",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000003",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 30",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9060",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 3",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "2951556.19",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "21992292.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Current Liabilities",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Current Liabilities"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Deposits (Asset)",
+              "RESERVEDNAME": [
+                "Deposits (Asset)",
+                {
+                  "_": "Deposits (Asset)",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000012",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 180",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9081",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 18",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Deposits (Asset)",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Deposits (Asset)"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Direct Expenses",
+              "RESERVEDNAME": [
+                "Direct Expenses",
+                {
+                  "_": "Direct Expenses",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000001a",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 260",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9070",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 26",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-739418.64",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Direct Expenses",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": [
+                    "Direct Expenses",
+                    "Expenses (Direct)"
+                  ]
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Direct Incomes",
+              "RESERVEDNAME": [
+                "Direct Incomes",
+                {
+                  "_": "Direct Incomes",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000019",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 250",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9069",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 25",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Direct Incomes",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": [
+                    "Direct Incomes",
+                    "Income (Direct)"
+                  ]
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Duties & Taxes",
+              "RESERVEDNAME": [
+                "Duties & Taxes",
+                {
+                  "_": "Duties & Taxes",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000000e",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Liabilities",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 140",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9077",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 14",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-2916812.84",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-72007.20",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Duties & Taxes",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Duties & Taxes"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Fixed Assets",
+              "RESERVEDNAME": [
+                "Fixed Assets",
+                {
+                  "_": "Fixed Assets",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000004",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 40",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9061",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 4",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-6914960.31",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-6330040.72",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Fixed Assets",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Fixed Assets"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "GEM PORTAL",
+              "RESERVEDNAME": "",
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000984",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Sundry Debtors",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 500",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9088",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 2436",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-80035.45",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-98734.95",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "GEM PORTAL",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "GEM PORTAL"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "IMPORT PARTY",
+              "RESERVEDNAME": "",
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000990",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Sundry Creditors",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 500",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9089",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 2448",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "IMPORT PARTY",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "IMPORT PARTY"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Indirect Expenses",
+              "RESERVEDNAME": [
+                "Indirect Expenses",
+                {
+                  "_": "Indirect Expenses",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000001c",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 280",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9072",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 28",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-6792917.83",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Indirect Expenses",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": [
+                    "Indirect Expenses",
+                    "Expenses (Indirect)"
+                  ]
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Indirect Incomes",
+              "RESERVEDNAME": [
+                "Indirect Incomes",
+                {
+                  "_": "Indirect Incomes",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000001b",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 270",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9071",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 27",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-13153.09",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Indirect Incomes",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": [
+                    "Indirect Incomes",
+                    "Income (Indirect)"
+                  ]
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Investments",
+              "RESERVEDNAME": [
+                "Investments",
+                {
+                  "_": "Investments",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000005",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 50",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9062",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 5",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-25000.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-25000.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Investments",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Investments"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Loans & Advances (Asset)",
+              "RESERVEDNAME": [
+                "Loans & Advances (Asset)",
+                {
+                  "_": "Loans & Advances (Asset)",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000013",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 190",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9082",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 19",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-100719.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-94590.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Loans & Advances (Asset)",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Loans & Advances (Asset)"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Loans (Liability)",
+              "RESERVEDNAME": [
+                "Loans (Liability)",
+                {
+                  "_": "Loans (Liability)",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000002",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 20",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9059",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 2",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "44230862.14",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "44672491.13",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Loans (Liability)",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Loans (Liability)"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Misc. Expenses (ASSET)",
+              "RESERVEDNAME": [
+                "Misc. Expenses (ASSET)",
+                {
+                  "_": "Misc. Expenses (ASSET)",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000008",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 80",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9065",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 8",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-7360.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-7360.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Misc. Expenses (ASSET)",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Misc. Expenses (ASSET)"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Office Equipment",
+              "RESERVEDNAME": "",
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000a2f",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Fixed Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 500",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9087",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 2607",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Office Equipment",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Office Equipment"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "PLANT AND MACHINERY",
+              "RESERVEDNAME": "",
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000772",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Fixed Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 500",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9086",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 1906",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-5250144.63",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-4771144.63",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "PLANT AND MACHINERY",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "PLANT AND MACHINERY"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Provisions",
+              "RESERVEDNAME": [
+                "Provisions",
+                {
+                  "_": "Provisions",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000000f",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Liabilities",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 150",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9078",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 15",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-489527.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "898347.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Provisions",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Provisions"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Purchase Accounts",
+              "RESERVEDNAME": [
+                "Purchase Accounts",
+                {
+                  "_": "Purchase Accounts",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000018",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 240",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9068",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 24",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-86525116.39",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Purchase Accounts",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Purchase Accounts"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Reserves & Surplus",
+              "RESERVEDNAME": [
+                "Reserves & Surplus",
+                {
+                  "_": "Reserves & Surplus",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000000a",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Capital Account",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 100",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9073",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 10",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "3316745.87",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "3316745.87",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Reserves & Surplus",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": [
+                    "Reserves & Surplus",
+                    "Retained Earnings"
+                  ]
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Sales Accounts",
+              "RESERVEDNAME": [
+                "Sales Accounts",
+                {
+                  "_": "Sales Accounts",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000017",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 230",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9067",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 23",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "86506170.44",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Sales Accounts",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Sales Accounts"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Secured Loans",
+              "RESERVEDNAME": [
+                "Secured Loans",
+                {
+                  "_": "Secured Loans",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000000c",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Loans (Liability)",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 120",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9075",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 12",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Secured Loans",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Secured Loans"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "STEAMER MOLD",
+              "RESERVEDNAME": "",
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000115d",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "PLANT AND MACHINERY",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 500",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 12027",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 4445",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-1402849.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-1007849.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "STEAMER MOLD",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "STEAMER MOLD"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Stock-in-Hand",
+              "RESERVEDNAME": [
+                "Stock-in-Hand",
+                {
+                  "_": "Stock-in-Hand",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000011",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 170",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9080",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 17",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-44026134.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-44026134.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Stock-in-Hand",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Stock-in-Hand"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Sundry Creditors",
+              "RESERVEDNAME": [
+                "Sundry Creditors",
+                {
+                  "_": "Sundry Creditors",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000010",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Liabilities",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 160",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9079",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 16",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "6370907.03",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "21165952.20",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Sundry Creditors",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Sundry Creditors"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Sundry Debtors",
+              "RESERVEDNAME": [
+                "Sundry Debtors",
+                {
+                  "_": "Sundry Debtors",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000014",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Current Assets",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "Yes",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 200",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 12429",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 20",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "14076783.55",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "-12445561.95",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Sundry Debtors",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Sundry Debtors"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Suspense A/c",
+              "RESERVEDNAME": [
+                "Suspense A/c",
+                {
+                  "_": "Suspense A/c",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00000009",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "\u0004 Primary",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 90",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9066",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 9",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "-291607.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "0.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Suspense A/c",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Suspense A/c"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            },
+            {
+              "NAME": "Unsecured Loans",
+              "RESERVEDNAME": [
+                "Unsecured Loans",
+                {
+                  "_": "Unsecured Loans",
+                  "TYPE": "String"
+                }
+              ],
+              "GUID": {
+                "_": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-0000000d",
+                "TYPE": "String"
+              },
+              "PARENT": {
+                "_": "Loans (Liability)",
+                "TYPE": "String"
+              },
+              "ISSUBLEDGER": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "ISDEEMEDPOSITIVE": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "TRACKNEGATIVEBALANCES": {
+                "_": "No",
+                "TYPE": "Logical"
+              },
+              "AFFECTSSTOCK": {
+                "TYPE": "Logical"
+              },
+              "SORTPOSITION": {
+                "_": " 130",
+                "TYPE": "Number"
+              },
+              "ALTERID": {
+                "_": " 9076",
+                "TYPE": "Number"
+              },
+              "MASTERID": {
+                "_": " 13",
+                "TYPE": "Number"
+              },
+              "CLOSINGBALANCE": {
+                "_": "39665227.00",
+                "TYPE": "Amount"
+              },
+              "OPENINGBALANCE": {
+                "_": "39865227.00",
+                "TYPE": "Amount"
+              },
+              "ALIASNAME": {
+                "_": "Unsecured Loans",
+                "TYPE": "String"
+              },
+              "LANGUAGENAME.LIST": {
+                "NAME.LIST": {
+                  "TYPE": "String",
+                  "NAME": "Unsecured Loans"
+                },
+                "LANGUAGEID": {
+                  "_": " 1033",
+                  "TYPE": "Number"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
