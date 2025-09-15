@@ -42,14 +42,18 @@ const TallyVouchersDetail = () => {
                 ...(date && { date })
             });
             
-            const response = await axios.get(`http://localhost:7010/api/tally/vouchers?${params}`, {
+            const response = await axios.get(`/tally/vouchers?${params}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 timeout: 120000 // 120 seconds
             });
             
             if (response.data.status === 200) {
-                setVouchersData(response.data.data.vouchers || []);
-                setTotalPages(Math.ceil((response.data.data.total || 0) / itemsPerPage));
+                const list = response.data.data.vouchers || [];
+                list.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                setVouchersData(list);
+                const total = response.data.data.total;
+                const computedTotalPages = total ? Math.ceil(total / itemsPerPage) : Math.max(1, Math.ceil(list.length / itemsPerPage));
+                setTotalPages(computedTotalPages);
                 setError(null);
             } else {
                 setError(`Server returned status: ${response.data.status}`);
@@ -74,6 +78,22 @@ const TallyVouchersDetail = () => {
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
         fetchVouchersData(page, searchTerm, voucherTypeFilter, dateFilter);
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            const prev = currentPage - 1;
+            setCurrentPage(prev);
+            fetchVouchersData(prev, searchTerm, voucherTypeFilter, dateFilter);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            const next = currentPage + 1;
+            setCurrentPage(next);
+            fetchVouchersData(next, searchTerm, voucherTypeFilter, dateFilter);
+        }
     };
 
     // Handle search
@@ -110,14 +130,18 @@ const TallyVouchersDetail = () => {
                     limit: itemsPerPage.toString()
                 });
                 
-                const response = await axios.get(`http://localhost:7010/api/tally/vouchers?${params}`, {
+                const response = await axios.get(`/tally/vouchers?${params}`, {
                     headers: { Authorization: `Bearer ${token}` },
                     timeout: 120000 // 120 seconds
                 });
                 
                 if (response.data.status === 200) {
-                    setVouchersData(response.data.data.vouchers || []);
-                    setTotalPages(Math.ceil((response.data.data.total || 0) / itemsPerPage));
+                    const list = response.data.data.vouchers || [];
+                    list.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                    setVouchersData(list);
+                    const total = response.data.data.total;
+                    const computedTotalPages = total ? Math.ceil(total / itemsPerPage) : Math.max(1, Math.ceil(list.length / itemsPerPage));
+                    setTotalPages(computedTotalPages);
                     setError(null);
                 } else {
                     setError(`Server returned status: ${response.data.status}`);
@@ -278,14 +302,11 @@ const TallyVouchersDetail = () => {
                         <Card.Body>
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h4 className="header-title">
-                                    Voucher Details 
+                                    Voucher Details
                                     {!loading && vouchersData.length > 0 && (
                                         <span className="text-muted"> ({vouchersData.length} records)</span>
                                     )}
                                 </h4>
-                                <Button variant="info" size="sm" onClick={() => fetchVouchersData(currentPage, searchTerm, voucherTypeFilter, dateFilter)}>
-                                    <i className="mdi mdi-refresh"></i> Refresh
-                                </Button>
                             </div>
 
                             {loading ? (
@@ -381,23 +402,15 @@ const TallyVouchersDetail = () => {
                                     </div>
 
                                     {/* Pagination */}
-                                    {totalPages > 1 && (
-                                        <Row className="mt-3">
-                                            <Col xs={12} className="d-flex justify-content-center">
-                                                <Stack spacing={2}>
-                                                    <Pagination 
-                                                        count={totalPages} 
-                                                        page={currentPage} 
-                                                        onChange={handlePageChange}
-                                                        color="primary"
-                                                        size="large"
-                                                        showFirstButton 
-                                                        showLastButton
-                                                    />
-                                                </Stack>
-                                            </Col>
-                                        </Row>
-                                    )}
+                                    <Row className="mt-3">
+                                        <Col xs={12} className="d-flex justify-content-between align-items-center">
+                                            <div className="text-muted small">Page {currentPage} of {totalPages}</div>
+                                            <div className="d-flex gap-2">
+                                                <Button variant="outline-secondary" size="sm" disabled={currentPage === 1} onClick={handlePrevPage}>Prev</Button>
+                                                <Button variant="primary" size="sm" disabled={currentPage >= totalPages} onClick={handleNextPage}>Next</Button>
+                                            </div>
+                                        </Col>
+                                    </Row>
                                 </>
                             )}
                         </Card.Body>

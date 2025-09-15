@@ -1,0 +1,631 @@
+{
+  "metadata": {
+    "generatedAt": "2025-09-15T10:18:45.984Z",
+    "tallyUrl": "http://192.168.0.183:9000/",
+    "description": "Sales vouchers for party ODIN HEALTHCARE PVT LTD with narration and cost centres",
+    "party": "ODIN HEALTHCARE PVT LTD",
+    "summary": {
+      "totalVouchers": 17,
+      "vouchersWithCostCenters": 8,
+      "vouchersWithoutCostCenters": 9,
+      "dateRange": {
+        "earliest": "20250402",
+        "latest": "20250901"
+      },
+      "voucherTypes": [
+        "Sales"
+      ],
+      "uniqueCostCenters": [
+        "DIRECT"
+      ]
+    }
+  },
+  "vouchers": [
+    {
+      "voucherNumber": "PLL/25-26/01",
+      "voucherType": "Sales",
+      "date": "20250402",
+      "parsedDate": "2025-04-02",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -242000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a2f",
+      "masterId": " 6703",
+      "voucherKey": "196486163857424",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -271040,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 14520,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 14520,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/02",
+      "voucherType": "Sales",
+      "date": "20250404",
+      "parsedDate": "2025-04-04",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -300080,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a3a",
+      "masterId": " 6714",
+      "voucherKey": "196494753792016",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -336090,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 18004.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 18004.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/012",
+      "voucherType": "Sales",
+      "date": "20250417",
+      "parsedDate": "2025-04-17",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -38000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001aac",
+      "masterId": " 6828",
+      "voucherKey": "196550588366880",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -42560,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 2280,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 2280,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/032",
+      "voucherType": "Sales",
+      "date": "20250605",
+      "parsedDate": "2025-06-05",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "372014452840",
+      "amount": -322560.00000000006,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c0f",
+      "masterId": " 7183",
+      "voucherKey": "196761041764384",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -361267,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 19353.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 19353.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.2,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/033",
+      "voucherType": "Sales",
+      "date": "20250605",
+      "parsedDate": "2025-06-05",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -2497500,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c11",
+      "masterId": " 7185",
+      "voucherKey": "196761041764400",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -2797200,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 149850,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 149850,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/036",
+      "voucherType": "Sales",
+      "date": "20250606",
+      "parsedDate": "2025-06-06",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "352015085566",
+      "amount": -1045000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c1c",
+      "masterId": " 7196",
+      "voucherKey": "196765336731664",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -1170400,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/037",
+      "voucherType": "Sales",
+      "date": "20250611",
+      "parsedDate": "2025-06-11",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -1045000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c4c",
+      "masterId": " 7244",
+      "voucherKey": "196786811568136",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -1170400,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/038",
+      "voucherType": "Sales",
+      "date": "20250612",
+      "parsedDate": "2025-06-12",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -557254.9999999999,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c5d",
+      "masterId": " 7261",
+      "voucherKey": "196791106535480",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -624126,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 33435.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 33435.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/039",
+      "voucherType": "Sales",
+      "date": "20250616",
+      "parsedDate": "2025-06-16",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -27750,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c6b",
+      "masterId": " 7275",
+      "voucherKey": "196808286404656",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -31080,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 1665,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 1665,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/040",
+      "voucherType": "Sales",
+      "date": "20250616",
+      "parsedDate": "2025-06-16",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "342021721370",
+      "amount": -57350,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c6c",
+      "masterId": " 7276",
+      "voucherKey": "196808286404664",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -64232,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 3441,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 3441,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/044",
+      "voucherType": "Sales",
+      "date": "20250620",
+      "parsedDate": "2025-06-20",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -632045,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ca9",
+      "masterId": " 7337",
+      "voucherKey": "196825466273808",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -663647,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 15801.13,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 15801.13,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.26,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.26
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/045",
+      "voucherType": "Sales",
+      "date": "20250624",
+      "parsedDate": "2025-06-24",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -395770,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001cc1",
+      "masterId": " 7361",
+      "voucherKey": "196842646143000",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -443262,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 23746.2,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 23746.2,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.4,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/049",
+      "voucherType": "Sales",
+      "date": "20250630",
+      "parsedDate": "2025-06-30",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "372031475341",
+      "amount": -1045000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001d08",
+      "masterId": " 7432",
+      "voucherKey": "196868415946792",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -1170400,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/061",
+      "voucherType": "Sales",
+      "date": "20250808",
+      "parsedDate": "2025-08-08",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "362058662626",
+      "amount": -599760,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001e70",
+      "masterId": " 7792",
+      "voucherKey": "197035919671304",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -671731,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 35985.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 35985.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.2,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/063",
+      "voucherType": "Sales",
+      "date": "20250820",
+      "parsedDate": "2025-08-20",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -111000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ee2",
+      "masterId": " 7906",
+      "voucherKey": "197087459278920",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -124320,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 6660,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 6660,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/065",
+      "voucherType": "Sales",
+      "date": "20250826",
+      "parsedDate": "2025-08-26",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -474810.00000000006,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001f0b",
+      "masterId": " 7947",
+      "voucherKey": "197113229082640",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -531787,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 28488.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 28488.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.2,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/067",
+      "voucherType": "Sales",
+      "date": "20250901",
+      "parsedDate": "2025-09-01",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "342074636638",
+      "amount": -756674.9999999999,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001f44",
+      "masterId": " 8004",
+      "voucherKey": "197138998886456",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -848098,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 45711.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 45711.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    }
+  ]
+}

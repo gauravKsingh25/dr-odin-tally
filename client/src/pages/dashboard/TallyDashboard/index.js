@@ -1,5 +1,5 @@
 // @flow
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Row, Col, Card, Button, Table, Badge, ProgressBar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -20,6 +20,8 @@ const TallyDashboard = () => {
     const [expandedLedgerRows, setExpandedLedgerRows] = useState([]);
     const [expandedStockRows, setExpandedStockRows] = useState([]);
     const navigate = useNavigate();
+    const [isVoucherFetching, setIsVoucherFetching] = useState(false);
+    const voucherPollRef = useRef(null);
 
     // Toggle functions
     const toggleVoucherRow = (index) => {
@@ -37,6 +39,80 @@ const TallyDashboard = () => {
             prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
         );
     };
+        // Backend batch voucher fetch function (non-blocking + polling)
+        const fetchVouchersFromTally = async () => {
+            setError(null);
+            try {
+                const api = new APICore();
+                const loggedInUser = api.getLoggedInUser();
+                const token = loggedInUser?.token;
+                if (!token) {
+                    navigate('/account/login');
+                    return;
+                }
+                setIsVoucherFetching(true);
+                // Start background fetch
+                const startRes = await axios.post('/tally/fetch-vouchers', {}, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (startRes.data.status === 202 || startRes.data.status === 200) {
+                    // Start polling status every 2s
+                    voucherPollRef.current && clearInterval(voucherPollRef.current);
+                    voucherPollRef.current = setInterval(async () => {
+                        try {
+                            const statusRes = await axios.get('/tally/fetch-vouchers/status', {
+                                headers: { Authorization: `Bearer ${token}` }
+                            });
+                            const s = statusRes.data?.data || {};
+                            setSyncStatus(prev => ({
+                                ...(prev || {}),
+                                type: 'voucher-fetch',
+                                message: s.isRunning ? `Fetching vouchers...` : 'Voucher fetch completed',
+                                progress: {
+                                    percent: s.percent || 0,
+                                    batchCount: s.batchCount || 0,
+                                    batchTotal: s.batchTotal || 0,
+                                },
+                                details: {
+                                    vouchers: s.totals?.vouchers || 0,
+                                    products: s.totals?.products || 0,
+                                    vendors: s.totals?.vendors || 0,
+                                    executives: s.totals?.executives || 0,
+                                    lastBatch: s.lastBatch || null,
+                                    errors: s.errors || []
+                                },
+                                running: s.isRunning,
+                                startedAt: s.startedAt,
+                                completedAt: s.completedAt
+                            }));
+                            if (!s.isRunning) {
+                                clearInterval(voucherPollRef.current);
+                                voucherPollRef.current = null;
+                                setIsVoucherFetching(false);
+                                // Refresh dashboard numbers after completion
+                                await fetchComprehensiveDashboard();
+                            }
+                        } catch (e) {
+                            console.error('Voucher status poll failed:', e);
+                        }
+                    }, 2000);
+                    // Safety timeout: stop after 10 minutes
+                    setTimeout(() => {
+                        if (voucherPollRef.current) {
+                            clearInterval(voucherPollRef.current);
+                            voucherPollRef.current = null;
+                            setIsVoucherFetching(false);
+                        }
+                    }, 10 * 60 * 1000);
+                } else {
+                    setError('Failed to start voucher fetch');
+                    setIsVoucherFetching(false);
+                }
+            } catch (error) {
+                setError(error.response?.data?.message || 'Failed to start voucher fetch');
+                setIsVoucherFetching(false);
+            }
+        };
     
     // Get theme from Redux store
     const { layoutColor } = useSelector((state) => ({
@@ -62,7 +138,7 @@ const TallyDashboard = () => {
         try {
             // First test the health endpoint
             console.log('Testing health endpoint...');
-            const healthResponse = await axios.get('http://localhost:7010/api/tally/health');
+            const healthResponse = await axios.get('/tally/health');
             console.log('Health check:', healthResponse.data);
             
             // Get token from the API Core (sessionStorage)
@@ -86,7 +162,7 @@ const TallyDashboard = () => {
             }
             
             console.log('Fetching dashboard data with token...');
-            const response = await axios.get('http://localhost:7010/api/tally/dashboard', {
+            const response = await axios.get('/tally/dashboard', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -133,7 +209,7 @@ const TallyDashboard = () => {
                 return;
             }
             
-            const response = await axios.get('http://localhost:7010/api/tally/test-connection', {
+            const response = await axios.get('/tally/test-connection', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -161,7 +237,7 @@ const TallyDashboard = () => {
             
             if (!token) return;
             
-            const response = await axios.get('http://localhost:7010/api/tally/sync/status', {
+            const response = await axios.get('/tally/sync/status', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -187,7 +263,7 @@ const TallyDashboard = () => {
             }
             
             // Use the background sync endpoint
-            const response = await axios.post('http://localhost:7010/api/tally/sync/manual', {}, {
+            const response = await axios.post('/tally/sync/manual', {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -203,7 +279,7 @@ const TallyDashboard = () => {
                 // Poll sync status and refresh data when complete
                 const pollInterval = setInterval(async () => {
                     await checkSyncStatus();
-                    const statusResponse = await axios.get('http://localhost:7010/api/tally/sync/status', {
+                    const statusResponse = await axios.get('/tally/sync/status', {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     
@@ -242,7 +318,7 @@ const TallyDashboard = () => {
             }
             
             // Use the comprehensive sync endpoint
-            const response = await axios.post('http://localhost:7010/api/tally/sync/comprehensive', {}, {
+            const response = await axios.post('/tally/sync/comprehensive', {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -279,7 +355,7 @@ const TallyDashboard = () => {
             }
             
             console.log('Fetching comprehensive dashboard data...');
-            const response = await axios.get('http://localhost:7010/api/tally/dashboard/comprehensive', {
+            const response = await axios.get('/tally/dashboard/comprehensive', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -336,6 +412,15 @@ const TallyDashboard = () => {
         console.log('=====================================');
     }, [fetchDashboardData, fetchComprehensiveDashboard]);
 
+    useEffect(() => {
+        return () => {
+            if (voucherPollRef.current) {
+                clearInterval(voucherPollRef.current);
+                voucherPollRef.current = null;
+            }
+        };
+    }, []);
+
     if (loading) {
         return (
             <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
@@ -353,7 +438,7 @@ const TallyDashboard = () => {
                 <Col xs={12}>
                     <div className="page-title-box d-flex justify-content-between align-items-center">
                         <h4 className="page-title">Tally Dashboard</h4>
-                        <div>
+                        <div className="d-flex align-items-center">
                             <Button variant="info" className="me-2" onClick={testConnection} disabled={loading}>
                                 <i className="mdi mdi-connection"></i> Test Connection
                             </Button>
@@ -364,13 +449,48 @@ const TallyDashboard = () => {
                                 <i className={`mdi ${isSyncing ? 'mdi-sync mdi-spin' : 'mdi-sync'}`}></i> 
                                 {isSyncing ? 'Basic Sync...' : 'Basic Sync'}
                             </Button>
-                            <Button variant="success" onClick={triggerComprehensiveSync} disabled={loading}>
+                            <Button variant="success" className="me-2" onClick={triggerComprehensiveSync} disabled={loading}>
                                 <i className="mdi mdi-database-sync"></i> Full Sync
+                            </Button>
+                            <Button
+                                variant={isVoucherFetching ? 'secondary' : 'outline-info'}
+                                className="ms-2"
+                                onClick={fetchVouchersFromTally}
+                                disabled={loading || isSyncing || isVoucherFetching}
+                            >
+                                <i className={`mdi ${isVoucherFetching ? 'mdi-sync mdi-spin' : 'mdi-cloud-download'}`}></i> {isVoucherFetching ? 'Fetching Vouchers...' : 'Start Voucher Fetch'}
                             </Button>
                         </div>
                     </div>
                 </Col>
             </Row>
+
+            {/* Sticky top progress bar for voucher batches */}
+            {syncStatus?.type === 'voucher-fetch' && (
+                <div style={{ position: 'sticky', top: 0, zIndex: 1040 }}>
+                    <div className="alert alert-info mb-3 py-2">
+                        <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong><i className="mdi mdi-file-document me-2"></i>Voucher Fetch</strong>
+                                <span className="ms-2">{syncStatus.message}</span>
+                                {syncStatus.details?.lastBatch && (
+                                    <small className="d-block text-muted">Last batch: {syncStatus.details.lastBatch.range} • {syncStatus.details.lastBatch.count} vouchers</small>
+                                )}
+                            </div>
+                            <div style={{ minWidth: 220 }}>
+                                <ProgressBar now={syncStatus.progress?.percent || 0} label={`${syncStatus.progress?.percent || 0}%`} animated striped />
+                                <div className="d-flex justify-content-between mt-1">
+                                    <small>Batch {syncStatus.progress?.batchCount || 0}/{syncStatus.progress?.batchTotal || 0}</small>
+                                    <small>Total: {syncStatus.details?.vouchers || 0}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {syncStatus.details?.errors && syncStatus.details.errors.length > 0 && (
+                            <small className="text-danger d-block mt-1">Errors: {syncStatus.details.errors.length}</small>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {connectionStatus && (
                 <Row>
@@ -557,10 +677,10 @@ const TallyDashboard = () => {
                                                     variant="light" 
                                                     size="sm"
                                                     onClick={() => navigate('/tally-ledgers-detail')}
-                                                    title="Ledger balance analysis"
+                                                    title="Sundry Debtors balance analysis"
                                                     className="slide-in-right see-more-btn"
                                                 >
-                                                    <i className="mdi mdi-account-multiple"></i> Ledgers
+                                                    <i className="mdi mdi-account-multiple"></i> Sundry Debtors
                                                 </Button>
                                                 <Button 
                                                     variant="light" 
@@ -614,7 +734,7 @@ const TallyDashboard = () => {
                                     <div className="float-end">
                                         <i className="mdi mdi-account-multiple widget-icon bg-success"></i>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Ledgers</h5>
+                                    <h5 className="text-muted fw-normal mt-0">Sundry Debtors</h5>
                                     <h3 className="mt-3 mb-3">{dashboardData.summary?.ledgers || 0}</h3>
                                     <p className="mb-0 text-muted">
                                         <span className="text-success me-2">
@@ -626,7 +746,7 @@ const TallyDashboard = () => {
                                             size="sm" 
                                             className="p-0 ms-2 text-decoration-none"
                                             onClick={() => navigate('/tally-ledgers-detail')}
-                                            title="Manage ledgers"
+                                            title="Manage Sundry Debtors"
                                         >
                                             <i className="mdi mdi-eye text-success"></i>
                                         </Button>
@@ -766,7 +886,7 @@ const TallyDashboard = () => {
                                             size="sm" 
                                             className="p-0 ms-2 text-decoration-none"
                                             onClick={() => navigate('/tally-ledgers-detail')}
-                                            title="View ledger-wise opening balances"
+                                            title="View Sundry Debtors opening balances"
                                         >
                                             <i className="mdi mdi-eye text-success"></i>
                                         </Button>
@@ -795,7 +915,7 @@ const TallyDashboard = () => {
                                             size="sm" 
                                             className="p-0 ms-2 text-decoration-none"
                                             onClick={() => navigate('/tally-ledgers-detail')}
-                                            title="View ledger-wise closing balances"
+                                            title="View Sundry Debtors closing balances"
                                         >
                                             <i className="mdi mdi-eye text-primary"></i>
                                         </Button>

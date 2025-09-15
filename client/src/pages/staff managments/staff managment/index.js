@@ -15,7 +15,7 @@ import {
 } from 'react-bootstrap';
 // import FormInput from "../../../../components/FormInput"
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Edit from '../staff managment/Model/edit';
 import './style.css';
 import { MonthList, getDesignationByPost, getZoneAction } from '../../../redux/actions';
@@ -32,6 +32,7 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 function UploadStaffManagmentPage() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const store = useSelector((state) => state);
     const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
     const [isModelShow, setIsModelSHow] = useState(false);
@@ -357,7 +358,13 @@ function UploadStaffManagmentPage() {
                                                                                             <p className="text-nowrap txt_showDots staffmanagment_width my-0 ">   {ele?.empId} </p>
                                                                                         </td>
                                                                                         <td width="100px" className="text-truncater ">
-                                                                                            <p className="text-nowrap txt_showDots staffmanagment_width my-0 ">  {ele?.empName} </p>
+                                                                                            <p
+                                                                                                onClick={() => navigate(`/staffmanagment/employee/${ele?._id}`)}
+                                                                                                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                                                                                className="text-nowrap txt_showDots staffmanagment_width my-0 text-primary fw-semibold"
+                                                                                            >
+                                                                                                {ele?.empName}
+                                                                                            </p>
                                                                                         </td>
                                                                                         <td width="100px" className="text-truncater ">
                                                                                             <p className="text-nowrap txt_showDots staffmanagment_width my-0 "> {ele?.zoneId?.zone} </p>
@@ -587,7 +594,13 @@ function UploadStaffManagmentPage() {
                                                                                     }</p>
                                                                                 </td>
                                                                                 <td width="100px" className="  text-truncate">
-                                                                                    <p className=" my-0 text-nowrap txt_showDots staffmanagment_width text-truncate"> {ele?.empName}</p>
+                                                                                    <p
+                                                                                        onClick={() => navigate(`/staffmanagment/employee/${ele?._id}`)}
+                                                                                        style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                                                                        className=" my-0 text-nowrap txt_showDots staffmanagment_width text-truncate text-primary fw-semibold"
+                                                                                    >
+                                                                                        {ele?.empName}
+                                                                                    </p>
                                                                                 </td>
                                                                                 <td width="100px" className="  text-truncate">
                                                                                     <p className=" my-0 text-nowrap txt_showDots staffmanagment_width text-truncate">  {ele?.zoneId?.zone}</p>

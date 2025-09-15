@@ -1,0 +1,70 @@
+.kpi-grid .kpi-card {
+    min-height: 84px;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    transition: box-shadow .15s ease, transform .15s ease;
+}
+
+@media (min-width: 992px) {
+    .kpi-grid .col-lg-2 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+}
+
+.kpi-grid .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.table-responsive {
+    overflow-y: auto;
+}
+
+.card .table thead tr.table-head {
+    background-color: #313a46 !important;
+}
+
+.employee-info-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.employee-info-page .page-title-box .page-title-right {
+    float: none;
+}
+
+.employee-info-page .page-title-box .page-title-right .breadcrumb {
+    justify-content: flex-start;
+}
+
+.unified-panel {
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-radius: 12px;
+}
+
+.panel-box {
+    border: 1px solid rgba(0,0,0,0.10);
+    background-color: #f9fbfd;
+    border-radius: 10px;
+}
+
+.table-centered tbody tr:hover {
+    background-color: #f6f8fc;
+}
+
+.bg-light {
+    background-color: #f7f9fc !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+}
+
+.page-title-box { margin-bottom: 12px; }
+
+
+

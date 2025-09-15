@@ -3,7 +3,7 @@ const xml2js = require('xml2js');
 
 class TallyService {
     constructor() {
-        this.tallyUrl = process.env.TALLY_URL || 'http://192.168.0.183:9000';
+        this.tallyUrl = process.env.TALLY_URL ;
         this.parser = new xml2js.Parser({ 
             explicitArray: false, 
             mergeAttrs: true, 
@@ -126,14 +126,31 @@ class TallyService {
     }
 
     getVouchersPayload(fromDate = null, toDate = null) {
-        const dateFilter = fromDate && toDate ? `
+        // Ensure we always filter at Tally source from 2022-01-01 till today
+        const formatYmd = (d) => {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}${mm}${dd}`;
+        };
+
+        let from = fromDate;
+        let to = toDate;
+        if (!from || !to) {
+            const defaultFrom = new Date('2022-01-01T00:00:00.000Z');
+            const defaultTo = new Date();
+            from = formatYmd(defaultFrom);
+            to = formatYmd(defaultTo);
+        }
+
+        const dateFilter = `
                                 <FILTER>
                                     <DATERANGE>
-                                        <FROM>${fromDate}</FROM>
-                                        <TO>${toDate}</TO>
+                                        <FROM>${from}</FROM>
+                                        <TO>${to}</TO>
                                     </DATERANGE>
-                                </FILTER>` : '';
-        
+                                </FILTER>`;
+
         return `
         <ENVELOPE>
             <HEADER>
@@ -162,6 +179,7 @@ class TallyService {
                                 <NATIVEMETHOD>MASTERID</NATIVEMETHOD>
                                 <NATIVEMETHOD>ALTERID</NATIVEMETHOD>
                                 <NATIVEMETHOD>VOUCHERKEY</NATIVEMETHOD>
+                                <NATIVEMETHOD>AMOUNT</NATIVEMETHOD>
                                 <NATIVEMETHOD>EWAYBILLNO</NATIVEMETHOD>
                                 <NATIVEMETHOD>EWAY.LIST</NATIVEMETHOD>
                                 <NATIVEMETHOD>GSTREGISTRATION</NATIVEMETHOD>
@@ -179,6 +197,7 @@ class TallyService {
                                 <NATIVEMETHOD>ISINVOICEISSUED</NATIVEMETHOD>
                                 <NATIVEMETHOD>ISOPTIONAL</NATIVEMETHOD>
                                 <NATIVEMETHOD>EFFECTIVEDATE</NATIVEMETHOD>
+                                <NATIVEMETHOD>BASICVOUCHERDATE</NATIVEMETHOD>
                                 <NATIVEMETHOD>USEFOREXCISE</NATIVEMETHOD>
                                 <NATIVEMETHOD>ISEXCISEVOUCHER</NATIVEMETHOD>
                                 <NATIVEMETHOD>EXCISETARIFF</NATIVEMETHOD>
@@ -724,10 +743,33 @@ class TallyService {
     safeNumber(value) {
         if (value == null) return 0;
         if (typeof value === 'object' && value._ != null) value = value._;
-        const stringValue = String(value).replace(/,/g, '').trim();
-        if (stringValue === '') return 0;
+        let stringValue = String(value).trim();
+
+        // Remove thousand separators
+        stringValue = stringValue.replace(/,/g, '');
+
+        // Handle Dr/Cr notations used by Tally. Treat Cr as negative, Dr as positive
+        // Support both suffix and prefix positions (e.g., "1234.50 Cr" or "Cr 1234.50")
+        let sign = 1;
+        const hasCr = /\bCR\b/i.test(stringValue);
+        const hasDr = /\bDR\b/i.test(stringValue);
+        if (hasCr) sign = -1;
+        else if (hasDr) sign = 1;
+        stringValue = stringValue.replace(/\bDR\b|\bCR\b/gi, '').trim();
+
+        // Parentheses indicate negative amounts: (1234.50)
+        const hasParens = /^\(.*\)$/.test(stringValue);
+        if (hasParens) {
+            sign *= -1;
+            stringValue = stringValue.slice(1, -1).trim();
+        }
+
+        // Strip any remaining non-numeric characters except leading minus and decimal point
+        stringValue = stringValue.replace(/[^0-9.-]/g, '');
+
+        if (stringValue === '' || stringValue === '-' || stringValue === '.') return 0;
         const number = parseFloat(stringValue);
-        return Number.isFinite(number) ? number : 0;
+        return Number.isFinite(number) ? number * sign : 0;
     }
 
     findCollection(parsed) {
@@ -1073,8 +1115,63 @@ class TallyService {
                 }));
             }
 
+            // Extract cost center allocations from ledger entries
+            let costCentreAllocations = [];
+            if (voucher.ALLLEDGERENTRIES?.LIST) {
+                const entries = Array.isArray(voucher.ALLLEDGERENTRIES.LIST) 
+                    ? voucher.ALLLEDGERENTRIES.LIST 
+                    : [voucher.ALLLEDGERENTRIES.LIST];
+                
+                entries.forEach(entry => {
+                    // Check for direct cost center allocations
+                    if (entry['COSTCENTREALLOCATIONS.LIST']) {
+                        const ccAllocations = Array.isArray(entry['COSTCENTREALLOCATIONS.LIST'])
+                            ? entry['COSTCENTREALLOCATIONS.LIST']
+                            : [entry['COSTCENTREALLOCATIONS.LIST']];
+                        
+                        ccAllocations.forEach(cc => {
+                            if (cc.NAME && cc.AMOUNT) {
+                                costCentreAllocations.push({
+                                    costCentre: this.safeString(cc.NAME._ || cc.NAME),
+                                    amount: this.safeNumber(cc.AMOUNT._ || cc.AMOUNT),
+                                    percentage: 0,
+                                    ledgerName: this.safeString(entry.LEDGERNAME?._ || entry.LEDGERNAME || '')
+                                });
+                            }
+                        });
+                    }
+                    
+                    // Check for cost center allocations within category allocations
+                    if (entry['CATEGORYALLOCATIONS.LIST']) {
+                        const categoryAllocations = Array.isArray(entry['CATEGORYALLOCATIONS.LIST'])
+                            ? entry['CATEGORYALLOCATIONS.LIST']
+                            : [entry['CATEGORYALLOCATIONS.LIST']];
+                        
+                        categoryAllocations.forEach(category => {
+                            if (category['COSTCENTREALLOCATIONS.LIST']) {
+                                const ccAllocations = Array.isArray(category['COSTCENTREALLOCATIONS.LIST'])
+                                    ? category['COSTCENTREALLOCATIONS.LIST']
+                                    : [category['COSTCENTREALLOCATIONS.LIST']];
+                                
+                                ccAllocations.forEach(cc => {
+                                    if (cc.NAME && cc.AMOUNT) {
+                                        costCentreAllocations.push({
+                                            costCentre: this.safeString(cc.NAME._ || cc.NAME),
+                                            amount: this.safeNumber(cc.AMOUNT._ || cc.AMOUNT),
+                                            percentage: 0,
+                                            category: this.safeString(category.CATEGORY?._ || category.CATEGORY || ''),
+                                            ledgerName: this.safeString(entry.LEDGERNAME?._ || entry.LEDGERNAME || '')
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
             return {
-                date: date ? new Date(date) : new Date(),
+                date: date, // Keep as string, let controller parse it
                 voucherNumber,
                 voucherType,
                 party,
@@ -1084,7 +1181,9 @@ class TallyService {
                 masterId,
                 voucherKey,
                 ledgerEntries,
-                lastUpdated: new Date()
+                costCentreAllocations,
+                lastUpdated: new Date(),
+                raw: voucher // Store raw data for additional processing
             };
         });
     }

@@ -8,6 +8,7 @@ module.exports = function (app) {
     // Reporting Manager
     app.get('/api/empinfo/allemp', verifyToken, empInfoCtrl.getEmployee);
     app.get("/api/empinfo/get", verifyToken, empInfoCtrl.ReportingManager);
+    app.get('/api/empinfo/:id', verifyToken, empInfoCtrl.getEmployeeDetail);
     // Zone
     app.post('/api/empinfo/createZone', verifyToken, empInfoCtrl.createZone);
     app.get('/api/empinfo/getzone', verifyToken, empInfoCtrl.GetZones);

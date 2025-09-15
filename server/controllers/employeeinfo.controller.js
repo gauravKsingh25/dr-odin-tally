@@ -317,6 +317,52 @@ exports.getEmployee = async (req, res) => {
     }
 }
 
+// --------------------- get single employee with hierarchy -----------------------
+exports.getEmployeeDetail = async (req, res) => {
+    try {
+        const companyId = mongoose.Types.ObjectId(req.userid);
+        const employeeId = req.params.id;
+
+        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+            return res.status(400).json({ status: 400, message: "Invalid employee id" });
+        }
+
+        const nestedPopulateQuery = { path: 'rmId', populate: { path: 'designation' } };
+
+        const employee = await empInfoModel
+            .findOne({ _id: employeeId, companyid: companyId })
+            .populate('designation')
+            .populate('zoneId')
+            .populate('city')
+            .populate('state')
+            .populate(nestedPopulateQuery);
+
+        if (!employee) {
+            return res.status(404).json({ status: 404, message: "Employee not found" });
+        }
+
+        const directReports = await empInfoModel
+            .find({ rmId: employee._id, companyid: companyId })
+            .populate('designation')
+            .select('empId empName designation zoneId state city status');
+
+        const directReportsCount = directReports.length;
+
+        return res.status(200).json({
+            status: 200,
+            message: 'Employee detail',
+            response: {
+                employee,
+                reportingManager: employee.rmId || null,
+                directReportsCount,
+                directReports,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ status: 500, message: error.message });
+    }
+};
+
 // --------------------- get user by state -----------------------
 exports.getStateUser = async (req, res) => {
     const companyId = req.userid;

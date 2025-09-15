@@ -1,0 +1,2154 @@
+{
+  "metadata": {
+    "generatedAt": "2025-09-15T07:13:04.955Z",
+    "tallyUrl": "http://192.168.0.183:9000/",
+    "description": "Sales vouchers with narration and cost centres extracted directly from Tally",
+    "summary": {
+      "totalVouchers": 68,
+      "vouchersWithCostCenters": 27,
+      "vouchersWithoutCostCenters": 41,
+      "dateRange": {
+        "earliest": "20250402",
+        "latest": "20250901"
+      },
+      "voucherTypes": [
+        "Sales"
+      ],
+      "uniqueCostCenters": [
+        "DIRECT"
+      ],
+      "uniqueParties": [
+        "ALPHA (INDIA)",
+        "APEX INTERNATIONAL",
+        "All India Institute of Medical Sciences",
+        "Deen Dayal Upadhyaya College",
+        "Employee State Insurance (ESI)",
+        "Employees State Insurance Corporation",
+        "Employees State Insurance Corporation (ESIC)",
+        "Employees State Insurance Corporation (ESIC) PB",
+        "Indian Army (HP)",
+        "Indian Army (SK)",
+        "Indian Council of Medical Research (ICMR)",
+        "Khadki Field Unit Pune",
+        "NETGEN WORLD",
+        "National Institute of Siddha (NIS)",
+        "ODIN HEALTHCARE PVT LTD PKL",
+        "PASSIM MEDICHEM AGENCIES(CHD)",
+        "PROCARE",
+        "String",
+        "Tejja Packaging Industries"
+      ]
+    }
+  },
+  "vouchers": [
+    {
+      "voucherNumber": "PLL/25-26/01",
+      "voucherType": "Sales",
+      "date": "20250402",
+      "parsedDate": "2025-04-02",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -242000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a2f",
+      "masterId": " 6703",
+      "voucherKey": "196486163857424",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -271040,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 14520,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 14520,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/02",
+      "voucherType": "Sales",
+      "date": "20250404",
+      "parsedDate": "2025-04-04",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -300080,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a3a",
+      "masterId": " 6714",
+      "voucherKey": "196494753792016",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -336090,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 18004.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 18004.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/03",
+      "voucherType": "Sales",
+      "date": "20250405",
+      "parsedDate": "2025-04-05",
+      "party": "All India Institute of Medical Sciences",
+      "narration": "",
+      "amount": -6961.61,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a41",
+      "masterId": " 6721",
+      "voucherKey": "196499048759312",
+      "ledgerEntries": [
+        {
+          "ledgerName": "All India Institute of Medical Sciences",
+          "amount": -7797,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 835.39,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/04",
+      "voucherType": "Sales",
+      "date": "20250405",
+      "parsedDate": "2025-04-05",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -3400,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a43",
+      "masterId": " 6723",
+      "voucherKey": "196499048759328",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -3958,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 558,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/05",
+      "voucherType": "Sales",
+      "date": "20250408",
+      "parsedDate": "2025-04-08",
+      "party": "String",
+      "narration": "",
+      "amount": 0,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a66",
+      "masterId": " 6758",
+      "voucherKey": "196511933661384",
+      "ledgerEntries": [
+        {
+          "ledgerName": "",
+          "amount": 0,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/06",
+      "voucherType": "Sales",
+      "date": "20250409",
+      "parsedDate": "2025-04-09",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -1561280,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a6b",
+      "masterId": " 6763",
+      "voucherKey": "196516228628488",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -1748634,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 187353.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/07",
+      "voucherType": "Sales",
+      "date": "20250412",
+      "parsedDate": "2025-04-12",
+      "party": "Employees State Insurance Corporation",
+      "narration": "",
+      "amount": -1376.7,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a8b",
+      "masterId": " 6795",
+      "voucherKey": "196529113530384",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Employees State Insurance Corporation",
+          "amount": -1624.5,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 247.81,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.01,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.01
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/08",
+      "voucherType": "Sales",
+      "date": "20250415",
+      "parsedDate": "2025-04-15",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -5044950,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a91",
+      "masterId": " 6801",
+      "voucherKey": "196541998432272",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -5650344,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 605394,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/09",
+      "voucherType": "Sales",
+      "date": "20250415",
+      "parsedDate": "2025-04-15",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -787500,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a93",
+      "masterId": " 6803",
+      "voucherKey": "196541998432280",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -882000,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 94500,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/010",
+      "voucherType": "Sales",
+      "date": "20250416",
+      "parsedDate": "2025-04-16",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -3137800,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a99",
+      "masterId": " 6809",
+      "voucherKey": "196546293399554",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -3514336,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 376536,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/011",
+      "voucherType": "Sales",
+      "date": "20250417",
+      "parsedDate": "2025-04-17",
+      "party": "Employees State Insurance Corporation (ESIC)",
+      "narration": "",
+      "amount": -1263.98,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001a9f",
+      "masterId": " 6815",
+      "voucherKey": "196550588366864",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Employees State Insurance Corporation (ESIC)",
+          "amount": -1491.5,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT 18%",
+          "amount": 227.52,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/012",
+      "voucherType": "Sales",
+      "date": "20250417",
+      "parsedDate": "2025-04-17",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -38000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001aac",
+      "masterId": " 6828",
+      "voucherKey": "196550588366880",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -42560,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 2280,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 2280,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/013",
+      "voucherType": "Sales",
+      "date": "20250421",
+      "parsedDate": "2025-04-21",
+      "party": "ALPHA (INDIA)",
+      "narration": "PLASTIC PARTS 109 KGS",
+      "amount": -82527.66000000002,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001abe",
+      "masterId": " 6846",
+      "voucherKey": "196567768236040",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ALPHA (INDIA)",
+          "amount": -92431,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 4951.68,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 4951.68,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.02,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.02
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/014",
+      "voucherType": "Sales",
+      "date": "20250422",
+      "parsedDate": "2025-04-22",
+      "party": "Tejja Packaging Industries",
+      "narration": "",
+      "amount": -15975.15,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ac1",
+      "masterId": " 6849",
+      "voucherKey": "196572063203344",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Tejja Packaging Industries",
+          "amount": -18851,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 2875.53,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.32,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.32
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/015",
+      "voucherType": "Sales",
+      "date": "20250424",
+      "parsedDate": "2025-04-24",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "March . 2025",
+      "amount": -1642830,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001acf",
+      "masterId": " 6863",
+      "voucherKey": "196580653137944",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -1839970,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 197139.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/016",
+      "voucherType": "Sales",
+      "date": "20250424",
+      "parsedDate": "2025-04-24",
+      "party": "Khadki Field Unit Pune",
+      "narration": "",
+      "amount": -1895.97,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ad1",
+      "masterId": " 6865",
+      "voucherKey": "196580653137960",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Khadki Field Unit Pune",
+          "amount": -2237.25,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 341.27,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.01,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/017",
+      "voucherType": "Sales",
+      "date": "20250429",
+      "parsedDate": "2025-04-29",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -1281000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ae0",
+      "masterId": " 6880",
+      "voucherKey": "196602127974424",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -1434720,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 153720,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/018",
+      "voucherType": "Sales",
+      "date": "20250502",
+      "parsedDate": "2025-05-02",
+      "party": "National Institute of Siddha (NIS)",
+      "narration": "",
+      "amount": -8919.64,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001afc",
+      "masterId": " 6908",
+      "voucherKey": "196615012876312",
+      "ledgerEntries": [
+        {
+          "ledgerName": "National Institute of Siddha (NIS)",
+          "amount": -9990,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 1070.36,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/019",
+      "voucherType": "Sales",
+      "date": "20250502",
+      "parsedDate": "2025-05-02",
+      "party": "National Institute of Siddha (NIS)",
+      "narration": "",
+      "amount": -1376.69,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001afd",
+      "masterId": " 6909",
+      "voucherKey": "196615012876320",
+      "ledgerEntries": [
+        {
+          "ledgerName": "National Institute of Siddha (NIS)",
+          "amount": -1624.5,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 247.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.01,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/020",
+      "voucherType": "Sales",
+      "date": "20250502",
+      "parsedDate": "2025-05-02",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -41200,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001afe",
+      "masterId": " 6910",
+      "voucherKey": "196615012876328",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -43260,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 2060,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/021",
+      "voucherType": "Sales",
+      "date": "20250506",
+      "parsedDate": "2025-05-06",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -10000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001b0c",
+      "masterId": " 6924",
+      "voucherKey": "196632192745480",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -11200,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 1200,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/022",
+      "voucherType": "Sales",
+      "date": "20250513",
+      "parsedDate": "2025-05-13",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -2996460,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001b3f",
+      "masterId": " 6975",
+      "voucherKey": "196662257516560",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -3356035,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 359575.2,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.2,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/023",
+      "voucherType": "Sales",
+      "date": "20250514",
+      "parsedDate": "2025-05-14",
+      "party": "Employees State Insurance Corporation (ESIC) PB",
+      "narration": "",
+      "amount": -4130.08,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001b4e",
+      "masterId": " 6990",
+      "voucherKey": "196666552483880",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Employees State Insurance Corporation (ESIC) PB",
+          "amount": -4873.5,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 743.41,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.01,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.01
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/024",
+      "voucherType": "Sales",
+      "date": "20250521",
+      "parsedDate": "2025-05-21",
+      "party": "Deen Dayal Upadhyaya College",
+      "narration": "",
+      "amount": -2320.54,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001b7d",
+      "masterId": " 7037",
+      "voucherKey": "196696617254968",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Deen Dayal Upadhyaya College",
+          "amount": -2599,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 278.46,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/025",
+      "voucherType": "Sales",
+      "date": "20250521",
+      "parsedDate": "2025-05-21",
+      "party": "Deen Dayal Upadhyaya College",
+      "narration": "",
+      "amount": -1902.86,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001b7e",
+      "masterId": " 7038",
+      "voucherKey": "196696617254976",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Deen Dayal Upadhyaya College",
+          "amount": -1998,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 95.14,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/026",
+      "voucherType": "Sales",
+      "date": "20250522",
+      "parsedDate": "2025-05-22",
+      "party": "Indian Army (HP)",
+      "narration": "",
+      "amount": -1249.1100000000001,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001b94",
+      "masterId": " 7060",
+      "voucherKey": "196700912222256",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Indian Army (HP)",
+          "amount": -1399,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 149.89,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/027",
+      "voucherType": "Sales",
+      "date": "20250524",
+      "parsedDate": "2025-05-24",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -25000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ba7",
+      "masterId": " 7079",
+      "voucherKey": "196709502156808",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -28000,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 3000,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/028",
+      "voucherType": "Sales",
+      "date": "20250527",
+      "parsedDate": "2025-05-27",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "372008215613",
+      "amount": -5548200,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001bc2",
+      "masterId": " 7106",
+      "voucherKey": "196722387058720",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -6213984,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 665784,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/029",
+      "voucherType": "Sales",
+      "date": "20250531",
+      "parsedDate": "2025-05-31",
+      "party": "Indian Army (SK)",
+      "narration": "",
+      "amount": -1376.7,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001bdd",
+      "masterId": " 7133",
+      "voucherKey": "196739566927880",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Indian Army (SK)",
+          "amount": -1624.5,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 247.81,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.01,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.01
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/030",
+      "voucherType": "Sales",
+      "date": "20250604",
+      "parsedDate": "2025-06-04",
+      "party": "String",
+      "narration": "392013974750",
+      "amount": 0,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c07",
+      "masterId": " 7175",
+      "voucherKey": "196756746797112",
+      "ledgerEntries": [
+        {
+          "ledgerName": "",
+          "amount": 0,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/031",
+      "voucherType": "Sales",
+      "date": "20250604",
+      "parsedDate": "2025-06-04",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "382013983117",
+      "amount": -1151592,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c0b",
+      "masterId": " 7179",
+      "voucherKey": "196756746797144",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -1317180,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 165588.48,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.48,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.48
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/032",
+      "voucherType": "Sales",
+      "date": "20250605",
+      "parsedDate": "2025-06-05",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "372014452840",
+      "amount": -322560.00000000006,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c0f",
+      "masterId": " 7183",
+      "voucherKey": "196761041764384",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -361267,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 19353.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 19353.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.2,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/033",
+      "voucherType": "Sales",
+      "date": "20250605",
+      "parsedDate": "2025-06-05",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -2497500,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c11",
+      "masterId": " 7185",
+      "voucherKey": "196761041764400",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -2797200,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 149850,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 149850,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/034",
+      "voucherType": "Sales",
+      "date": "20250605",
+      "parsedDate": "2025-06-05",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "342014478454",
+      "amount": -6111000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c12",
+      "masterId": " 7186",
+      "voucherKey": "196761041764408",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -6844320,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 733320,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/035",
+      "voucherType": "Sales",
+      "date": "20250605",
+      "parsedDate": "2025-06-05",
+      "party": "Indian Army (SK)",
+      "narration": "",
+      "amount": -25437.95,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c1a",
+      "masterId": " 7194",
+      "voucherKey": "196761041764472",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Indian Army (SK)",
+          "amount": -28490.5,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 3052.55,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/036",
+      "voucherType": "Sales",
+      "date": "20250606",
+      "parsedDate": "2025-06-06",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "352015085566",
+      "amount": -1045000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c1c",
+      "masterId": " 7196",
+      "voucherKey": "196765336731664",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -1170400,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/037",
+      "voucherType": "Sales",
+      "date": "20250611",
+      "parsedDate": "2025-06-11",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -1045000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c4c",
+      "masterId": " 7244",
+      "voucherKey": "196786811568136",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -1170400,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/038",
+      "voucherType": "Sales",
+      "date": "20250612",
+      "parsedDate": "2025-06-12",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -557254.9999999999,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c5d",
+      "masterId": " 7261",
+      "voucherKey": "196791106535480",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -624126,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 33435.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 33435.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/039",
+      "voucherType": "Sales",
+      "date": "20250616",
+      "parsedDate": "2025-06-16",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -27750,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c6b",
+      "masterId": " 7275",
+      "voucherKey": "196808286404656",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -31080,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 1665,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 1665,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/040",
+      "voucherType": "Sales",
+      "date": "20250616",
+      "parsedDate": "2025-06-16",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "342021721370",
+      "amount": -57350,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c6c",
+      "masterId": " 7276",
+      "voucherKey": "196808286404664",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -64232,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 3441,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 3441,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/041",
+      "voucherType": "Sales",
+      "date": "20250619",
+      "parsedDate": "2025-06-19",
+      "party": "Employee State Insurance (ESI)",
+      "narration": "",
+      "amount": -4459.82,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001c9e",
+      "masterId": " 7326",
+      "voucherKey": "196821171306512",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Employee State Insurance (ESI)",
+          "amount": -4995,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 267.59,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 267.59,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/042",
+      "voucherType": "Sales",
+      "date": "20250619",
+      "parsedDate": "2025-06-19",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "322023838599",
+      "amount": -3459300,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ca3",
+      "masterId": " 7331",
+      "voucherKey": "196821171306544",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -3874416,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 415116,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/043",
+      "voucherType": "Sales",
+      "date": "20250619",
+      "parsedDate": "2025-06-19",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "332023844388",
+      "amount": -3491380,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ca5",
+      "masterId": " 7333",
+      "voucherKey": "196821171306560",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -3699499,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 208118.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/044",
+      "voucherType": "Sales",
+      "date": "20250620",
+      "parsedDate": "2025-06-20",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -632045,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ca9",
+      "masterId": " 7337",
+      "voucherKey": "196825466273808",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -663647,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 15801.13,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 15801.13,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.26,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.26
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/045",
+      "voucherType": "Sales",
+      "date": "20250624",
+      "parsedDate": "2025-06-24",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -395770,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001cc1",
+      "masterId": " 7361",
+      "voucherKey": "196842646143000",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -443262,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 23746.2,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 23746.2,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.4,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/046",
+      "voucherType": "Sales",
+      "date": "20250627",
+      "parsedDate": "2025-06-27",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "312029364149",
+      "amount": -5239500,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ce8",
+      "masterId": " 7400",
+      "voucherKey": "196855531044896",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -5868240,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 628740,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/047",
+      "voucherType": "Sales",
+      "date": "20250627",
+      "parsedDate": "2025-06-27",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -15000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ceb",
+      "masterId": " 7403",
+      "voucherKey": "196855531044912",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -16800,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 1800,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/048",
+      "voucherType": "Sales",
+      "date": "20250627",
+      "parsedDate": "2025-06-27",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -1050000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001cf5",
+      "masterId": " 7413",
+      "voucherKey": "196855531044963",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -1176000,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 126000,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/049",
+      "voucherType": "Sales",
+      "date": "20250630",
+      "parsedDate": "2025-06-30",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "372031475341",
+      "amount": -1045000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001d08",
+      "masterId": " 7432",
+      "voucherKey": "196868415946792",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -1170400,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 62700,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/050",
+      "voucherType": "Sales",
+      "date": "20250703",
+      "parsedDate": "2025-07-03",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -5297250,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001d2e",
+      "masterId": " 7470",
+      "voucherKey": "196881300848704",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -5932920,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 635670,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/051",
+      "voucherType": "Sales",
+      "date": "20250705",
+      "parsedDate": "2025-07-05",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -1858140,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001d46",
+      "masterId": " 7494",
+      "voucherKey": "196889890783272",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -2081117,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 222976.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.2,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/052",
+      "voucherType": "Sales",
+      "date": "20250708",
+      "parsedDate": "2025-07-08",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "302037174144",
+      "amount": -3009300,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001d5d",
+      "masterId": " 7517",
+      "voucherKey": "196902775685144",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -3370416,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 361116,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/053",
+      "voucherType": "Sales",
+      "date": "20250713",
+      "parsedDate": "2025-07-13",
+      "party": "APEX INTERNATIONAL",
+      "narration": "",
+      "amount": -3180000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001d8f",
+      "masterId": " 7567",
+      "voucherKey": "196924250521608",
+      "ledgerEntries": [
+        {
+          "ledgerName": "APEX INTERNATIONAL",
+          "amount": -3561600,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 381600,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/054",
+      "voucherType": "Sales",
+      "date": "20250716",
+      "parsedDate": "2025-07-16",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -3401450,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001dab",
+      "masterId": " 7595",
+      "voucherKey": "196937135423512",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -3809624,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 408174,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/055",
+      "voucherType": "Sales",
+      "date": "20250717",
+      "parsedDate": "2025-07-17",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -3843415,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001db4",
+      "masterId": " 7604",
+      "voucherKey": "196941430390800",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -4304625,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 461209.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.2,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/056",
+      "voucherType": "Sales",
+      "date": "20250724",
+      "parsedDate": "2025-07-24",
+      "party": "Indian Council of Medical Research (ICMR)",
+      "narration": "",
+      "amount": -1263.98,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001df4",
+      "masterId": " 7668",
+      "voucherKey": "196971495161912",
+      "ledgerEntries": [
+        {
+          "ledgerName": "Indian Council of Medical Research (ICMR)",
+          "amount": -1491.5,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 227.52,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/057",
+      "voucherType": "Sales",
+      "date": "20250729",
+      "parsedDate": "2025-07-29",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "342051528655",
+      "amount": -1118880,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001e1e",
+      "masterId": " 7710",
+      "voucherKey": "196992969998376",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -1253146,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 134265.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/058",
+      "voucherType": "Sales",
+      "date": "20250730",
+      "parsedDate": "2025-07-30",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "362052371645",
+      "amount": -2625000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001e30",
+      "masterId": " 7728",
+      "voucherKey": "196997264965688",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -2940000,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 315000,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/059",
+      "voucherType": "Sales",
+      "date": "20250730",
+      "parsedDate": "2025-07-30",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -1118880,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001e32",
+      "masterId": " 7730",
+      "voucherKey": "196997264965704",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -1253146,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 134265.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/060",
+      "voucherType": "Sales",
+      "date": "20250731",
+      "parsedDate": "2025-07-31",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -647400,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001e3c",
+      "masterId": " 7740",
+      "voucherKey": "197001559933000",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -725088,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 77688,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/061",
+      "voucherType": "Sales",
+      "date": "20250808",
+      "parsedDate": "2025-08-08",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "362058662626",
+      "amount": -599760,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001e70",
+      "masterId": " 7792",
+      "voucherKey": "197035919671304",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -671731,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 35985.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 35985.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.2,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/062",
+      "voucherType": "Sales",
+      "date": "20250819",
+      "parsedDate": "2025-08-19",
+      "party": "NETGEN WORLD",
+      "narration": "",
+      "amount": -10000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ece",
+      "masterId": " 7886",
+      "voucherKey": "197083164311584",
+      "ledgerEntries": [
+        {
+          "ledgerName": "NETGEN WORLD",
+          "amount": -11200,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 1200,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/063",
+      "voucherType": "Sales",
+      "date": "20250820",
+      "parsedDate": "2025-08-20",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -111000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ee2",
+      "masterId": " 7906",
+      "voucherKey": "197087459278920",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -124320,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 6660,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 6660,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": []
+    },
+    {
+      "voucherNumber": "PLL/25-26/064",
+      "voucherType": "Sales",
+      "date": "20250821",
+      "parsedDate": "2025-08-21",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -4424340,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001ee6",
+      "masterId": " 7910",
+      "voucherKey": "197091754246168",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -4955261,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 530920.8,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.2,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/065",
+      "voucherType": "Sales",
+      "date": "20250826",
+      "parsedDate": "2025-08-26",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "",
+      "amount": -474810.00000000006,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001f0b",
+      "masterId": " 7947",
+      "voucherKey": "197113229082640",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -531787,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 28488.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 28488.6,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.2,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.2
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/066",
+      "voucherType": "Sales",
+      "date": "20250830",
+      "parsedDate": "2025-08-30",
+      "party": "PROCARE",
+      "narration": "1000X3.20",
+      "amount": -420000,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001f30",
+      "masterId": " 7984",
+      "voucherKey": "197130408951824",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PROCARE",
+          "amount": -473984,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "PACKING CHARGES @12",
+          "amount": 3200,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 50784,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "PACKING CHARGES @12",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 3200
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/067",
+      "voucherType": "Sales",
+      "date": "20250901",
+      "parsedDate": "2025-09-01",
+      "party": "ODIN HEALTHCARE PVT LTD PKL",
+      "narration": "342074636638",
+      "amount": -756674.9999999999,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001f44",
+      "masterId": " 8004",
+      "voucherKey": "197138998886456",
+      "ledgerEntries": [
+        {
+          "ledgerName": "ODIN HEALTHCARE PVT LTD PKL",
+          "amount": -848098,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "CGST OUTPUT",
+          "amount": 45711.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "SGST OUTPUT",
+          "amount": 45711.3,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": 0.4,
+          "isDebit": true
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "voucherNumber": "PLL/25-26/068",
+      "voucherType": "Sales",
+      "date": "20250901",
+      "parsedDate": "2025-09-01",
+      "party": "PASSIM MEDICHEM AGENCIES(CHD)",
+      "narration": "",
+      "amount": -2512895,
+      "guid": "3c326b86-f97f-4e77-83f5-06f0d8a2f435-00001f46",
+      "masterId": " 8006",
+      "voucherKey": "197138998886472",
+      "ledgerEntries": [
+        {
+          "ledgerName": "PASSIM MEDICHEM AGENCIES(CHD)",
+          "amount": -2814442,
+          "isDebit": false
+        },
+        {
+          "ledgerName": "IGST OUTPUT",
+          "amount": 301547.4,
+          "isDebit": true
+        },
+        {
+          "ledgerName": "ROUND OFF",
+          "amount": -0.4,
+          "isDebit": false
+        }
+      ],
+      "costCentreAllocations": [
+        {
+          "ledgerName": "ROUND OFF",
+          "category": "Primary Cost Category",
+          "costCentre": "DIRECT",
+          "amount": -0.4
+        }
+      ]
+    }
+  ]
+}

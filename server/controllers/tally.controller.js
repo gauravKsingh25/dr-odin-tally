@@ -1,3 +1,5 @@
+// Export all controller functions explicitly for reliability
+// ...existing code...
 const tallyModel = require("../models/tally.model");
 const TallyLedger = require("../models/tallyLedger.model");
 const TallyVoucher = require("../models/tallyVoucher.model");
@@ -14,6 +16,34 @@ const { default: mongoose } = require("mongoose");
 
 const date = new Date();
 const tallyService = new TallyService();
+
+// Helper function to parse Tally dates (YYYYMMDD format)
+function parseTallyDate(dateStr) {
+    if (!dateStr) return null;
+    
+    // Handle different date formats from Tally
+    if (typeof dateStr === 'string') {
+        // Format: "20250401" (YYYYMMDD)
+        if (dateStr.match(/^\d{8}$/)) {
+            const year = dateStr.substring(0, 4);
+            const month = dateStr.substring(4, 6);
+            const day = dateStr.substring(6, 8);
+            return new Date(`${year}-${month}-${day}`);
+        }
+        // Format: "2025-04-01" or other ISO formats
+        if (dateStr.includes('-') || dateStr.includes('/')) {
+            const parsed = new Date(dateStr);
+            return isNaN(parsed.getTime()) ? null : parsed;
+        }
+    }
+    
+    // If it's already a Date object
+    if (dateStr instanceof Date) {
+        return isNaN(dateStr.getTime()) ? null : dateStr;
+    }
+    
+    return null;
+}
 
 
 exports.CreateTallyReport = async (req, res) => {
@@ -236,20 +266,305 @@ exports.ChequeBounce = async (req, res) => {
 
 // ============= NEW TALLY INTEGRATION CONTROLLERS =============
 
+// Progress state for background voucher fetch
+const voucherFetchState = {
+    isRunning: false,
+    startedAt: null,
+    completedAt: null,
+    batchCount: 0,
+    batchTotal: 0,
+    percent: 0,
+    totals: { vouchers: 0, products: 0, vendors: 0, executives: 0 },
+    lastBatch: null,
+    errors: []
+};
+
+function resetVoucherFetchState() {
+    voucherFetchState.isRunning = false;
+    voucherFetchState.startedAt = null;
+    voucherFetchState.completedAt = null;
+    voucherFetchState.batchCount = 0;
+    voucherFetchState.batchTotal = 0;
+    voucherFetchState.percent = 0;
+    voucherFetchState.totals = { vouchers: 0, products: 0, vendors: 0, executives: 0 };
+    voucherFetchState.lastBatch = null;
+    voucherFetchState.errors = [];
+}
+
+exports.getVoucherFetchStatus = (req, res) => {
+    res.status(200).json({
+        status: 200,
+        data: {
+            ...voucherFetchState
+        }
+    });
+};
+
+async function runVoucherFetch(companyId) {
+    const VendorTransaction = require('../models/vendorTransaction.model');
+    const SalesExecutive = require('../models/salesExecutive.model');
+
+    voucherFetchState.isRunning = true;
+    voucherFetchState.startedAt = new Date();
+    voucherFetchState.completedAt = null;
+    voucherFetchState.batchCount = 0;
+    voucherFetchState.percent = 0;
+    voucherFetchState.totals = { vouchers: 0, products: 0, vendors: 0, executives: 0 };
+    voucherFetchState.errors = [];
+
+    try {
+        console.log('🔄 Starting voucher fetch process...');
+        console.log(`📊 Company ID: ${companyId}`);
+
+        // Clear existing voucher collections first
+        console.log('🗑️ Clearing existing voucher data...');
+        await Promise.all([
+            TallyVoucher.deleteMany({ companyId }),
+            tallyModel.deleteMany({ companyId }),
+            VendorTransaction.deleteMany({ companyId }),
+            SalesExecutive.deleteMany({ companyId })
+        ]);
+        console.log('✅ Existing voucher data cleared successfully');
+
+        const fromDate = new Date();
+        fromDate.setDate(fromDate.getDate() - 30);
+        const toDate = new Date();
+        const batchDays = 7;
+        let start = new Date(fromDate);
+        let end = new Date(toDate);
+
+        // compute total batches first
+        voucherFetchState.batchTotal = Math.ceil(((end - start) / (1000 * 60 * 60 * 24) + 1) / batchDays);
+
+        while (start <= end && voucherFetchState.isRunning) {
+            voucherFetchState.batchCount++;
+            let batchStart = new Date(start);
+            let batchEnd = new Date(start);
+            batchEnd.setDate(batchEnd.getDate() + batchDays - 1);
+            if (batchEnd > end) batchEnd = new Date(end);
+
+            const batchFrom = batchStart.toISOString().split('T')[0].replace(/-/g, '');
+            const batchTo = batchEnd.toISOString().split('T')[0].replace(/-/g, '');
+
+            let voucherData;
+            try {
+                voucherData = await tallyService.fetchVouchers(batchFrom, batchTo);
+            } catch (err) {
+                const msg = `Voucher batch ${batchFrom}-${batchTo} error: ${err.message}`;
+                console.error(msg);
+                voucherFetchState.errors.push(msg);
+                start.setDate(start.getDate() + batchDays);
+                voucherFetchState.percent = Math.round((voucherFetchState.batchCount / Math.max(1, voucherFetchState.batchTotal)) * 100);
+                voucherFetchState.lastBatch = { range: `${batchFrom}-${batchTo}`, count: 0 };
+                continue;
+            }
+
+            const normalizedVouchers = tallyService.normalizeVouchers(voucherData);
+            const batchVoucherCount = normalizedVouchers.length;
+
+            // Log batch progress
+            voucherFetchState.percent = Math.round((voucherFetchState.batchCount / Math.max(1, voucherFetchState.batchTotal)) * 100);
+            voucherFetchState.lastBatch = { range: `${batchFrom}-${batchTo}`, count: batchVoucherCount };
+            console.log(`Voucher batch ${voucherFetchState.batchCount}/${voucherFetchState.batchTotal} (${batchFrom}-${batchTo}): ${batchVoucherCount} vouchers. Progress: ${voucherFetchState.percent}%`);
+
+            for (const voucher of normalizedVouchers) {
+                try {
+                    // Parse date using helper function
+                    let parsedDate = parseTallyDate(voucher.date);
+
+                    // Skip voucher if critical data is missing
+                    if (!voucher.voucherNumber) {
+                        console.warn(`Skipping voucher with missing voucher number:`, voucher);
+                        continue;
+                    }
+
+                    const query = voucher.guid && voucher.guid.trim() !== ''
+                        ? { guid: voucher.guid }
+                        : {
+                            voucherNumber: voucher.voucherNumber,
+                            ...(parsedDate && { date: parsedDate }),
+                            companyId,
+                            guid: { $in: [null, ''] }
+                        };
+                    await TallyVoucher.updateOne(
+                        query,
+                        {
+                            $set: {
+                                ...voucher,
+                                ...(voucher.raw || {}),
+                                companyId,
+                                date: parsedDate,
+                                year: parsedDate ? parsedDate.getFullYear() : null,
+                                lastUpdated: new Date()
+                            }
+                        },
+                        { upsert: true }
+                    );
+                    voucherFetchState.totals.vouchers++;
+
+                    // --- Product sales extraction (existing tallyModel) ---
+                    let inventory = voucher.raw?.INVENTORYENTRIES?.LIST || voucher.raw?.['INVENTORYENTRIES.LIST'] || [];
+                    if (!Array.isArray(inventory)) inventory = [inventory];
+                    for (const item of inventory) {
+                        const productObj = {
+                            ...item,
+                            date: parsedDate,
+                            company: voucher.party,
+                            product: item.STOCKITEMNAME || item.STOCKITEM || '',
+                            employee: '',
+                            invoice: voucher.voucherNumber,
+                            totalPcs: item.BILLEDQTY || item.ACTUALQTY || '',
+                            productPcs: item.BILLEDQTY || item.ACTUALQTY || '',
+                            productPrice: item.AMOUNT || 0,
+                            totalAmount: item.AMOUNT || 0,
+                            tax: '',
+                            netAmount: item.AMOUNT || 0,
+                            companyid: companyId,
+                            monthId: null,
+                            year: parsedDate ? parsedDate.getFullYear() : date.getFullYear()
+                        };
+                        await tallyModel.updateOne(
+                            {
+                                ...(productObj.date && { date: productObj.date }),
+                                invoice: productObj.invoice,
+                                company: productObj.company,
+                                product: productObj.product,
+                                companyid: companyId,
+                                year: productObj.year
+                            },
+                            { $set: productObj },
+                            { upsert: true }
+                        );
+                        voucherFetchState.totals.products++;
+                    }
+
+                    // --- Vendor transaction extraction ---
+                    if ((voucher.voucherType && voucher.voucherType.toLowerCase().includes('purchase')) || (voucher.party)) {
+                        const vendorObj = {
+                            ...voucher,
+                            date: parsedDate,
+                            voucherNumber: voucher.voucherNumber,
+                            voucherType: voucher.voucherType,
+                            vendorName: voucher.party,
+                            amount: voucher.amount,
+                            narration: voucher.narration,
+                            companyId,
+                            year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
+                            lastUpdated: new Date()
+                        };
+                        await VendorTransaction.updateOne(
+                            {
+                                ...(vendorObj.date && { date: vendorObj.date }),
+                                voucherNumber: vendorObj.voucherNumber,
+                                vendorName: vendorObj.vendorName,
+                                companyId,
+                                year: vendorObj.year
+                            },
+                            { $set: vendorObj },
+                            { upsert: true }
+                        );
+                        voucherFetchState.totals.vendors++;
+                    }
+
+                    // --- Sales executive extraction ---
+                    let execName = '';
+                    if (voucher.narration && voucher.narration.toLowerCase().includes('sales by')) {
+                        const match = voucher.narration.match(/sales by[:\-]?\s*([a-zA-Z .]+)/i);
+                        if (match && match[1]) execName = match[1].trim();
+                    }
+                    let costCenter = '';
+                    if (voucher.raw?.COSTCENTRENAME) costCenter = String(voucher.raw.COSTCENTRENAME);
+                    else if (voucher.raw?.COSTCENTRE && voucher.raw.COSTCENTRE.NAME) costCenter = String(voucher.raw.COSTCENTRE.NAME);
+                    if (!execName && costCenter) execName = costCenter;
+                    if (execName) {
+                        const execObj = {
+                            ...voucher,
+                            date: parsedDate,
+                            voucherNumber: voucher.voucherNumber,
+                            voucherType: voucher.voucherType,
+                            party: voucher.party,
+                            executive: execName,
+                            amount: voucher.amount,
+                            narration: voucher.narration,
+                            companyId,
+                            year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
+                            lastUpdated: new Date()
+                        };
+                        await SalesExecutive.updateOne(
+                            {
+                                ...(execObj.date && { date: execObj.date }),
+                                voucherNumber: execObj.voucherNumber,
+                                executive: execObj.executive,
+                                companyId,
+                                year: execObj.year
+                            },
+                            { $set: execObj },
+                            { upsert: true }
+                        );
+                        voucherFetchState.totals.executives++;
+                    }
+                } catch (voucherError) {
+                    console.error(`Error processing voucher ${voucher.voucherNumber}:`, voucherError.message);
+                    voucherFetchState.errors.push(`Voucher ${voucher.voucherNumber} error: ${voucherError.message}`);
+                }
+            }
+
+            start.setDate(start.getDate() + batchDays);
+        }
+
+        voucherFetchState.isRunning = false;
+        voucherFetchState.completedAt = new Date();
+        console.log('Tally voucher fetch completed:', {
+            vouchers: voucherFetchState.totals.vouchers,
+            products: voucherFetchState.totals.products,
+            vendors: voucherFetchState.totals.vendors,
+            executives: voucherFetchState.totals.executives,
+            errors: voucherFetchState.errors.length
+        });
+    } catch (error) {
+        console.error('Voucher fetch error:', error);
+        voucherFetchState.isRunning = false;
+        voucherFetchState.completedAt = new Date();
+        voucherFetchState.errors.push(error.message);
+    }
+}
+
 // Sync all data from Tally
 exports.syncTallyData = async (req, res) => {
     try {
         const companyId = mongoose.Types.ObjectId(req.userid);
+        
+        console.log('🔄 Starting full Tally data sync...');
+        console.log(`📊 Company ID: ${companyId}`);
+        
+        // Clear existing Tally collections first (excluding vouchers)
+        console.log('🗑️ Clearing existing Tally data (excluding vouchers)...');
+        const clearResults = await Promise.all([
+            TallyCompany.deleteMany({ companyId }),
+            TallyLedger.deleteMany({ companyId }),
+            TallyStockItem.deleteMany({ companyId }),
+            TallyGroup.deleteMany({ companyId }),
+            TallyCostCenter.deleteMany({ companyId }),
+            TallyCurrency.deleteMany({ companyId })
+        ]);
+        console.log('✅ Existing Tally data cleared successfully');
+        console.log(`🗑️ Cleared: ${clearResults[0].deletedCount} companies, ${clearResults[1].deletedCount} ledgers, ${clearResults[2].deletedCount} stock items, ${clearResults[3].deletedCount} groups, ${clearResults[4].deletedCount} cost centers, ${clearResults[5].deletedCount} currencies`);
+        
         const result = {
             companies: 0,
             ledgers: 0,
             vouchers: 0,
             stockItems: 0,
-            errors: []
+            groups: 0,
+            costCenters: 0,
+            currencies: 0,
+            errors: [],
+            clearedCount: clearResults.reduce((sum, res) => sum + res.deletedCount, 0)
         };
 
         // Sync Company Info (parse and store all fields)
         try {
+            console.log('📊 Fetching company information...');
             const companyData = await tallyService.fetchCompanyInfo();
             const normalizedCompany = tallyService.normalizeCompanyInfo(companyData);
             if (normalizedCompany && normalizedCompany.length > 0) {
@@ -273,25 +588,78 @@ exports.syncTallyData = async (req, res) => {
                     );
                 }
                 result.companies = normalizedCompany.length;
+                console.log(`✅ Synced ${result.companies} companies`);
             }
         } catch (error) {
             result.errors.push(`Company sync error: ${error.message}`);
+            console.error(`❌ Company sync error: ${error.message}`);
         }
 
         // Sync Ledgers (parse and store all fields)
         try {
+            console.log('📊 Fetching ledgers...');
             const ledgerData = await tallyService.fetchLedgers();
             const normalizedLedgers = tallyService.normalizeLedgers(ledgerData);
+            
+            // Debug: Log sample ledger data to check balance processing
+            if (normalizedLedgers.length > 0) {
+                const sampleLedger = normalizedLedgers[0];
+                console.log('🔍 Sample ledger data:');
+                console.log(`   Name: ${sampleLedger.name}`);
+                console.log(`   Opening Balance: ${sampleLedger.openingBalance}`);
+                console.log(`   Closing Balance: ${sampleLedger.closingBalance}`);
+                console.log(`   Raw Data Keys: ${Object.keys(sampleLedger.rawData || {}).slice(0, 10).join(', ')}`);
+            }
+            
             for (const ledger of normalizedLedgers) {
                 const raw = ledger.rawData || {};
                 const query = ledger.guid && ledger.guid.trim() !== '' 
                     ? { guid: ledger.guid }
                     : { name: ledger.name, companyId, guid: { $in: [null, ''] } };
+                
+                // Ensure balance data is properly processed (don't let raw data overwrite processed values)
+                const ledgerToStore = {
+                    ...raw, // Raw data first
+                    ...ledger, // Processed data second (this will override raw with processed values)
+                    companyId, 
+                    year: date.getFullYear(),
+                    lastUpdated: new Date()
+                };
+                
+                // Debug: Log balance data for first few ledgers
+                if (result.ledgers < 3) {
+                    console.log(`🔍 Ledger ${result.ledgers + 1}: ${ledger.name}`);
+                    console.log(`   Opening: ${ledger.openingBalance}, Closing: ${ledger.closingBalance}`);
+                }
+                
                 await TallyLedger.updateOne(
+                    query,
+                    { $set: ledgerToStore },
+                    { upsert: true }
+                );
+                result.ledgers++;
+            }
+            console.log(`✅ Synced ${result.ledgers} ledgers`);
+        } catch (error) {
+            result.errors.push(`Ledgers sync error: ${error.message}`);
+            console.error(`❌ Ledgers sync error: ${error.message}`);
+        }
+
+        // Sync Groups (parse and store all fields)
+        try {
+            console.log('📊 Fetching groups...');
+            const groupsData = await tallyService.fetchGroups();
+            const normalizedGroups = tallyService.normalizeGroups(groupsData);
+            for (const group of normalizedGroups) {
+                const raw = group.rawData || {};
+                const query = group.guid && group.guid.trim() !== '' 
+                    ? { guid: group.guid }
+                    : { name: group.name, companyId, guid: { $in: [null, ''] } };
+                await TallyGroup.updateOne(
                     query,
                     { 
                         $set: { 
-                            ...ledger,
+                            ...group,
                             ...raw,
                             companyId, 
                             year: date.getFullYear(),
@@ -301,13 +669,78 @@ exports.syncTallyData = async (req, res) => {
                     { upsert: true }
                 );
             }
-            result.ledgers = normalizedLedgers.length;
+            result.groups = normalizedGroups.length;
+            console.log(`✅ Synced ${result.groups} groups`);
         } catch (error) {
-            result.errors.push(`Ledgers sync error: ${error.message}`);
+            result.errors.push(`Groups sync error: ${error.message}`);
+            console.error(`❌ Groups sync error: ${error.message}`);
+        }
+
+        // Sync Currencies (parse and store all fields)
+        try {
+            console.log('📊 Fetching currencies...');
+            const currenciesData = await tallyService.fetchCurrencies();
+            const normalizedCurrencies = tallyService.normalizeCurrencies(currenciesData);
+            for (const currency of normalizedCurrencies) {
+                const raw = currency.rawData || {};
+                const query = currency.guid && currency.guid.trim() !== '' 
+                    ? { guid: currency.guid }
+                    : { name: currency.name, companyId, guid: { $in: [null, ''] } };
+                await TallyCurrency.updateOne(
+                    query,
+                    { 
+                        $set: { 
+                            ...currency,
+                            ...raw,
+                            companyId, 
+                            year: date.getFullYear(),
+                            lastUpdated: new Date()
+                        } 
+                    },
+                    { upsert: true }
+                );
+            }
+            result.currencies = normalizedCurrencies.length;
+            console.log(`✅ Synced ${result.currencies} currencies`);
+        } catch (error) {
+            result.errors.push(`Currencies sync error: ${error.message}`);
+            console.error(`❌ Currencies sync error: ${error.message}`);
+        }
+
+        // Sync Cost Centers (parse and store all fields)
+        try {
+            console.log('📊 Fetching cost centers...');
+            const costCentersData = await tallyService.fetchCostCenters();
+            const normalizedCostCenters = tallyService.normalizeCostCenters(costCentersData);
+            for (const costCenter of normalizedCostCenters) {
+                const raw = costCenter.rawData || {};
+                const query = costCenter.guid && costCenter.guid.trim() !== '' 
+                    ? { guid: costCenter.guid }
+                    : { name: costCenter.name, companyId, guid: { $in: [null, ''] } };
+                await TallyCostCenter.updateOne(
+                    query,
+                    { 
+                        $set: { 
+                            ...costCenter,
+                            ...raw,
+                            companyId, 
+                            year: date.getFullYear(),
+                            lastUpdated: new Date()
+                        } 
+                    },
+                    { upsert: true }
+                );
+            }
+            result.costCenters = normalizedCostCenters.length;
+            console.log(`✅ Synced ${result.costCenters} cost centers`);
+        } catch (error) {
+            result.errors.push(`Cost Centers sync error: ${error.message}`);
+            console.error(`❌ Cost Centers sync error: ${error.message}`);
         }
 
         // Sync Stock Items (parse and store all fields)
         try {
+            console.log('📊 Fetching stock items...');
             const stockData = await tallyService.fetchStockItems();
             const normalizedStockItems = tallyService.normalizeStockItems(stockData);
             for (const item of normalizedStockItems) {
@@ -330,183 +763,17 @@ exports.syncTallyData = async (req, res) => {
                 );
             }
             result.stockItems = normalizedStockItems.length;
+            console.log(`✅ Synced ${result.stockItems} stock items`);
         } catch (error) {
             result.errors.push(`Stock items sync error: ${error.message}`);
+            console.error(`❌ Stock items sync error: ${error.message}`);
         }
 
-
-        // Batch fetch vouchers (last 30 days, 7-day batches) with progress logging
-        try {
-            const VendorTransaction = require('../models/vendorTransaction.model');
-            const SalesExecutive = require('../models/salesExecutive.model');
-            const fromDate = new Date();
-            fromDate.setDate(fromDate.getDate() - 30);
-            const toDate = new Date();
-            const batchDays = 7;
-            let start = new Date(fromDate);
-            let end = new Date(toDate);
-            let totalVouchers = 0, totalProducts = 0, totalVendors = 0, totalExecutives = 0;
-            let batchCount = 0, batchTotal = Math.ceil((end - start) / (1000 * 60 * 60 * 24 * batchDays));
-
-            while (start <= end) {
-                batchCount++;
-                let batchStart = new Date(start);
-                let batchEnd = new Date(start);
-                batchEnd.setDate(batchEnd.getDate() + batchDays - 1);
-                if (batchEnd > end) batchEnd = new Date(end);
-                const batchFrom = batchStart.toISOString().split('T')[0].replace(/-/g, '');
-                const batchTo = batchEnd.toISOString().split('T')[0].replace(/-/g, '');
-                let voucherData;
-                try {
-                    voucherData = await tallyService.fetchVouchers(batchFrom, batchTo);
-                } catch (err) {
-                    result.errors.push(`Voucher batch ${batchFrom}-${batchTo} error: ${err.message}`);
-                    start.setDate(start.getDate() + batchDays);
-                    continue;
-                }
-                const normalizedVouchers = tallyService.normalizeVouchers(voucherData);
-                totalVouchers += normalizedVouchers.length;
-                // Log batch progress
-                const percent = Math.round((batchCount / batchTotal) * 100);
-                console.log(`Voucher batch ${batchCount}/${batchTotal} (${batchFrom}-${batchTo}): ${normalizedVouchers.length} vouchers. Progress: ${percent}%`);
-
-                for (const voucher of normalizedVouchers) {
-                    // Save all voucher fields
-                    const query = voucher.guid && voucher.guid.trim() !== '' 
-                        ? { guid: voucher.guid }
-                        : { 
-                            voucherNumber: voucher.voucherNumber, 
-                            date: voucher.date,
-                            companyId,
-                            guid: { $in: [null, ''] }
-                        };
-                    await TallyVoucher.updateOne(
-                        query,
-                        { 
-                            $set: { 
-                                ...voucher, 
-                                ...(voucher.raw || {}), // Store all raw fields
-                                companyId, 
-                                year: date.getFullYear(),
-                                lastUpdated: new Date()
-                            } 
-                        },
-                        { upsert: true }
-                    );
-
-                    // --- Product sales extraction (existing tallyModel) ---
-                    let inventory = voucher.raw?.INVENTORYENTRIES?.LIST || voucher.raw?.['INVENTORYENTRIES.LIST'] || [];
-                    if (!Array.isArray(inventory)) inventory = [inventory];
-                    for (const item of inventory) {
-                        const productObj = {
-                            ...item,
-                            date: voucher.date,
-                            company: voucher.party,
-                            product: item.STOCKITEMNAME || item.STOCKITEM || '',
-                            employee: '',
-                            invoice: voucher.voucherNumber,
-                            totalPcs: item.BILLEDQTY || item.ACTUALQTY || '',
-                            productPcs: item.BILLEDQTY || item.ACTUALQTY || '',
-                            productPrice: item.AMOUNT || 0,
-                            totalAmount: item.AMOUNT || 0,
-                            tax: '',
-                            netAmount: item.AMOUNT || 0,
-                            companyid: companyId,
-                            monthId: null,
-                            year: date.getFullYear()
-                        };
-                        // Upsert into tallyModel
-                        await tallyModel.updateOne(
-                            {
-                                date: productObj.date,
-                                invoice: productObj.invoice,
-                                company: productObj.company,
-                                product: productObj.product,
-                                companyid: companyId,
-                                year: date.getFullYear()
-                            },
-                            { $set: productObj },
-                            { upsert: true }
-                        );
-                        totalProducts++;
-                    }
-
-                    // --- Vendor transaction extraction (new model) ---
-                    if ((voucher.voucherType && voucher.voucherType.toLowerCase().includes('purchase')) || (voucher.party)) {
-                        const vendorObj = {
-                            ...voucher,
-                            date: voucher.date,
-                            voucherNumber: voucher.voucherNumber,
-                            voucherType: voucher.voucherType,
-                            vendorName: voucher.party,
-                            amount: voucher.amount,
-                            narration: voucher.narration,
-                            companyId,
-                            year: date.getFullYear(),
-                            lastUpdated: new Date()
-                        };
-                        await VendorTransaction.updateOne(
-                            {
-                                date: vendorObj.date,
-                                voucherNumber: vendorObj.voucherNumber,
-                                vendorName: vendorObj.vendorName,
-                                companyId,
-                                year: date.getFullYear()
-                            },
-                            { $set: vendorObj },
-                            { upsert: true }
-                        );
-                        totalVendors++;
-                    }
-
-                    // --- Sales executive extraction (new model) ---
-                    let execName = '';
-                    if (voucher.narration && voucher.narration.toLowerCase().includes('sales by')) {
-                        const match = voucher.narration.match(/sales by[:\-]?\s*([a-zA-Z .]+)/i);
-                        if (match && match[1]) execName = match[1].trim();
-                    }
-                    let costCenter = '';
-                    if (voucher.raw?.COSTCENTRENAME) costCenter = String(voucher.raw.COSTCENTRENAME);
-                    else if (voucher.raw?.COSTCENTRE && voucher.raw.COSTCENTRE.NAME) costCenter = String(voucher.raw.COSTCENTRE.NAME);
-                    if (!execName && costCenter) execName = costCenter;
-                    if (execName) {
-                        const execObj = {
-                            ...voucher,
-                            date: voucher.date,
-                            voucherNumber: voucher.voucherNumber,
-                            voucherType: voucher.voucherType,
-                            party: voucher.party,
-                            executive: execName,
-                            amount: voucher.amount,
-                            narration: voucher.narration,
-                            companyId,
-                            year: date.getFullYear(),
-                            lastUpdated: new Date()
-                        };
-                        await SalesExecutive.updateOne(
-                            {
-                                date: execObj.date,
-                                voucherNumber: execObj.voucherNumber,
-                                executive: execObj.executive,
-                                companyId,
-                                year: date.getFullYear()
-                            },
-                            { $set: execObj },
-                            { upsert: true }
-                        );
-                        totalExecutives++;
-                    }
-                }
-                start.setDate(start.getDate() + batchDays);
-            }
-            result.vouchers = totalVouchers;
-            result.products = totalProducts;
-            result.vendors = totalVendors;
-            result.executives = totalExecutives;
-        } catch (error) {
-            result.errors.push(`Vouchers sync error: ${error.message}`);
-        }
-
+        console.log('✅ Full Tally sync completed successfully!');
+        console.log(`📊 Final Results: ${result.companies} companies, ${result.ledgers} ledgers, ${result.stockItems} stock items, ${result.groups} groups, ${result.costCenters} cost centers, ${result.currencies} currencies`);
+        console.log(`🗑️ Cleared ${result.clearedCount} old records`);
+        console.log(`❌ Errors: ${result.errors.length}`);
+        
         res.status(200).json({
             status: 200,
             message: "Tally data sync completed",
@@ -518,6 +785,39 @@ exports.syncTallyData = async (req, res) => {
         res.status(500).json({
             status: 500,
             message: "Failed to sync Tally data",
+            error: error.message
+        });
+    }
+};
+
+// Fetch vouchers only, now non-blocking with progress polling
+exports.fetchTallyVouchers = async (req, res) => {
+    try {
+        const companyId = mongoose.Types.ObjectId(req.userid);
+
+        if (voucherFetchState.isRunning) {
+            return res.status(200).json({
+                status: 200,
+                message: 'Voucher fetch already running',
+                data: { ...voucherFetchState }
+            });
+        }
+
+        // Reset and start in background
+        resetVoucherFetchState();
+        voucherFetchState.isRunning = true;
+        setImmediate(() => runVoucherFetch(companyId));
+
+        return res.status(202).json({
+            status: 202,
+            message: 'Voucher fetch started',
+            data: { startedAt: voucherFetchState.startedAt, isRunning: true }
+        });
+    } catch (error) {
+        console.error('Voucher fetch start error:', error);
+        return res.status(500).json({
+            status: 500,
+            message: 'Failed to start voucher fetch',
             error: error.message
         });
     }
@@ -535,18 +835,32 @@ exports.getTallyDashboard = async (req, res) => {
         const totalStockItems = await TallyStockItem.countDocuments({ companyId, year: currentYear });
 
         // Get recent vouchers
-            // --- Batch fetch vouchers in groups of 500 with progress bar ---
-            // This block is not needed in getTallyDashboard, remove misplaced code and closing brackets
-            // ...existing code...
-        } catch (error) {
-            console.error('Tally sync error:', error);
-            res.status(500).json({
-                status: 500,
-                message: "Failed to sync Tally data",
-                error: error.message
-            });
-        }
+        const recentVouchers = await TallyVoucher.find({ companyId, year: currentYear })
+            .sort({ date: -1 })
+            .limit(5)
+            .select('date voucherType voucherNumber party amount');
+
+        res.status(200).json({
+            status: 200,
+            data: {
+                summary: {
+                    totalLedgers,
+                    totalVouchers,
+                    totalStockItems
+                },
+                recentVouchers
+            }
+        });
+
+    } catch (error) {
+        console.error('Dashboard error:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to fetch dashboard data",
+            error: error.message
+        });
     }
+};
 // Get Ledgers
 exports.getTallyLedgers = async (req, res) => {
     try {
@@ -558,16 +872,21 @@ exports.getTallyLedgers = async (req, res) => {
         const group = req.query.group || '';
         const balance = req.query.balance || '';
 
-        const query = { companyId, year: currentYear };
+        const query = { 
+            companyId, 
+            year: currentYear,
+            // Filter only Sundry Debtors
+            parent: { $regex: 'Sundry Debtors', $options: 'i' }
+        };
         
         // Search filter
         if (search) {
             query.name = { $regex: search, $options: 'i' };
         }
         
-        // Group filter
+        // Group filter (keeping for compatibility, but will be overridden by Sundry Debtors filter)
         if (group) {
-            query.parent = { $regex: group, $options: 'i' };
+            query.parent = { $regex: 'Sundry Debtors', $options: 'i' };
         }
         
         // Balance filter
@@ -614,6 +933,70 @@ exports.getTallyLedgers = async (req, res) => {
             message: "Failed to fetch ledgers",
             error: error.message
         });
+    }
+};
+
+// Get ledgers related to an employee (match name/id across key fields)
+exports.getLedgersByEmployee = async (req, res) => {
+    try {
+        const companyId = mongoose.Types.ObjectId(req.userid);
+        const name = (req.query.name || '').trim();
+        const empId = (req.query.empId || '').trim();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 25;
+
+        if (!name) {
+            return res.status(400).json({ status: 400, message: 'name query is required' });
+        }
+
+        const nameRegex = new RegExp(name, 'i');
+        const idRegex = empId ? new RegExp(empId, 'i') : null;
+
+        const query = {
+            companyId,
+            $or: [
+                { name: nameRegex },
+                { aliasName: nameRegex },
+                { reservedName: nameRegex },
+                { parent: nameRegex },
+                { contactPerson: nameRegex },
+                { addressList: nameRegex },
+                { 'bankDetails.accountNumber': nameRegex },
+                { 'bankDetails.bankName': nameRegex },
+                { costCentreAllocations: { $elemMatch: { costCentre: nameRegex } } },
+                ...(idRegex ? [
+                    { name: idRegex },
+                    { aliasName: idRegex },
+                    { reservedName: idRegex },
+                    { parent: idRegex },
+                    { contactPerson: idRegex },
+                    { addressList: idRegex },
+                ] : []),
+            ],
+        };
+
+        const ledgers = await TallyLedger.find(query)
+            .sort({ name: 1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .select('name aliasName reservedName parent openingBalance closingBalance languageName languageId isGroup guid masterId alterid ledgerPhone ledgerFax email website incometaxnumber salestaxnumber gstregistrationtype gstin gstdutyhead addressList bankDetails contactPerson creditPeriod creditLimit interestRate priceLevel billWiseDetails categoryData costCentreAllocations lastUpdated');
+
+        const total = await TallyLedger.countDocuments(query);
+
+        res.status(200).json({
+            status: 200,
+            data: {
+                ledgers,
+                pagination: {
+                    currentPage: page,
+                    totalPages: Math.ceil(total / limit),
+                    total,
+                    limit,
+                },
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ status: 500, message: 'Failed to fetch related ledgers', error: error.message });
     }
 };
 
@@ -667,6 +1050,70 @@ exports.getTallyVouchers = async (req, res) => {
             message: "Failed to fetch vouchers",
             error: error.message
         });
+    }
+};
+
+// Get vouchers related to an employee name (search across key fields)
+exports.getVouchersByEmployee = async (req, res) => {
+    try {
+        const companyId = mongoose.Types.ObjectId(req.userid);
+        const name = (req.query.name || '').trim();
+        const empId = (req.query.empId || '').trim();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 25;
+
+        if (!name) {
+            return res.status(400).json({ status: 400, message: 'name query is required' });
+        }
+
+        const nameRegex = new RegExp(name, 'i');
+        const idRegex = empId ? new RegExp(empId, 'i') : null;
+
+        const query = {
+            companyId,
+            $or: [
+                { party: nameRegex },
+                { partyledgername: nameRegex },
+                { narration: nameRegex },
+                { reference: nameRegex },
+                { voucherNumber: nameRegex },
+                { ledgerEntries: { $elemMatch: { ledgerName: nameRegex } } },
+                { 'ledgerEntries.billAllocations': { $elemMatch: { billName: nameRegex } } },
+                { costCentreAllocations: { $elemMatch: { costCentre: nameRegex } } },
+                ...(idRegex ? [
+                    { party: idRegex },
+                    { narration: idRegex },
+                    { reference: idRegex },
+                    { voucherNumber: idRegex },
+                    { ledgerEntries: { $elemMatch: { ledgerName: idRegex } } },
+                    { 'ledgerEntries.billAllocations': { $elemMatch: { billName: idRegex } } },
+                    { costCentreAllocations: { $elemMatch: { costCentre: idRegex } } },
+                ] : []),
+            ],
+        };
+
+        const vouchers = await TallyVoucher.find(query)
+            .sort({ date: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .select('date voucherNumber voucherType party amount narration reference ledgerEntries costCentreAllocations gstDetails bankDetails');
+
+        const total = await TallyVoucher.countDocuments(query);
+
+        res.status(200).json({
+            status: 200,
+            data: {
+                vouchers,
+                pagination: {
+                    currentPage: page,
+                    totalPages: Math.ceil(total / limit),
+                    total,
+                    limit,
+                },
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ status: 500, message: 'Failed to fetch related vouchers', error: error.message });
     }
 };
 
@@ -761,6 +1208,48 @@ exports.testTallyConnection = async (req, res) => {
         res.status(500).json({
             status: 500,
             message: "Failed to test Tally connection",
+            error: error.message
+        });
+    }
+};
+
+// Test ledger data processing
+exports.testLedgerProcessing = async (req, res) => {
+    try {
+        console.log('🧪 Testing ledger data processing...');
+        
+        // Fetch a small sample of ledger data
+        const ledgerData = await tallyService.fetchLedgers();
+        const normalizedLedgers = tallyService.normalizeLedgers(ledgerData);
+        
+        // Test first 5 ledgers
+        const testLedgers = normalizedLedgers.slice(0, 5);
+        
+        const testResults = testLedgers.map(ledger => ({
+            name: ledger.name,
+            openingBalance: ledger.openingBalance,
+            closingBalance: ledger.closingBalance,
+            rawOpeningBalance: ledger.rawData?.OPENINGBALANCE,
+            rawClosingBalance: ledger.rawData?.CLOSINGBALANCE,
+            hasValidBalances: ledger.openingBalance !== 0 || ledger.closingBalance !== 0
+        }));
+        
+        console.log('🧪 Test Results:', testResults);
+        
+        res.status(200).json({
+            status: 200,
+            message: "Ledger processing test completed",
+            data: {
+                totalLedgers: normalizedLedgers.length,
+                testResults,
+                sampleRawData: testLedgers[0]?.rawData || {}
+            }
+        });
+    } catch (error) {
+        console.error('🧪 Test error:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to test ledger processing",
             error: error.message
         });
     }
@@ -985,14 +1474,31 @@ exports.getComprehensiveDashboard = async (req, res) => {
             .limit(10)
             .select('name closingValue closingQty baseUnits lastUpdated');
 
-        // Get financial summary
+        // Get financial summary (debit, credit, net and absolute)
         const financialSummary = await TallyLedger.aggregate([
             { $match: { companyId: mongoose.Types.ObjectId(companyId) } },
             {
                 $group: {
                     _id: null,
-                    totalOpeningBalance: { $sum: '$openingBalance' },
-                    totalClosingBalance: { $sum: '$closingBalance' },
+                    // Opening balances
+                    openingDebitTotal: {
+                        $sum: { $cond: [{ $gt: ['$openingBalance', 0] }, '$openingBalance', 0] }
+                    },
+                    openingCreditTotal: {
+                        $sum: { $cond: [{ $lt: ['$openingBalance', 0] }, '$openingBalance', 0] }
+                    },
+                    openingNetTotal: { $sum: '$openingBalance' },
+                    openingAbsoluteTotal: { $sum: { $abs: '$openingBalance' } },
+                    // Closing balances
+                    closingDebitTotal: {
+                        $sum: { $cond: [{ $gt: ['$closingBalance', 0] }, '$closingBalance', 0] }
+                    },
+                    closingCreditTotal: {
+                        $sum: { $cond: [{ $lt: ['$closingBalance', 0] }, '$closingBalance', 0] }
+                    },
+                    closingNetTotal: { $sum: '$closingBalance' },
+                    closingAbsoluteTotal: { $sum: { $abs: '$closingBalance' } },
+                    // Meta
                     totalLedgers: { $sum: 1 }
                 }
             }
@@ -1039,6 +1545,28 @@ exports.getComprehensiveDashboard = async (req, res) => {
             { $sort: { count: -1 } }
         ]);
 
+        // Normalize financial summary shape to include legacy fields expected by UI
+        const fsRaw = financialSummary[0] || {
+            openingDebitTotal: 0,
+            openingCreditTotal: 0,
+            openingNetTotal: 0,
+            openingAbsoluteTotal: 0,
+            closingDebitTotal: 0,
+            closingCreditTotal: 0,
+            closingNetTotal: 0,
+            closingAbsoluteTotal: 0,
+            totalLedgers: 0
+        };
+        const fs = {
+            ...fsRaw,
+            // Legacy keys used by frontend cards
+            totalOpeningBalance: fsRaw.openingAbsoluteTotal || Math.abs(fsRaw.openingNetTotal || 0),
+            totalClosingBalance: fsRaw.closingNetTotal || 0,
+            // Extra helpers
+            totalOpeningAbsolute: fsRaw.openingAbsoluteTotal || Math.abs(fsRaw.openingNetTotal || 0),
+            totalClosingAbsolute: fsRaw.closingAbsoluteTotal || Math.abs(fsRaw.closingNetTotal || 0)
+        };
+
         res.status(200).json({
             status: 200,
             data: {
@@ -1052,11 +1580,7 @@ exports.getComprehensiveDashboard = async (req, res) => {
                     currencies: currenciesCount,
                     lastSync: new Date()
                 },
-                financialSummary: financialSummary[0] || {
-                    totalOpeningBalance: 0,
-                    totalClosingBalance: 0,
-                    totalLedgers: 0
-                },
+                financialSummary: fs,
                 voucherSummary,
                 stockSummary,
                 groupSummary,
@@ -1077,6 +1601,4 @@ exports.getComprehensiveDashboard = async (req, res) => {
         });
     }
 };
-
-
 

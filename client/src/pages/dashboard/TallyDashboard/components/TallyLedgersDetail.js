@@ -48,8 +48,12 @@ const TallyLedgersDetail = () => {
             });
             
             if (response.data.status === 200) {
-                setLedgersData(response.data.data.ledgers || []);
-                setTotalPages(Math.ceil((response.data.data.total || 0) / itemsPerPage));
+                const list = response.data.data.ledgers || [];
+                list.sort((a, b) => new Date(b.lastUpdated || 0) - new Date(a.lastUpdated || 0));
+                setLedgersData(list);
+                const total = response.data.data.total;
+                const computedTotalPages = total ? Math.ceil(total / itemsPerPage) : Math.max(1, Math.ceil(list.length / itemsPerPage));
+                setTotalPages(computedTotalPages);
                 
                 // Extract unique groups for filter dropdown
                 const ledgers = response.data.data.ledgers || [];
@@ -80,6 +84,22 @@ const TallyLedgersDetail = () => {
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
         fetchLedgersData(page, searchTerm, groupFilter, balanceFilter);
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            const prev = currentPage - 1;
+            setCurrentPage(prev);
+            fetchLedgersData(prev, searchTerm, groupFilter, balanceFilter);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            const next = currentPage + 1;
+            setCurrentPage(next);
+            fetchLedgersData(next, searchTerm, groupFilter, balanceFilter);
+        }
     };
 
     // Handle search
@@ -203,7 +223,7 @@ const TallyLedgersDetail = () => {
                 <Col xs={12}>
                     <div className="page-title-box d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 className="page-title">Tally Ledgers - Detailed View</h4>
+                            <h4 className="page-title">Sundry Debtors - Detailed View</h4>
                             <ol className="breadcrumb m-0">
                                 <li className="breadcrumb-item">
                                     <Button 
@@ -214,7 +234,7 @@ const TallyLedgersDetail = () => {
                                         Dashboard
                                     </Button>
                                 </li>
-                                <li className="breadcrumb-item active">Ledgers Detail</li>
+                                <li className="breadcrumb-item active">Sundry Debtors Detail</li>
                             </ol>
                         </div>
                         <div>
@@ -334,7 +354,7 @@ const TallyLedgersDetail = () => {
                         <Card.Body>
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h4 className="header-title">
-                                    Ledger Details 
+                                    Sundry Debtors Details 
                                     {!loading && ledgersData.length > 0 && (
                                         <span className="text-muted"> ({ledgersData.length} records)</span>
                                     )}
@@ -454,23 +474,15 @@ const TallyLedgersDetail = () => {
                                     </div>
 
                                     {/* Pagination */}
-                                    {totalPages > 1 && (
-                                        <Row className="mt-3">
-                                            <Col xs={12} className="d-flex justify-content-center">
-                                                <Stack spacing={2}>
-                                                    <Pagination 
-                                                        count={totalPages} 
-                                                        page={currentPage} 
-                                                        onChange={handlePageChange}
-                                                        color="primary"
-                                                        size="large"
-                                                        showFirstButton 
-                                                        showLastButton
-                                                    />
-                                                </Stack>
-                                            </Col>
-                                        </Row>
-                                    )}
+                                    <Row className="mt-3">
+                                        <Col xs={12} className="d-flex justify-content-between align-items-center">
+                                            <div className="text-muted small">Page {currentPage} of {totalPages}</div>
+                                            <div className="d-flex gap-2">
+                                                <Button variant="outline-secondary" size="sm" disabled={currentPage === 1} onClick={handlePrevPage}>Prev</Button>
+                                                <Button variant="primary" size="sm" disabled={currentPage >= totalPages} onClick={handleNextPage}>Next</Button>
+                                            </div>
+                                        </Col>
+                                    </Row>
                                 </>
                             )}
                         </Card.Body>

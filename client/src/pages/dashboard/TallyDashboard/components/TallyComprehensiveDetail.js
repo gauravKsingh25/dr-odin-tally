@@ -28,7 +28,7 @@ const TallyComprehensiveDetail = () => {
                 return;
             }
             
-            const response = await axios.get('http://localhost:7010/api/tally/dashboard/comprehensive', {
+            const response = await axios.get('/tally/dashboard/comprehensive', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -68,7 +68,7 @@ const TallyComprehensiveDetail = () => {
                     return;
                 }
                 
-                const response = await axios.get('http://localhost:7010/api/tally/dashboard/comprehensive', {
+                const response = await axios.get('/tally/dashboard/comprehensive', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 
@@ -164,8 +164,14 @@ const TallyComprehensiveDetail = () => {
                                 <i className="mdi mdi-arrow-left"></i> Back
                             </Button>
                             <Button variant="primary" onClick={fetchComprehensiveData} disabled={loading}>
-                                <i className="mdi mdi-refresh"></i> Refresh
+                                <i className="mdi mdi-refresh"></i> Full Sync (All except vouchers)
                             </Button>
+                            <Button variant="warning" className="ms-2" onClick={() => navigate('/tally-vouchers-detail')}>
+                                <i className="mdi mdi-file-document"></i> Fetch Vouchers (Batch Only)
+                            </Button>
+                            <span className="ms-2 text-muted" style={{fontSize: '0.95em'}}>
+                                Use <b>Full Sync</b> for all Tally data except vouchers. Use <b>Fetch Vouchers</b> for batch voucher sync only.
+                            </span>
                         </div>
                     </div>
                 </Col>
@@ -213,7 +219,7 @@ const TallyComprehensiveDetail = () => {
                                                     <Card.Body className="text-center">
                                                         <i className="mdi mdi-account-multiple widget-icon"></i>
                                                         <h3 className="mt-2">{comprehensiveData.summary?.ledgers || 0}</h3>
-                                                        <p className="mb-0">Ledgers</p>
+                                                        <p className="mb-0">Sundry Debtors</p>
                                                     </Card.Body>
                                                 </Card>
                                             </Col>
@@ -437,7 +443,7 @@ const TallyComprehensiveDetail = () => {
                                             <Col lg={6}>
                                                 <Card>
                                                     <Card.Body>
-                                                        <h5 className="card-title">Recent Ledgers</h5>
+                                                        <h5 className="card-title">Recent Sundry Debtors</h5>
                                                         <div className="table-responsive">
                                                             <Table size="sm" hover>
                                                                 <thead>

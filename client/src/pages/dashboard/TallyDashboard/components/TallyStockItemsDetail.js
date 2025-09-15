@@ -42,17 +42,21 @@ const TallyStockItemsDetail = () => {
                 ...(stock && { stock })
             });
             
-            const response = await axios.get(`http://localhost:7010/api/tally/stockitems?${params}`, {
+            const response = await axios.get(`/tally/stockitems?${params}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
             if (response.data && response.data.status === 200) {
                 const responseData = response.data.data || {};
-                setStockItemsData(responseData.stockItems || []);
+                const list = responseData.stockItems || [];
+                list.sort((a, b) => new Date(b.lastUpdated || 0) - new Date(a.lastUpdated || 0));
+                setStockItemsData(list);
                 
-                // Handle pagination data
+                // Handle pagination data (fallback to length if total missing)
                 const pagination = responseData.pagination || {};
-                setTotalPages(pagination.totalPages || Math.ceil((pagination.total || 0) / itemsPerPage));
+                const total = pagination.total;
+                const computedTotalPages = total ? Math.ceil(total / itemsPerPage) : Math.max(1, Math.ceil(list.length / itemsPerPage));
+                setTotalPages(pagination.totalPages || computedTotalPages);
                 setError(null);
             } else {
                 setError(`Server returned status: ${response.data?.status || 'Unknown error'}`);
@@ -82,6 +86,22 @@ const TallyStockItemsDetail = () => {
             setLoading(false);
         }
     }, [navigate, itemsPerPage]);
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            const prev = currentPage - 1;
+            setCurrentPage(prev);
+            fetchStockItemsData(prev, searchTerm, categoryFilter, stockFilter);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            const next = currentPage + 1;
+            setCurrentPage(next);
+            fetchStockItemsData(next, searchTerm, categoryFilter, stockFilter);
+        }
+    };
 
     // Handle pagination change
     const handlePageChange = (event, page) => {
@@ -140,7 +160,7 @@ const TallyStockItemsDetail = () => {
                 ...(stockFilter && { stock: stockFilter })
             });
             
-            const response = await axios.get(`http://localhost:7010/api/tally/stockitems?${params}`, {
+            const response = await axios.get(`/tally/stockitems?${params}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 responseType: 'blob'
             });
@@ -431,23 +451,15 @@ const TallyStockItemsDetail = () => {
                                     </div>
 
                                     {/* Pagination */}
-                                    {totalPages > 1 && (
-                                        <Row className="mt-3">
-                                            <Col xs={12} className="d-flex justify-content-center">
-                                                <Stack spacing={2}>
-                                                    <Pagination 
-                                                        count={totalPages} 
-                                                        page={currentPage} 
-                                                        onChange={handlePageChange}
-                                                        color="primary"
-                                                        size="large"
-                                                        showFirstButton 
-                                                        showLastButton
-                                                    />
-                                                </Stack>
-                                            </Col>
-                                        </Row>
-                                    )}
+                                    <Row className="mt-3">
+                                        <Col xs={12} className="d-flex justify-content-between align-items-center">
+                                            <div className="text-muted small">Page {currentPage} of {totalPages}</div>
+                                            <div className="d-flex gap-2">
+                                                <Button variant="outline-secondary" size="sm" disabled={currentPage === 1} onClick={handlePrevPage}>Prev</Button>
+                                                <Button variant="primary" size="sm" disabled={currentPage >= totalPages} onClick={handleNextPage}>Next</Button>
+                                            </div>
+                                        </Col>
+                                    </Row>
                                 </>
                             )}
                         </Card.Body>
