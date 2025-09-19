@@ -2,10 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Table, Badge, Tab, Tabs } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Chart from 'react-apexcharts';
 import { APICore } from '../../../../helpers/api/apiCore';
 import MainLoader from '../../../../components/MainLoader';
+import ThemeToggle from '../../../../components/ThemeToggle';
 import axios from 'axios';
+import '../TallyDashboard.css';
 
 const TallyComprehensiveDetail = () => {
     const [comprehensiveData, setComprehensiveData] = useState(null);
@@ -13,6 +16,23 @@ const TallyComprehensiveDetail = () => {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('overview');
     const navigate = useNavigate();
+
+    // Get theme from Redux store for charts
+    const { layoutColor } = useSelector((state) => ({
+        layoutColor: state.Layout.layoutColor,
+    }));
+    
+    // Theme-aware chart colors
+    const getChartTheme = () => {
+        const isDark = layoutColor === 'dark';
+        return {
+            colors: isDark ? ['#667eea', '#f093fb', '#764ba2', '#f5576c', '#4facfe', '#00f2fe'] 
+                          : ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'],
+            textColor: isDark ? '#e3e6f0' : '#6c757d',
+            gridColor: isDark ? '#404954' : '#f1f3fa',
+            backgroundColor: isDark ? 'transparent' : 'transparent'
+        };
+    };
 
     // Fetch comprehensive dashboard data
     const fetchComprehensiveData = async () => {
@@ -140,20 +160,23 @@ const TallyComprehensiveDetail = () => {
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4 className="page-title">Tally Comprehensive Analytics</h4>
-                            <ol className="breadcrumb m-0">
-                                <li className="breadcrumb-item">
-                                    <Button 
-                                        variant="link" 
-                                        className="p-0 text-decoration-none"
-                                        onClick={() => navigate('/tally-dashboard')}
-                                    >
-                                        Dashboard
-                                    </Button>
-                                </li>
-                                <li className="breadcrumb-item active">Comprehensive View</li>
-                            </ol>
+                        <div className="d-flex align-items-center">
+                            <div>
+                                <h4 className="page-title mb-0">Tally Comprehensive Analytics</h4>
+                                <ol className="breadcrumb m-0">
+                                    <li className="breadcrumb-item">
+                                        <Button 
+                                            variant="link" 
+                                            className="p-0 text-decoration-none"
+                                            onClick={() => navigate('/tally-dashboard')}
+                                        >
+                                            Dashboard
+                                        </Button>
+                                    </li>
+                                    <li className="breadcrumb-item active">Comprehensive View</li>
+                                </ol>
+                            </div>
+                            <ThemeToggle size="sm" className="theme-toggle-dashboard ms-3" />
                         </div>
                         <div>
                             <Button 

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Chart from 'react-apexcharts';
 import MainLoader from '../../../components/MainLoader';
+import ThemeToggle from '../../../components/ThemeToggle';
 import { APICore } from '../../../helpers/api/apiCore';
 import axios from 'axios';
 import './TallyDashboard.css';
@@ -437,8 +438,11 @@ const TallyDashboard = () => {
             <Row>
                 <Col xs={12}>
                     <div className="page-title-box d-flex justify-content-between align-items-center">
-                        <h4 className="page-title">Tally Dashboard</h4>
                         <div className="d-flex align-items-center">
+                            <h4 className="page-title mb-0 me-3">Tally Dashboard</h4>
+                            <ThemeToggle size="sm" className="theme-toggle-dashboard" />
+                        </div>
+                        <div className="d-flex align-items-center gap-2">
                             <Button variant="info" className="me-2" onClick={testConnection} disabled={loading}>
                                 <i className="mdi mdi-connection"></i> Test Connection
                             </Button>
