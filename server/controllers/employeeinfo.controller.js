@@ -341,12 +341,47 @@ exports.getEmployeeDetail = async (req, res) => {
             return res.status(404).json({ status: 404, message: "Employee not found" });
         }
 
+        // Helper to recursively get all subordinates
+        async function getAllSubordinates(empId) {
+            let allSubs = [];
+            const directSubs = await empInfoModel.find({ rmId: empId, companyid: companyId });
+            for (const sub of directSubs) {
+                allSubs.push(sub);
+                const subSubs = await getAllSubordinates(sub._id);
+                allSubs = allSubs.concat(subSubs);
+            }
+            return allSubs;
+        }
+
+        // Get all subordinates (recursive)
+        const allSubordinates = await getAllSubordinates(employee._id);
+
+        // Team: names of all direct subordinates
         const directReports = await empInfoModel
             .find({ rmId: employee._id, companyid: companyId })
             .populate('designation')
             .select('empId empName designation zoneId state city status');
-
         const directReportsCount = directReports.length;
+
+        // Aggregate all parties (employee + all subordinates)
+        let allParties = Array.isArray(employee.party) ? [...employee.party] : [];
+        for (const sub of allSubordinates) {
+            if (Array.isArray(sub.party)) {
+                allParties = allParties.concat(sub.party);
+            }
+        }
+        // Remove duplicates
+        allParties = [...new Set(allParties.filter(Boolean))];
+
+        // Fetch invoices for all parties
+        const TallyVoucher = require("../models/tallyVoucher.model");
+        let invoices = [];
+        if (allParties.length > 0) {
+            invoices = await TallyVoucher.find({
+                companyId: companyId,
+                party: { $in: allParties }
+            }).sort({ date: -1 });
+        }
 
         return res.status(200).json({
             status: 200,
@@ -356,6 +391,14 @@ exports.getEmployeeDetail = async (req, res) => {
                 reportingManager: employee.rmId || null,
                 directReportsCount,
                 directReports,
+                allSubordinates: allSubordinates.map(e => ({
+                    _id: e._id,
+                    empId: e.empId,
+                    empName: e.empName,
+                    designation: e.designation,
+                })),
+                parties: allParties,
+                invoices,
             },
         });
     } catch (error) {

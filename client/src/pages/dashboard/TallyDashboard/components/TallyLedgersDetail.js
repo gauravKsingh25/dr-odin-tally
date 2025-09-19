@@ -385,6 +385,7 @@ const TallyLedgersDetail = () => {
                                             <thead className="table-dark">
                                                 <tr>
                                                     <th>#</th>
+                                                    <th>Date</th>
                                                     <th>Ledger Name</th>
                                                     <th>Group/Parent</th>
                                                     <th>Opening Balance</th>
@@ -399,9 +400,12 @@ const TallyLedgersDetail = () => {
                                                 {ledgersData.length > 0 ? (
                                                     ledgersData.map((ledger, index) => {
                                                         const netChange = (ledger.closingBalance || 0) - (ledger.openingBalance || 0);
+                                                        const dateValue = ledger.lastUpdated || ledger.updatedAt || ledger.createdAt;
+                                                        const formattedDate = dateValue ? new Date(dateValue).toLocaleDateString() : 'N/A';
                                                         return (
                                                             <tr key={ledger._id || index}>
                                                                 <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                                                <td>{formattedDate}</td>
                                                                 <td>
                                                                     <div className="d-flex flex-column">
                                                                         <strong>{ledger.name || 'N/A'}</strong>
@@ -463,7 +467,7 @@ const TallyLedgersDetail = () => {
                                                     })
                                                 ) : (
                                                     <tr>
-                                                        <td colSpan="9" className="text-center text-muted py-4">
+                                                        <td colSpan="10" className="text-center text-muted py-4">
                                                             <i className="mdi mdi-account-multiple-outline mdi-48px d-block mb-2"></i>
                                                             No ledgers found. Try adjusting your filters.
                                                         </td>

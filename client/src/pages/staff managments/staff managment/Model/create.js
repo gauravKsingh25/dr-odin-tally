@@ -22,7 +22,7 @@ const Create = ({ modelShow, close }) => {
     const createLoader = store?.ActiveEmployeeCreateReducer
     const successHandle = store?.ActiveEmployeeCreateReducer
     const errorHandle = store?.ActiveEmployeeCreateReducer;
-    const [data, setData] = useState({ empId: "", empName: "", zone: "", state: "", city: "", designation: "", joinDate: "", reportingManager: "", status: true, statusValue: "", monthlytarget: "", yearlyTarget: "", alldesignation: "" })
+    const [data, setData] = useState({ empId: "", empName: "", zone: "", state: "", city: "", designation: "", joinDate: "", reportingManager: "", status: true, statusValue: "", monthlytarget: "", yearlyTarget: "", alldesignation: "", party: [] })
     const [showModel, setShowModel] = useState(false)
     const [isChecked, setIsChecked] = useState(false)
     const [loader, setloader] = useState(false)
@@ -39,11 +39,11 @@ const Create = ({ modelShow, close }) => {
             mnthtarget: data?.monthlyTarget ? data?.monthlyTarget : "",
             yrlytarget: data?.yearlyTarget ? data?.yearlyTarget : "",
             state: data?.state,
-            city: data?.city
+            city: data?.city,
+            party: data?.party ? data.party.map(p => p.value) : []
         }
         dispatch(activeEmployeeCreateAction(body))
         reset()
-
     }
 
     const handleZoneChange = (e) => {
@@ -235,6 +235,27 @@ const Create = ({ modelShow, close }) => {
                                                         </Col>
                                                     </Row>
                                                     <Row className="my-1">
+                                                        <Col lg={6}>
+                                                            <Form.Group>
+                                                                <Row className="d-flex align-items-center">
+                                                                    <Col lg={12}>
+                                                                        <Form.Label className=''>
+                                                                            Party (multiple allowed)
+                                                                        </Form.Label>
+                                                                    </Col>
+                                                                    <Col lg={12}>
+                                                                        <Select
+                                                                            isMulti
+                                                                            name="party"
+                                                                            options={[]}
+                                                                            placeholder="Enter or select parties"
+                                                                            {...register("party", { required: false })}
+                                                                            onChange={(selected) => setValue("party", selected)}
+                                                                        />
+                                                                    </Col>
+                                                                </Row>
+                                                            </Form.Group>
+                                                        </Col>
                                                         <Col lg={6}>
                                                             <Form.Group >
                                                                 <Row className="d-flex align-items-center">

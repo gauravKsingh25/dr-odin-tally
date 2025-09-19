@@ -87,7 +87,10 @@ const employeeSchema = mongoose.Schema({
         type : Number
     },
     color : String,
-    sort:Number
+    sort:Number,
+    party: [{
+        type: String
+    }]
 },{
     timestamps:true
 });

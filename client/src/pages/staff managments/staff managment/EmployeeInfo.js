@@ -51,18 +51,23 @@ const EmployeeInfo = () => {
             setRelated((s) => ({ ...s, loading: true, error: '' }));
             try {
                 const [vResp, lResp] = await Promise.all([
-                    api.get('tally/vouchers/by-employee', { name: data.employee.empName, empId: data.employee.empId, limit: 10 }),
+                    api.get('tally/vouchers/by-employee', { name: data.employee.empName, empId: data.employee.empId, limit: 1000 }),
                     api.get('tally/ledgers/by-employee', { name: data.employee.empName, empId: data.employee.empId, limit: 10 }),
                 ]);
-                const vouchers = vResp?.data?.data?.vouchers || [];
+                let vouchers = vResp?.data?.data?.vouchers || [];
                 const ledgers = lResp?.data?.data?.ledgers || [];
+                // Filter vouchers by employee's party list if present
+                const parties = Array.isArray(data.employee.party) ? data.employee.party : [];
+                if (parties.length > 0) {
+                    vouchers = vouchers.filter(v => v.party && parties.includes(v.party));
+                }
                 setRelated({ vouchers, ledgers, loading: false, error: '' });
             } catch (e) {
                 setRelated({ vouchers: [], ledgers: [], loading: false, error: 'Failed to load related invoices/ledgers' });
             }
         };
         fetchRelated();
-    }, [data?.employee?.empName]);
+    }, [data?.employee?.empName, data?.employee?.party, data?.employee?.empId]);
 
     const employee = data?.employee || {};
     const reportingManager = data?.reportingManager;
@@ -74,10 +79,12 @@ const EmployeeInfo = () => {
         { label: employee?.empName || 'Employee', path: '#', active: true },
     ];
 
+    // Calculate total sales from vouchers
+    const totalSales = related.vouchers.reduce((sum, v) => typeof v.amount === 'number' ? sum + v.amount : sum, 0);
     const kpis = [
         { label: 'Monthly Target', value: employee?.mnthtarget },
         { label: 'Yearly Target', value: employee?.yrlytarget },
-        { label: 'Achievement', value: employee?.achivement },
+        { label: 'Total Sales', value: totalSales ? totalSales.toLocaleString('en-IN') : '—' },
         { label: 'Expenses', value: employee?.expenses },
         { label: 'Performance %', value: employee?.percent },
     ];
