@@ -293,8 +293,9 @@ exports.GetCitiesWithState = async (req, res) => {
 };
 
 exports.GetStateCity = async (req, res) => {
+    const companyId = mongoose.Types.ObjectId(req.userid);
     try {
-        const city = await cityModel.find({ stateId: req.query.stateId }).populate('stateId');
+        const city = await cityModel.find({ stateId: req.query.stateId, companyid: companyId }).populate('stateId');
         if (city) {
             res.status(200).json({ status: 200, message: "All Cities", response: city })
         } else {

@@ -45,7 +45,7 @@ export const getZoneListReducer = (state = getZoneListState, action) => {
             };
         case getDesignationByPostTypes.GET_ZONE_ERROR:
             return {
-                getDesignation: state.MonthList,
+                getDesignation: state.getDesignation, // Fixed: was referencing undefined state.MonthList
                 loading: false,
             };
         default:

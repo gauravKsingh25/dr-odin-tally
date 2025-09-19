@@ -64,10 +64,10 @@ export const GET_CENTRAL_ZONE_REPORT = "/saleExecutive/centralZone"
 export const FILTER_PRODUCT_REPORT = "/total/filterProductData"
 //
 // getCitybyState
-export const GET_CITY_BY_STATE = "/designation/GetStateCity?stateId"
+export const GET_CITY_BY_STATE = "/designation/GetStateCity?stateId="
 
 //getstatebyzone
-export const GET_STATE_BY_ZONE = "/designation/GetZoneState?zoneId"
+export const GET_STATE_BY_ZONE = "/designation/GetZoneState?zoneId="
 // create zone 
 export const CREATE_ZONE = "/empinfo/createZone"
 // get zone

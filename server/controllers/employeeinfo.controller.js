@@ -448,15 +448,84 @@ exports.createZone = async (req, res) => {
 
 exports.GetZones = async (req, res) => {
     const companyId = req.userid;
+    console.log('🔍 GetZones API called');
+    console.log('🔍 Company ID from token:', companyId, 'Type:', typeof companyId);
+    
     try {
-        const resp = await Zone.find({ zone: { $exists: true }, companyid: companyId }).sort({ _id: 1 });
-        if (resp) {
-            res.status(200).json({ status: 200, message: "Get Successfully", response: resp });
-        } else {
-            res.status(200).json({ status: 400, message: "Zone Not Available", response: resp });
+        if (!companyId) {
+            console.error('❌ No company ID found in request');
+            return res.status(400).json({ 
+                status: 400, 
+                message: "Authentication required - no company ID found",
+                response: [] 
+            });
         }
+
+        // Convert string to ObjectId if needed for comparison
+        let queryCompanyId;
+        try {
+            queryCompanyId = mongoose.Types.ObjectId.isValid(companyId) 
+                ? new mongoose.Types.ObjectId(companyId) 
+                : companyId;
+        } catch (conversionError) {
+            console.error('❌ Invalid company ID format:', companyId);
+            return res.status(400).json({ 
+                status: 400, 
+                message: "Invalid company ID format",
+                response: [] 
+            });
+        }
+
+        console.log('� Querying zones for company:', queryCompanyId);
+        
+        // Query zones with the correct company ID
+        const zones = await Zone.find({ companyid: queryCompanyId }).sort({ zone: 1 });
+        
+        console.log('📋 Query result - Found zones:', zones.length);
+        
+        if (zones.length > 0) {
+            console.log('✅ Zones retrieved successfully');
+            console.log('📋 Zone names:', zones.map(z => z.zone));
+            
+            return res.status(200).json({ 
+                status: 200, 
+                message: "Zones retrieved successfully", 
+                response: zones 
+            });
+        } else {
+            console.log('⚠️ No zones found - running diagnostics...');
+            
+            // Diagnostic checks
+            const totalZones = await Zone.countDocuments();
+            const zonesWithCompany = await Zone.countDocuments({ companyid: { $exists: true } });
+            const sampleZone = await Zone.findOne();
+            
+            console.log('🔍 Diagnostics:');
+            console.log('  - Total zones in database:', totalZones);
+            console.log('  - Zones with company ID:', zonesWithCompany);
+            
+            if (sampleZone) {
+                console.log('  - Sample zone company ID:', sampleZone.companyid, 'Type:', typeof sampleZone.companyid);
+                console.log('  - Comparison (loose):', sampleZone.companyid == companyId);
+                console.log('  - Comparison (strict):', sampleZone.companyid === companyId);
+                console.log('  - ObjectId comparison:', sampleZone.companyid.equals(queryCompanyId));
+            }
+            
+            return res.status(200).json({ 
+                status: 200, 
+                message: "No zones found for this company", 
+                response: [] 
+            });
+        }
+        
     } catch (err) {
-        res.status(400).json({ status: 400, response: err.message });
+        console.error('❌ Error in GetZones:', err.message);
+        console.error('❌ Stack trace:', err.stack);
+        return res.status(500).json({ 
+            status: 500, 
+            message: "Internal server error", 
+            response: [] 
+        });
     }
 };
 

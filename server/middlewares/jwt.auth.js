@@ -28,15 +28,32 @@ const verifyToken = async (req, res, next) => {
 
     try {
         let token = req.headers.authorization;
+        console.log('🔑 Token received:', token ? 'Present' : 'Missing');
+        
         if (token) {
             token = token.split(" ")[1];
             let user = jwt.verify(token, `$2a$08$hVQ5qjUJSzg6o.k31s8jA.FLHl4FHcEm1jZ6OBMhQu8pUB0UODFkC`);
-            req.userid = user.aud._id;
+            console.log('👤 Decoded user object:', JSON.stringify(user, null, 2));
+            console.log('🏢 User aud:', user.aud);
+            console.log('🏢 User aud type:', typeof user.aud);
+            
+            if (user.aud && user.aud._id) {
+                req.userid = user.aud._id;
+                console.log('✅ Set req.userid to:', req.userid);
+            } else if (user.aud) {
+                req.userid = user.aud;
+                console.log('✅ Set req.userid to (direct):', req.userid);
+            } else {
+                console.error('❌ No valid user ID found in token');
+                return res.status(400).json({ message: "Invalid token structure" });
+            }
         } else {
-            res.status(400).json({ message: "Unauthorized User" });
+            console.error('❌ No authorization token provided');
+            return res.status(400).json({ message: "Unauthorized User" });
         }
         next();
     } catch (err) {
+        console.error('❌ Token verification failed:', err.message);
         res.status(400).json({ message: "Unauthorized User" });
     }
     // try {    

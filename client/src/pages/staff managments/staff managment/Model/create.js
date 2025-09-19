@@ -9,10 +9,10 @@ import 'react-date-range/dist/theme/default.css';
 import addYears from 'date-fns/addYears';
 import { useDispatch, useSelector } from 'react-redux';
 import { activeEmployeeCreateAction, reportingManagerByDesignationAction, } from '../../../../redux/staffManagment/activeEmployee/actions';
-import { getcityByState, getStateByZone } from '../../../../redux/setting/action';
+import { getcityByState, getStateByZone, getZoneAction } from '../../../../redux/setting/action';
 import MainLoader from '../../../../components/MainLoader';
 import ToastHandle from "../../../../constants/Toaster/Toaster"
-import { getDesignationByPost } from '../../../../redux/actions';
+import { getDesignationByPost, getZoneAction as getZoneListAction } from '../../../../redux/actions';
 import Select from 'react-select'
 
 const Create = ({ modelShow, close }) => {
@@ -77,6 +77,18 @@ const Create = ({ modelShow, close }) => {
         }
         dispatch(reportingManagerByDesignationAction(daata))
     }
+
+    // Initialize dropdown data when modal opens
+    useEffect(() => {
+        if (modelShow) {
+            // Fetch zones, designations, and other initial data
+            dispatch(getZoneListAction());
+            dispatch(getDesignationByPost({ search: "" }));
+            dispatch(reportingManagerByDesignationAction({ search: "" }));
+            // Also dispatch the setting zone action to ensure zones are available
+            dispatch(getZoneAction());
+        }
+    }, [modelShow, dispatch]);
 
     useEffect(() => {
         if (createLoader?.loading) {
