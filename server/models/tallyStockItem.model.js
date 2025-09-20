@@ -197,6 +197,12 @@ const tallyStockItemSchema = mongoose.Schema({
         type: Boolean,
         default: true
     },
+    // Stock status (calculated field)
+    stockStatus: {
+        type: String,
+        enum: ['In Stock', 'Low Stock', 'Critical Stock', 'Out of Stock', 'Overstock', 'Unknown'],
+        default: 'Unknown'
+    },
     lastUpdated: {
         type: Date,
         default: Date.now

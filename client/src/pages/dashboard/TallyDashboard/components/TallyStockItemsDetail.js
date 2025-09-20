@@ -264,7 +264,7 @@ const TallyStockItemsDetail = () => {
                                         <Form.Label>Search Stock Items</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            placeholder="Search by item name..."
+                                            placeholder="Search by name, code, HSN, or description..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                         />
@@ -296,7 +296,9 @@ const TallyStockItemsDetail = () => {
                                             <option value="">All Stock</option>
                                             <option value="in-stock">In Stock</option>
                                             <option value="low-stock">Low Stock</option>
+                                            <option value="critical-stock">Critical Stock</option>
                                             <option value="out-of-stock">Out of Stock</option>
+                                            <option value="overstock">Overstock</option>
                                         </Form.Select>
                                     </Form.Group>
                                 </Col>
@@ -361,10 +363,12 @@ const TallyStockItemsDetail = () => {
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Item Name</th>
+                                                    <th>HSN/Code</th>
                                                     <th>Category</th>
                                                     <th>Opening Qty</th>
                                                     <th>Closing Qty</th>
                                                     <th>Units</th>
+                                                    <th>Rate/Price</th>
                                                     <th>Opening Value</th>
                                                     <th>Closing Value</th>
                                                     <th>Status</th>
@@ -375,22 +379,50 @@ const TallyStockItemsDetail = () => {
                                                 {stockItemsData.length > 0 ? (
                                                     stockItemsData.map((item, index) => {
                                                         const stockStatus = getStockStatusBadge(item.closingQty || 0);
+                                                        const rate = item.actualClosingRate || item.closingRate || 0;
+                                                        const valueChange = item.valueChangePercent || 0;
+                                                        
                                                         return (
                                                             <tr key={item._id || index}>
                                                                 <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                                                 <td>
                                                                     <div className="d-flex flex-column">
-                                                                        <strong className="text-truncate" style={{ maxWidth: '200px' }}>
+                                                                        <strong className="text-truncate" style={{ maxWidth: '200px' }} title={item.name}>
                                                                             {item.name || 'N/A'}
                                                                         </strong>
-                                                                        {item.alias && (
-                                                                            <small className="text-muted">({item.alias})</small>
+                                                                        {item.aliasName && (
+                                                                            <small className="text-muted" title={item.aliasName}>
+                                                                                ({item.aliasName})
+                                                                            </small>
+                                                                        )}
+                                                                        {item.description && (
+                                                                            <small className="text-info" title={item.description}>
+                                                                                {item.description.substring(0, 30)}
+                                                                                {item.description.length > 30 && '...'}
+                                                                            </small>
                                                                         )}
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <div className="text-truncate" style={{ maxWidth: '120px' }}>
-                                                                        {item.category || item.parent || 'N/A'}
+                                                                    <div className="d-flex flex-column">
+                                                                        {item.hsnCode && (
+                                                                            <Badge bg="secondary" className="mb-1">
+                                                                                HSN: {item.hsnCode}
+                                                                            </Badge>
+                                                                        )}
+                                                                        {item.stockItemCode && (
+                                                                            <Badge bg="info">
+                                                                                Code: {item.stockItemCode}
+                                                                            </Badge>
+                                                                        )}
+                                                                        {!item.hsnCode && !item.stockItemCode && (
+                                                                            <span className="text-muted">N/A</span>
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div className="text-truncate" style={{ maxWidth: '120px' }} title={item.category || item.parent || item.stockGroup}>
+                                                                        {item.category || item.parent || item.stockGroup || 'N/A'}
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -399,9 +431,16 @@ const TallyStockItemsDetail = () => {
                                                                     </span>
                                                                 </td>
                                                                 <td>
-                                                                    <span className="fw-bold">
-                                                                        {(item.closingQty || 0).toLocaleString()}
-                                                                    </span>
+                                                                    <div className="d-flex flex-column">
+                                                                        <span className="fw-bold">
+                                                                            {(item.closingQty || 0).toLocaleString()}
+                                                                        </span>
+                                                                        {item.reorderLevel > 0 && (
+                                                                            <small className="text-warning">
+                                                                                Reorder: {item.reorderLevel}
+                                                                            </small>
+                                                                        )}
+                                                                    </div>
                                                                 </td>
                                                                 <td>
                                                                     <Badge bg="info">
@@ -409,15 +448,43 @@ const TallyStockItemsDetail = () => {
                                                                     </Badge>
                                                                 </td>
                                                                 <td>
+                                                                    <div className="d-flex flex-column">
+                                                                        <span className="fw-bold text-success">
+                                                                            {formatCurrency(rate)}
+                                                                        </span>
+                                                                        {rate > 0 && item.closingQty > 0 && (
+                                                                            <small className="text-muted">
+                                                                                per {item.baseUnits || 'unit'}
+                                                                            </small>
+                                                                        )}
+                                                                    </div>
+                                                                </td>
+                                                                <td>
                                                                     {formatCurrency(item.openingValue || 0)}
                                                                 </td>
                                                                 <td>
-                                                                    {formatCurrency(item.closingValue || 0)}
+                                                                    <div className="d-flex flex-column">
+                                                                        <span className="fw-bold">
+                                                                            {formatCurrency(item.closingValue || 0)}
+                                                                        </span>
+                                                                        {valueChange !== 0 && (
+                                                                            <small className={valueChange > 0 ? 'text-success' : 'text-danger'}>
+                                                                                {valueChange > 0 ? '+' : ''}{valueChange.toFixed(1)}%
+                                                                            </small>
+                                                                        )}
+                                                                    </div>
                                                                 </td>
                                                                 <td>
-                                                                    <Badge bg={stockStatus.color}>
-                                                                        {stockStatus.text}
-                                                                    </Badge>
+                                                                    <div className="d-flex flex-column">
+                                                                        <Badge bg={stockStatus.color} className="mb-1">
+                                                                            {item.calculatedStockStatus || item.stockStatus || stockStatus.text}
+                                                                        </Badge>
+                                                                        {item.gstApplicable === 'Yes' && (
+                                                                            <Badge bg="warning" size="sm">
+                                                                                GST
+                                                                            </Badge>
+                                                                        )}
+                                                                    </div>
                                                                 </td>
                                                                 <td>
                                                                     <div className="d-flex gap-1">
@@ -435,6 +502,14 @@ const TallyStockItemsDetail = () => {
                                                                         >
                                                                             <i className="mdi mdi-chart-line"></i>
                                                                         </Button>
+                                                                        <Button 
+                                                                            variant="outline-success" 
+                                                                            size="sm"
+                                                                            title="Price History"
+                                                                            disabled={!item.priceDetails || item.priceDetails.length === 0}
+                                                                        >
+                                                                            <i className="mdi mdi-currency-inr"></i>
+                                                                        </Button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -442,7 +517,7 @@ const TallyStockItemsDetail = () => {
                                                     })
                                                 ) : (
                                                     <tr>
-                                                        <td colSpan="10" className="text-center text-muted py-4">
+                                                        <td colSpan="12" className="text-center text-muted py-4">
                                                             <i className="mdi mdi-package-variant-closed mdi-48px d-block mb-2"></i>
                                                             No stock items found. Try adjusting your filters.
                                                         </td>

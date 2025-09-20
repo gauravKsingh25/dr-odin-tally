@@ -80,7 +80,9 @@ const TallyDashboard = () => {
                                     vendors: s.totals?.vendors || 0,
                                     executives: s.totals?.executives || 0,
                                     lastBatch: s.lastBatch || null,
-                                    errors: s.errors || []
+                                    errors: s.errors || [],
+                                    dateRange: s.dateRange || null,
+                                    checkpoint: s.checkpoint || null
                                 },
                                 running: s.isRunning,
                                 startedAt: s.startedAt,
@@ -477,6 +479,11 @@ const TallyDashboard = () => {
                             <div>
                                 <strong><i className="mdi mdi-file-document me-2"></i>Voucher Fetch</strong>
                                 <span className="ms-2">{syncStatus.message}</span>
+                                {syncStatus.details?.dateRange && (
+                                    <small className="d-block text-muted">
+                                        Date range: {new Date(syncStatus.details.dateRange.from).toLocaleDateString()} - {new Date(syncStatus.details.dateRange.to).toLocaleDateString()}
+                                    </small>
+                                )}
                                 {syncStatus.details?.lastBatch && (
                                     <small className="d-block text-muted">Last batch: {syncStatus.details.lastBatch.range} • {syncStatus.details.lastBatch.count} vouchers</small>
                                 )}

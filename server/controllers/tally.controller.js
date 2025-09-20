@@ -266,7 +266,7 @@ exports.ChequeBounce = async (req, res) => {
 
 // ============= NEW TALLY INTEGRATION CONTROLLERS =============
 
-// Progress state for background voucher fetch
+// Progress state for background voucher fetch with checkpoint support
 const voucherFetchState = {
     isRunning: false,
     startedAt: null,
@@ -276,7 +276,9 @@ const voucherFetchState = {
     percent: 0,
     totals: { vouchers: 0, products: 0, vendors: 0, executives: 0 },
     lastBatch: null,
-    errors: []
+    errors: [],
+    checkpoint: null, // Store last successful date for resumption
+    dateRange: null   // Store overall date range being processed
 };
 
 function resetVoucherFetchState() {
@@ -289,6 +291,8 @@ function resetVoucherFetchState() {
     voucherFetchState.totals = { vouchers: 0, products: 0, vendors: 0, executives: 0 };
     voucherFetchState.lastBatch = null;
     voucherFetchState.errors = [];
+    voucherFetchState.checkpoint = null;
+    voucherFetchState.dateRange = null;
 }
 
 exports.getVoucherFetchStatus = (req, res) => {
@@ -299,6 +303,170 @@ exports.getVoucherFetchStatus = (req, res) => {
         }
     });
 };
+
+// Helper function to process a single voucher record
+async function processVoucherRecord(voucher, companyId, voucherFetchState) {
+    const VendorTransaction = require('../models/vendorTransaction.model');
+    const SalesExecutive = require('../models/salesExecutive.model');
+    
+    try {
+        // Parse date using helper function
+        let parsedDate = parseTallyDate(voucher.date);
+
+        // Skip voucher if critical data is missing
+        if (!voucher.voucherNumber) {
+            console.warn(`Skipping voucher with missing voucher number:`, voucher);
+            return;
+        }
+
+        // Improved deduplication: Use compound unique key for better duplicate detection
+        const query = voucher.guid && voucher.guid.trim() !== ''
+            ? { guid: voucher.guid.trim(), companyId }
+            : {
+                voucherNumber: voucher.voucherNumber,
+                voucherType: voucher.voucherType || '',
+                ...(parsedDate && { date: parsedDate }),
+                companyId
+            };
+        
+        const updateResult = await TallyVoucher.updateOne(
+            query,
+            {
+                $set: {
+                    ...voucher,
+                    ...(voucher.raw || {}),
+                    companyId,
+                    date: parsedDate,
+                    year: parsedDate ? parsedDate.getFullYear() : null,
+                    lastUpdated: new Date()
+                }
+            },
+            { upsert: true }
+        );
+        
+        // Only count actually inserted vouchers, not updates
+        if (updateResult.upsertedCount > 0) {
+            voucherFetchState.totals.vouchers++;
+        }
+
+        // --- Product sales extraction (existing tallyModel) ---
+        let inventory = voucher.raw?.INVENTORYENTRIES?.LIST || voucher.raw?.['INVENTORYENTRIES.LIST'] || [];
+        if (!Array.isArray(inventory)) inventory = [inventory];
+        for (const item of inventory) {
+            const productObj = {
+                ...item,
+                date: parsedDate,
+                company: voucher.party,
+                product: item.STOCKITEMNAME || item.STOCKITEM || '',
+                employee: '',
+                invoice: voucher.voucherNumber,
+                totalPcs: item.BILLEDQTY || item.ACTUALQTY || '',
+                productPcs: item.BILLEDQTY || item.ACTUALQTY || '',
+                productPrice: item.AMOUNT || 0,
+                totalAmount: item.AMOUNT || 0,
+                tax: '',
+                netAmount: item.AMOUNT || 0,
+                companyid: companyId,
+                monthId: null,
+                year: parsedDate ? parsedDate.getFullYear() : date.getFullYear()
+            };
+            const productUpdateResult = await tallyModel.updateOne(
+                {
+                    ...(productObj.date && { date: productObj.date }),
+                    invoice: productObj.invoice,
+                    company: productObj.company,
+                    product: productObj.product,
+                    companyid: companyId,
+                    year: productObj.year
+                },
+                { $set: productObj },
+                { upsert: true }
+            );
+            
+            // Only count actually inserted products, not updates
+            if (productUpdateResult.upsertedCount > 0) {
+                voucherFetchState.totals.products++;
+            }
+        }
+
+        // --- Vendor transaction extraction ---
+        if ((voucher.voucherType && voucher.voucherType.toLowerCase().includes('purchase')) || (voucher.party)) {
+            const vendorObj = {
+                ...voucher,
+                date: parsedDate,
+                voucherNumber: voucher.voucherNumber,
+                voucherType: voucher.voucherType,
+                vendorName: voucher.party,
+                amount: voucher.amount,
+                narration: voucher.narration,
+                companyId,
+                year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
+                lastUpdated: new Date()
+            };
+            const vendorUpdateResult = await VendorTransaction.updateOne(
+                {
+                    ...(vendorObj.date && { date: vendorObj.date }),
+                    voucherNumber: vendorObj.voucherNumber,
+                    vendorName: vendorObj.vendorName,
+                    companyId,
+                    year: vendorObj.year
+                },
+                { $set: vendorObj },
+                { upsert: true }
+            );
+            
+            // Only count actually inserted vendors, not updates
+            if (vendorUpdateResult.upsertedCount > 0) {
+                voucherFetchState.totals.vendors++;
+            }
+        }
+
+        // --- Sales executive extraction ---
+        let execName = '';
+        if (voucher.narration && voucher.narration.toLowerCase().includes('sales by')) {
+            const match = voucher.narration.match(/sales by[:\-]?\s*([a-zA-Z .]+)/i);
+            if (match && match[1]) execName = match[1].trim();
+        }
+        let costCenter = '';
+        if (voucher.raw?.COSTCENTRENAME) costCenter = String(voucher.raw.COSTCENTRENAME);
+        else if (voucher.raw?.COSTCENTRE && voucher.raw.COSTCENTRE.NAME) costCenter = String(voucher.raw.COSTCENTRE.NAME);
+        if (!execName && costCenter) execName = costCenter;
+        if (execName) {
+            const execObj = {
+                ...voucher,
+                date: parsedDate,
+                voucherNumber: voucher.voucherNumber,
+                voucherType: voucher.voucherType,
+                party: voucher.party,
+                executive: execName,
+                amount: voucher.amount,
+                narration: voucher.narration,
+                companyId,
+                year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
+                lastUpdated: new Date()
+            };
+            const execUpdateResult = await SalesExecutive.updateOne(
+                {
+                    ...(execObj.date && { date: execObj.date }),
+                    voucherNumber: execObj.voucherNumber,
+                    executive: execObj.executive,
+                    companyId,
+                    year: execObj.year
+                },
+                { $set: execObj },
+                { upsert: true }
+            );
+            
+            // Only count actually inserted executives, not updates
+            if (execUpdateResult.upsertedCount > 0) {
+                voucherFetchState.totals.executives++;
+            }
+        }
+    } catch (voucherError) {
+        console.error(`Error processing voucher ${voucher.voucherNumber}:`, voucherError.message);
+        voucherFetchState.errors.push(`Voucher ${voucher.voucherNumber} error: ${voucherError.message}`);
+    }
+}
 
 async function runVoucherFetch(companyId) {
     const VendorTransaction = require('../models/vendorTransaction.model');
@@ -326,15 +494,25 @@ async function runVoucherFetch(companyId) {
         ]);
         console.log('✅ Existing voucher data cleared successfully');
 
-        const fromDate = new Date();
-        fromDate.setDate(fromDate.getDate() - 30);
+        // Fetch vouchers from January 1, 2023 till now as requested
+        const fromDate = new Date('2023-01-01');
         const toDate = new Date();
-        const batchDays = 7;
+        const batchDays = 15; // Optimized batch size: smaller batches for better reliability
         let start = new Date(fromDate);
         let end = new Date(toDate);
 
+        // Store date range for checkpoint persistence
+        voucherFetchState.dateRange = {
+            from: fromDate.toISOString(),
+            to: toDate.toISOString(),
+            batchDays
+        };
+
         // compute total batches first
         voucherFetchState.batchTotal = Math.ceil(((end - start) / (1000 * 60 * 60 * 24) + 1) / batchDays);
+        
+        console.log(`📅 Fetching vouchers from ${fromDate.toDateString()} to ${toDate.toDateString()}`);
+        console.log(`📊 Total batches planned: ${voucherFetchState.batchTotal} (${batchDays} days per batch)`);
 
         while (start <= end && voucherFetchState.isRunning) {
             voucherFetchState.batchCount++;
@@ -353,9 +531,42 @@ async function runVoucherFetch(companyId) {
                 const msg = `Voucher batch ${batchFrom}-${batchTo} error: ${err.message}`;
                 console.error(msg);
                 voucherFetchState.errors.push(msg);
+                
+                // Try smaller sub-batches if main batch fails
+                if (batchDays > 3) {
+                    console.log(`🔄 Attempting smaller batches for failed range ${batchFrom}-${batchTo}`);
+                    const smallBatchDays = Math.max(1, Math.floor(batchDays / 3));
+                    let subStart = new Date(batchStart);
+                    
+                    while (subStart <= batchEnd) {
+                        let subEnd = new Date(subStart);
+                        subEnd.setDate(subEnd.getDate() + smallBatchDays - 1);
+                        if (subEnd > batchEnd) subEnd = new Date(batchEnd);
+                        
+                        const subFrom = subStart.toISOString().split('T')[0].replace(/-/g, '');
+                        const subTo = subEnd.toISOString().split('T')[0].replace(/-/g, '');
+                        
+                        try {
+                            const subVoucherData = await tallyService.fetchVouchers(subFrom, subTo);
+                            const subNormalizedVouchers = tallyService.normalizeVouchers(subVoucherData);
+                            console.log(`✅ Sub-batch ${subFrom}-${subTo}: ${subNormalizedVouchers.length} vouchers recovered`);
+                            
+                            // Process sub-batch vouchers
+                            for (const voucher of subNormalizedVouchers) {
+                                await processVoucherRecord(voucher, companyId, voucherFetchState);
+                            }
+                        } catch (subErr) {
+                            console.error(`❌ Sub-batch ${subFrom}-${subTo} also failed: ${subErr.message}`);
+                            voucherFetchState.errors.push(`Sub-batch ${subFrom}-${subTo} error: ${subErr.message}`);
+                        }
+                        
+                        subStart.setDate(subStart.getDate() + smallBatchDays);
+                    }
+                }
+                
                 start.setDate(start.getDate() + batchDays);
                 voucherFetchState.percent = Math.round((voucherFetchState.batchCount / Math.max(1, voucherFetchState.batchTotal)) * 100);
-                voucherFetchState.lastBatch = { range: `${batchFrom}-${batchTo}`, count: 0 };
+                voucherFetchState.lastBatch = { range: `${batchFrom}-${batchTo}`, count: 0, error: err.message };
                 continue;
             }
 
@@ -368,146 +579,15 @@ async function runVoucherFetch(companyId) {
             console.log(`Voucher batch ${voucherFetchState.batchCount}/${voucherFetchState.batchTotal} (${batchFrom}-${batchTo}): ${batchVoucherCount} vouchers. Progress: ${voucherFetchState.percent}%`);
 
             for (const voucher of normalizedVouchers) {
-                try {
-                    // Parse date using helper function
-                    let parsedDate = parseTallyDate(voucher.date);
-
-                    // Skip voucher if critical data is missing
-                    if (!voucher.voucherNumber) {
-                        console.warn(`Skipping voucher with missing voucher number:`, voucher);
-                        continue;
-                    }
-
-                    const query = voucher.guid && voucher.guid.trim() !== ''
-                        ? { guid: voucher.guid }
-                        : {
-                            voucherNumber: voucher.voucherNumber,
-                            ...(parsedDate && { date: parsedDate }),
-                            companyId,
-                            guid: { $in: [null, ''] }
-                        };
-                    await TallyVoucher.updateOne(
-                        query,
-                        {
-                            $set: {
-                                ...voucher,
-                                ...(voucher.raw || {}),
-                                companyId,
-                                date: parsedDate,
-                                year: parsedDate ? parsedDate.getFullYear() : null,
-                                lastUpdated: new Date()
-                            }
-                        },
-                        { upsert: true }
-                    );
-                    voucherFetchState.totals.vouchers++;
-
-                    // --- Product sales extraction (existing tallyModel) ---
-                    let inventory = voucher.raw?.INVENTORYENTRIES?.LIST || voucher.raw?.['INVENTORYENTRIES.LIST'] || [];
-                    if (!Array.isArray(inventory)) inventory = [inventory];
-                    for (const item of inventory) {
-                        const productObj = {
-                            ...item,
-                            date: parsedDate,
-                            company: voucher.party,
-                            product: item.STOCKITEMNAME || item.STOCKITEM || '',
-                            employee: '',
-                            invoice: voucher.voucherNumber,
-                            totalPcs: item.BILLEDQTY || item.ACTUALQTY || '',
-                            productPcs: item.BILLEDQTY || item.ACTUALQTY || '',
-                            productPrice: item.AMOUNT || 0,
-                            totalAmount: item.AMOUNT || 0,
-                            tax: '',
-                            netAmount: item.AMOUNT || 0,
-                            companyid: companyId,
-                            monthId: null,
-                            year: parsedDate ? parsedDate.getFullYear() : date.getFullYear()
-                        };
-                        await tallyModel.updateOne(
-                            {
-                                ...(productObj.date && { date: productObj.date }),
-                                invoice: productObj.invoice,
-                                company: productObj.company,
-                                product: productObj.product,
-                                companyid: companyId,
-                                year: productObj.year
-                            },
-                            { $set: productObj },
-                            { upsert: true }
-                        );
-                        voucherFetchState.totals.products++;
-                    }
-
-                    // --- Vendor transaction extraction ---
-                    if ((voucher.voucherType && voucher.voucherType.toLowerCase().includes('purchase')) || (voucher.party)) {
-                        const vendorObj = {
-                            ...voucher,
-                            date: parsedDate,
-                            voucherNumber: voucher.voucherNumber,
-                            voucherType: voucher.voucherType,
-                            vendorName: voucher.party,
-                            amount: voucher.amount,
-                            narration: voucher.narration,
-                            companyId,
-                            year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
-                            lastUpdated: new Date()
-                        };
-                        await VendorTransaction.updateOne(
-                            {
-                                ...(vendorObj.date && { date: vendorObj.date }),
-                                voucherNumber: vendorObj.voucherNumber,
-                                vendorName: vendorObj.vendorName,
-                                companyId,
-                                year: vendorObj.year
-                            },
-                            { $set: vendorObj },
-                            { upsert: true }
-                        );
-                        voucherFetchState.totals.vendors++;
-                    }
-
-                    // --- Sales executive extraction ---
-                    let execName = '';
-                    if (voucher.narration && voucher.narration.toLowerCase().includes('sales by')) {
-                        const match = voucher.narration.match(/sales by[:\-]?\s*([a-zA-Z .]+)/i);
-                        if (match && match[1]) execName = match[1].trim();
-                    }
-                    let costCenter = '';
-                    if (voucher.raw?.COSTCENTRENAME) costCenter = String(voucher.raw.COSTCENTRENAME);
-                    else if (voucher.raw?.COSTCENTRE && voucher.raw.COSTCENTRE.NAME) costCenter = String(voucher.raw.COSTCENTRE.NAME);
-                    if (!execName && costCenter) execName = costCenter;
-                    if (execName) {
-                        const execObj = {
-                            ...voucher,
-                            date: parsedDate,
-                            voucherNumber: voucher.voucherNumber,
-                            voucherType: voucher.voucherType,
-                            party: voucher.party,
-                            executive: execName,
-                            amount: voucher.amount,
-                            narration: voucher.narration,
-                            companyId,
-                            year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
-                            lastUpdated: new Date()
-                        };
-                        await SalesExecutive.updateOne(
-                            {
-                                ...(execObj.date && { date: execObj.date }),
-                                voucherNumber: execObj.voucherNumber,
-                                executive: execObj.executive,
-                                companyId,
-                                year: execObj.year
-                            },
-                            { $set: execObj },
-                            { upsert: true }
-                        );
-                        voucherFetchState.totals.executives++;
-                    }
-                } catch (voucherError) {
-                    console.error(`Error processing voucher ${voucher.voucherNumber}:`, voucherError.message);
-                    voucherFetchState.errors.push(`Voucher ${voucher.voucherNumber} error: ${voucherError.message}`);
-                }
+                await processVoucherRecord(voucher, companyId, voucherFetchState);
             }
+
+            // Save checkpoint after successful batch processing
+            voucherFetchState.checkpoint = {
+                lastProcessedDate: batchEnd.toISOString(),
+                batchCount: voucherFetchState.batchCount,
+                totals: { ...voucherFetchState.totals }
+            };
 
             start.setDate(start.getDate() + batchDays);
         }
@@ -529,50 +609,37 @@ async function runVoucherFetch(companyId) {
     }
 }
 
-// Sync all data from Tally
+/* REMOVED: Basic sync functionality - no longer needed, use syncComprehensiveData instead
+// Enhanced sync with comprehensive error handling and validation
 exports.syncTallyData = async (req, res) => {
-    try {
-        const companyId = mongoose.Types.ObjectId(req.userid);
-        
-        console.log('🔄 Starting full Tally data sync...');
-        console.log(`📊 Company ID: ${companyId}`);
-        
-        // Clear existing Tally collections first (excluding vouchers)
-        console.log('🗑️ Clearing existing Tally data (excluding vouchers)...');
-        const clearResults = await Promise.all([
-            TallyCompany.deleteMany({ companyId }),
-            TallyLedger.deleteMany({ companyId }),
-            TallyStockItem.deleteMany({ companyId }),
-            TallyGroup.deleteMany({ companyId }),
-            TallyCostCenter.deleteMany({ companyId }),
-            TallyCurrency.deleteMany({ companyId })
-        ]);
-        console.log('✅ Existing Tally data cleared successfully');
-        console.log(`🗑️ Cleared: ${clearResults[0].deletedCount} companies, ${clearResults[1].deletedCount} ledgers, ${clearResults[2].deletedCount} stock items, ${clearResults[3].deletedCount} groups, ${clearResults[4].deletedCount} cost centers, ${clearResults[5].deletedCount} currencies`);
-        
-        const result = {
-            companies: 0,
-            ledgers: 0,
-            vouchers: 0,
-            stockItems: 0,
-            groups: 0,
-            costCenters: 0,
-            currencies: 0,
-            errors: [],
-            clearedCount: clearResults.reduce((sum, res) => sum + res.deletedCount, 0)
-        };
+    // This method has been removed. Use syncComprehensiveData instead.
+    res.status(410).json({
+        status: 410,
+        message: "Basic sync functionality has been removed. Please use comprehensive sync instead.",
+        error: "This endpoint is no longer available"
+    });
+};
+*/
 
-        // Sync Company Info (parse and store all fields)
-        try {
-            console.log('📊 Fetching company information...');
-            const companyData = await tallyService.fetchCompanyInfo();
+// Fetch vouchers only, now non-blocking with progress polling
+exports.fetchTallyVouchers = async (req, res) => {
+            
             const normalizedCompany = tallyService.normalizeCompanyInfo(companyData);
-            if (normalizedCompany && normalizedCompany.length > 0) {
+            if (!normalizedCompany || normalizedCompany.length === 0) {
+                result.warnings.push('No company information found in Tally data');
+            } else {
                 for (const company of normalizedCompany) {
+                    // Validate required company fields
+                    if (!company.name || company.name.trim() === '') {
+                        result.warnings.push('Skipping company with empty name');
+                        continue;
+                    }
+                    
                     const raw = company.rawData || {};
                     const query = company.guid && company.guid.trim() !== '' 
                         ? { guid: company.guid }
                         : { name: company.name, companyId, guid: { $in: [null, ''] } };
+                    
                     await TallyCompany.updateOne(
                         query,
                         { 
@@ -586,63 +653,91 @@ exports.syncTallyData = async (req, res) => {
                         },
                         { upsert: true }
                     );
+                    result.companies++;
                 }
-                result.companies = normalizedCompany.length;
                 console.log(`✅ Synced ${result.companies} companies`);
             }
-        } catch (error) {
-            result.errors.push(`Company sync error: ${error.message}`);
-            console.error(`❌ Company sync error: ${error.message}`);
+        /*} catch (error) {
+            const errorMsg = `Company sync error: ${error.message}`;
+            result.errors.push(errorMsg);
+            console.error(`❌ ${errorMsg}`);*/
         }
 
-        // Sync Ledgers (parse and store all fields)
+        /*// Sync Ledgers with enhanced error handling
         try {
             console.log('📊 Fetching ledgers...');
             const ledgerData = await tallyService.fetchLedgers();
+            
+            if (!ledgerData) {
+                throw new Error('No ledger data received from Tally');
+            }
+            
             const normalizedLedgers = tallyService.normalizeLedgers(ledgerData);
             
-            // Debug: Log sample ledger data to check balance processing
-            if (normalizedLedgers.length > 0) {
-                const sampleLedger = normalizedLedgers[0];
-                console.log('🔍 Sample ledger data:');
-                console.log(`   Name: ${sampleLedger.name}`);
-                console.log(`   Opening Balance: ${sampleLedger.openingBalance}`);
-                console.log(`   Closing Balance: ${sampleLedger.closingBalance}`);
-                console.log(`   Raw Data Keys: ${Object.keys(sampleLedger.rawData || {}).slice(0, 10).join(', ')}`);
-            }
-            
-            for (const ledger of normalizedLedgers) {
-                const raw = ledger.rawData || {};
-                const query = ledger.guid && ledger.guid.trim() !== '' 
-                    ? { guid: ledger.guid }
-                    : { name: ledger.name, companyId, guid: { $in: [null, ''] } };
-                
-                // Ensure balance data is properly processed (don't let raw data overwrite processed values)
-                const ledgerToStore = {
-                    ...raw, // Raw data first
-                    ...ledger, // Processed data second (this will override raw with processed values)
-                    companyId, 
-                    year: date.getFullYear(),
-                    lastUpdated: new Date()
-                };
-                
-                // Debug: Log balance data for first few ledgers
-                if (result.ledgers < 3) {
-                    console.log(`🔍 Ledger ${result.ledgers + 1}: ${ledger.name}`);
-                    console.log(`   Opening: ${ledger.openingBalance}, Closing: ${ledger.closingBalance}`);
+            if (!normalizedLedgers || normalizedLedgers.length === 0) {
+                result.warnings.push('No ledgers found in Tally data');
+            } else {
+                // Debug: Log sample ledger data to check balance processing
+                if (normalizedLedgers.length > 0) {
+                    const sampleLedger = normalizedLedgers[0];
+                    console.log('🔍 Sample ledger data:');
+                    console.log(`   Name: ${sampleLedger.name}`);
+                    console.log(`   Opening Balance: ${sampleLedger.openingBalance}`);
+                    console.log(`   Closing Balance: ${sampleLedger.closingBalance}`);
+                    console.log(`   Raw Data Keys: ${Object.keys(sampleLedger.rawData || {}).slice(0, 10).join(', ')}`);
                 }
                 
-                await TallyLedger.updateOne(
-                    query,
-                    { $set: ledgerToStore },
-                    { upsert: true }
-                );
-                result.ledgers++;
+                let processedLedgers = 0;
+                let skippedLedgers = 0;
+                
+                for (const ledger of normalizedLedgers) {
+                    try {
+                        // Validate ledger data
+                        if (!ledger.name || ledger.name.trim() === '') {
+                            result.warnings.push('Skipping ledger with empty name');
+                            skippedLedgers++;
+                            continue;
+                        }
+                        
+                        const raw = ledger.rawData || {};
+                        const query = ledger.guid && ledger.guid.trim() !== '' 
+                            ? { guid: ledger.guid }
+                            : { name: ledger.name, companyId, guid: { $in: [null, ''] } };
+                        
+                        // Ensure balance data is properly processed (don't let raw data overwrite processed values)
+                        const ledgerToStore = {
+                            ...raw, // Raw data first
+                            ...ledger, // Processed data second (this will override raw with processed values)
+                            companyId, 
+                            year: date.getFullYear(),
+                            lastUpdated: new Date()
+                        };
+                        
+                        await TallyLedger.updateOne(
+                            query,
+                            { $set: ledgerToStore },
+                            { upsert: true }
+                        );
+                        processedLedgers++;
+                        
+                        // Log progress for large datasets
+                        if (processedLedgers % 100 === 0) {
+                            console.log(`📊 Processed ${processedLedgers}/${normalizedLedgers.length} ledgers...`);
+                        }
+                    } catch (ledgerError) {
+                        console.error(`❌ Error processing ledger "${ledger.name}":`, ledgerError.message);
+                        result.errors.push(`Ledger "${ledger.name}" error: ${ledgerError.message}`);
+                        skippedLedgers++;
+                    }
+                }
+                
+                result.ledgers = processedLedgers;
+                console.log(`✅ Synced ${processedLedgers} ledgers (${skippedLedgers} skipped)`);
             }
-            console.log(`✅ Synced ${result.ledgers} ledgers`);
         } catch (error) {
-            result.errors.push(`Ledgers sync error: ${error.message}`);
-            console.error(`❌ Ledgers sync error: ${error.message}`);
+            const errorMsg = `Ledgers sync error: ${error.message}`;
+            result.errors.push(errorMsg);
+            console.error(`❌ ${errorMsg}`);
         }
 
         // Sync Groups (parse and store all fields)
@@ -738,32 +833,80 @@ exports.syncTallyData = async (req, res) => {
             console.error(`❌ Cost Centers sync error: ${error.message}`);
         }
 
-        // Sync Stock Items (parse and store all fields)
+        // Sync Stock Items (Enhanced with comprehensive logging)
         try {
-            console.log('📊 Fetching stock items...');
+            console.log('� Fetching stock items...');
             const stockData = await tallyService.fetchStockItems();
             const normalizedStockItems = tallyService.normalizeStockItems(stockData);
-            for (const item of normalizedStockItems) {
-                const raw = item.rawData || {};
-                const query = item.guid && item.guid.trim() !== '' 
-                    ? { guid: item.guid }
-                    : { name: item.name, companyId, guid: { $in: [null, ''] } };
-                await TallyStockItem.updateOne(
-                    query,
-                    { 
-                        $set: { 
-                            ...item,
-                            ...raw,
-                            companyId, 
-                            year: date.getFullYear(),
-                            lastUpdated: new Date()
-                        } 
-                    },
-                    { upsert: true }
-                );
+            
+            console.log(`📦 Processing ${normalizedStockItems.length} stock items...`);
+            
+            // Log sample stock item for debugging
+            if (normalizedStockItems.length > 0) {
+                const sampleItem = normalizedStockItems[0];
+                console.log('🔍 Sample stock item data:');
+                console.log(`   Name: ${sampleItem.name}`);
+                console.log(`   Closing Qty: ${sampleItem.closingQty}`);
+                console.log(`   Closing Value: ${sampleItem.closingValue}`);
+                console.log(`   Closing Rate: ${sampleItem.closingRate}`);
+                console.log(`   Stock Status: ${sampleItem.stockStatus}`);
+                console.log(`   Base Units: ${sampleItem.baseUnits}`);
+                console.log(`   Stock Group: ${sampleItem.stockGroup}`);
+                console.log(`   HSN Code: ${sampleItem.hsnCode || 'N/A'}`);
             }
-            result.stockItems = normalizedStockItems.length;
-            console.log(`✅ Synced ${result.stockItems} stock items`);
+            
+            let processedItems = 0;
+            let skippedItems = 0;
+            
+            for (const item of normalizedStockItems) {
+                try {
+                    // Skip items with empty names
+                    if (!item.name || item.name.trim() === '') {
+                        console.warn(`⚠️ Skipping stock item with empty name`);
+                        skippedItems++;
+                        continue;
+                    }
+                    
+                    const raw = item.rawData || {};
+                    const query = item.guid && item.guid.trim() !== '' 
+                        ? { guid: item.guid }
+                        : { name: item.name, companyId, guid: { $in: [null, ''] } };
+                    
+                    // Ensure all required fields are properly set
+                    const stockItemToStore = {
+                        ...raw, // Raw data first
+                        ...item, // Processed data (this will override raw with processed values)
+                        companyId, 
+                        year: date.getFullYear(),
+                        lastUpdated: new Date()
+                    };
+                    
+                    // Remove rawData from the main document to avoid duplication
+                    const { rawData, ...itemWithoutRaw } = stockItemToStore;
+                    itemWithoutRaw.rawData = raw;
+                    
+                    await TallyStockItem.updateOne(
+                        query,
+                        { $set: itemWithoutRaw },
+                        { upsert: true }
+                    );
+                    
+                    processedItems++;
+                    
+                    // Log progress every 50 items
+                    if (processedItems % 50 === 0) {
+                        console.log(`📦 Processed ${processedItems}/${normalizedStockItems.length} stock items...`);
+                    }
+                } catch (itemError) {
+                    console.error(`❌ Error processing stock item "${item.name}":`, itemError.message);
+                    result.errors.push(`Stock item "${item.name}" error: ${itemError.message}`);
+                    skippedItems++;
+                }
+            }
+            
+            result.stockItems = processedItems;
+            console.log(`✅ Synced ${processedItems} stock items (${skippedItems} skipped)`);
+            
         } catch (error) {
             result.errors.push(`Stock items sync error: ${error.message}`);
             console.error(`❌ Stock items sync error: ${error.message}`);
@@ -788,7 +931,7 @@ exports.syncTallyData = async (req, res) => {
             error: error.message
         });
     }
-};
+};*/
 
 // Fetch vouchers only, now non-blocking with progress polling
 exports.fetchTallyVouchers = async (req, res) => {
@@ -1117,7 +1260,7 @@ exports.getVouchersByEmployee = async (req, res) => {
     }
 };
 
-// Get Stock Items
+// Get Stock Items with enhanced filtering and data
 exports.getTallyStockItems = async (req, res) => {
     try {
         const companyId = mongoose.Types.ObjectId(req.userid);
@@ -1130,12 +1273,18 @@ exports.getTallyStockItems = async (req, res) => {
 
         const query = { companyId, year: currentYear };
         
-        // Search filter
+        // Search filter - search across multiple fields
         if (search) {
-            query.name = { $regex: search, $options: 'i' };
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { aliasName: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { stockItemCode: { $regex: search, $options: 'i' } },
+                { hsnCode: { $regex: search, $options: 'i' } }
+            ];
         }
         
-        // Category filter
+        // Category filter - search across category-related fields
         if (category) {
             query.$or = [
                 { category: { $regex: category, $options: 'i' } },
@@ -1144,38 +1293,199 @@ exports.getTallyStockItems = async (req, res) => {
             ];
         }
         
-        // Stock status filter
+        // Stock status filter with enhanced logic
         if (stock) {
             switch (stock) {
                 case 'in-stock':
                     query.closingQty = { $gt: 0 };
                     break;
                 case 'low-stock':
+                    // Low stock: between 0 and reorder level (or 10 if no reorder level)
                     query.$and = [
                         { closingQty: { $gt: 0 } },
-                        { closingQty: { $lte: 10 } }  // Assuming low stock is <= 10 units
+                        { 
+                            $or: [
+                                { closingQty: { $lte: 10 } }, // Default low stock threshold
+                                { $and: [
+                                    { reorderLevel: { $gt: 0 } },
+                                    { closingQty: { $lte: '$reorderLevel' } }
+                                ]}
+                            ]
+                        }
+                    ];
+                    break;
+                case 'critical-stock':
+                    // Critical stock: between 0 and minimum level (or 5 if no minimum)
+                    query.$and = [
+                        { closingQty: { $gt: 0 } },
+                        { 
+                            $or: [
+                                { closingQty: { $lte: 5 } }, // Default critical threshold
+                                { $and: [
+                                    { minimumLevel: { $gt: 0 } },
+                                    { closingQty: { $lte: '$minimumLevel' } }
+                                ]}
+                            ]
+                        }
                     ];
                     break;
                 case 'out-of-stock':
                     query.closingQty = { $lte: 0 };
+                    break;
+                case 'overstock':
+                    // Overstock: above maximum level
+                    query.$and = [
+                        { maximumLevel: { $gt: 0 } },
+                        { closingQty: { $gt: '$maximumLevel' } }
+                    ];
                     break;
                 default:
                     break;
             }
         }
 
-        const stockItems = await TallyStockItem.find(query)
-            .sort({ name: 1 })
-            .skip((page - 1) * limit)
-            .limit(limit);
+        // Aggregation pipeline for enhanced data with calculated fields
+        const pipeline = [
+            { $match: query },
+            {
+                $addFields: {
+                    // Calculate actual rates if not present
+                    actualClosingRate: {
+                        $cond: {
+                            if: { $gt: ['$closingRate', 0] },
+                            then: '$closingRate',
+                            else: {
+                                $cond: {
+                                    if: { $gt: ['$closingQty', 0] },
+                                    then: { $divide: ['$closingValue', '$closingQty'] },
+                                    else: 0
+                                }
+                            }
+                        }
+                    },
+                    // Calculate stock turnover (simplified)
+                    stockTurnover: {
+                        $cond: {
+                            if: { $gt: ['$openingQty', 0] },
+                            then: { $divide: ['$closingQty', '$openingQty'] },
+                            else: 1
+                        }
+                    },
+                    // Calculate value change percentage
+                    valueChangePercent: {
+                        $cond: {
+                            if: { $gt: ['$openingValue', 0] },
+                            then: { 
+                                $multiply: [
+                                    { $divide: [
+                                        { $subtract: ['$closingValue', '$openingValue'] },
+                                        '$openingValue'
+                                    ]},
+                                    100
+                                ]
+                            },
+                            else: 0
+                        }
+                    },
+                    // Determine stock status based on levels
+                    calculatedStockStatus: {
+                        $cond: {
+                            if: { $lte: ['$closingQty', 0] },
+                            then: 'Out of Stock',
+                            else: {
+                                $cond: {
+                                    if: { $and: [
+                                        { $gt: ['$maximumLevel', 0] },
+                                        { $gt: ['$closingQty', '$maximumLevel'] }
+                                    ]},
+                                    then: 'Overstock',
+                                    else: {
+                                        $cond: {
+                                            if: { $and: [
+                                                { $gt: ['$minimumLevel', 0] },
+                                                { $lte: ['$closingQty', '$minimumLevel'] }
+                                            ]},
+                                            then: 'Critical Stock',
+                                            else: {
+                                                $cond: {
+                                                    if: { $and: [
+                                                        { $gt: ['$reorderLevel', 0] },
+                                                        { $lte: ['$closingQty', '$reorderLevel'] }
+                                                    ]},
+                                                    then: 'Low Stock',
+                                                    else: 'In Stock'
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            { $sort: { name: 1 } },
+            { $skip: (page - 1) * limit },
+            { $limit: limit }
+        ];
 
-        const total = await TallyStockItem.countDocuments(query);
+        const stockItems = await TallyStockItem.aggregate(pipeline);
+        
+        // Get total count for pagination
+        const totalPipeline = [
+            { $match: query },
+            { $count: "total" }
+        ];
+        const totalResult = await TallyStockItem.aggregate(totalPipeline);
+        const total = totalResult.length > 0 ? totalResult[0].total : 0;
+
+        // Get summary statistics
+        const summaryPipeline = [
+            { $match: { companyId, year: currentYear } },
+            {
+                $group: {
+                    _id: null,
+                    totalItems: { $sum: 1 },
+                    totalValue: { $sum: '$closingValue' },
+                    totalQuantity: { $sum: '$closingQty' },
+                    inStockCount: { 
+                        $sum: { $cond: [{ $gt: ['$closingQty', 0] }, 1, 0] }
+                    },
+                    outOfStockCount: { 
+                        $sum: { $cond: [{ $lte: ['$closingQty', 0] }, 1, 0] }
+                    },
+                    lowStockCount: { 
+                        $sum: { 
+                            $cond: [
+                                { $and: [
+                                    { $gt: ['$closingQty', 0] },
+                                    { $lte: ['$closingQty', 10] }
+                                ]},
+                                1,
+                                0
+                            ]
+                        }
+                    }
+                }
+            }
+        ];
+        
+        const summaryResult = await TallyStockItem.aggregate(summaryPipeline);
+        const summary = summaryResult.length > 0 ? summaryResult[0] : {
+            totalItems: 0,
+            totalValue: 0,
+            totalQuantity: 0,
+            inStockCount: 0,
+            outOfStockCount: 0,
+            lowStockCount: 0
+        };
 
         res.status(200).json({
             status: 200,
             data: {
                 stockItems,
                 total,
+                summary,
                 pagination: {
                     currentPage: page,
                     totalPages: Math.ceil(total / limit),
@@ -1186,6 +1496,7 @@ exports.getTallyStockItems = async (req, res) => {
         });
 
     } catch (error) {
+        console.error('Stock items fetch error:', error);
         res.status(500).json({
             status: 500,
             message: "Failed to fetch stock items",
@@ -1259,6 +1570,8 @@ exports.testLedgerProcessing = async (req, res) => {
 exports.syncComprehensiveData = async (req, res) => {
     try {
         const companyId = req.userid;
+        const syncStartTime = Date.now();
+        
         const results = {
             companies: 0,
             ledgers: 0,
@@ -1267,10 +1580,39 @@ exports.syncComprehensiveData = async (req, res) => {
             vouchers: 0,
             costCenters: 0,
             currencies: 0,
-            errors: []
+            errors: [],
+            clearedCount: 0
         };
 
-        console.log('Starting comprehensive Tally data sync...');
+        console.log('🔄 Starting comprehensive Tally data sync...');
+        console.log(`📊 Company ID: ${companyId}`);
+        console.log(`🕒 Started at: ${new Date().toISOString()}`);
+
+        // ===== CLEAR EXISTING DATA FIRST =====
+        console.log('🗑️ Clearing existing comprehensive sync data...');
+        try {
+            const clearResults = await Promise.all([
+                TallyCompany.deleteMany({ companyId }),
+                TallyLedger.deleteMany({ companyId }),
+                TallyGroup.deleteMany({ companyId }),
+                TallyStockItem.deleteMany({ companyId }),
+                TallyVoucher.deleteMany({ companyId }),
+                TallyCostCenter.deleteMany({ companyId }),
+                TallyCurrency.deleteMany({ companyId })
+            ]);
+            
+            const totalCleared = clearResults.reduce((sum, result) => sum + result.deletedCount, 0);
+            results.clearedCount = totalCleared;
+            
+            console.log('✅ Existing comprehensive data cleared successfully');
+            console.log(`🗑️ Cleared: ${clearResults[0].deletedCount} companies, ${clearResults[1].deletedCount} ledgers, ${clearResults[2].deletedCount} groups, ${clearResults[3].deletedCount} stock items, ${clearResults[4].deletedCount} vouchers, ${clearResults[5].deletedCount} cost centers, ${clearResults[6].deletedCount} currencies`);
+            console.log(`📊 Total records cleared: ${totalCleared}`);
+        } catch (clearError) {
+            console.error('⚠️ Warning: Failed to clear existing data:', clearError.message);
+            results.errors.push(`Data clearing error: ${clearError.message}`);
+        }
+
+        // ===== START COMPREHENSIVE SYNC =====
 
         // 1. Sync Companies
         try {
@@ -1403,14 +1745,21 @@ exports.syncComprehensiveData = async (req, res) => {
             results.errors.push(`Vouchers sync error: ${error.message}`);
         }
 
+        const syncDuration = Date.now() - syncStartTime;
+        console.log(`⏱️ Comprehensive sync completed in ${(syncDuration / 1000).toFixed(2)}s`);
+        console.log('📊 Final Results:', results);
+
         res.status(200).json({
             status: 200,
-            message: "Comprehensive Tally data sync completed",
+            message: "Comprehensive Tally data sync completed successfully",
             data: {
                 syncResults: results,
                 syncedAt: new Date(),
+                syncDuration: `${(syncDuration / 1000).toFixed(2)}s`,
+                totalCleared: results.clearedCount,
                 totalSynced: results.companies + results.ledgers + results.groups + 
-                           results.stockItems + results.vouchers + results.costCenters + results.currencies
+                           results.stockItems + results.vouchers + results.costCenters + results.currencies,
+                summary: `Cleared ${results.clearedCount} existing records, synced ${results.companies + results.ledgers + results.groups + results.stockItems + results.vouchers + results.costCenters + results.currencies} new records`
             }
         });
 

@@ -191,25 +191,14 @@ class TallyCronJob {
     }
 
     start() {
-        console.log('Starting Tally cron job - will run every hour at minute 0');
+        console.log('TallyCronJob initialized - automatic scheduling disabled');
+        console.log('💡 Use manual sync endpoints for Tally synchronization');
         
-        // Run every hour at minute 0
-        cron.schedule('0 * * * *', () => {
-            this.syncAllData();
-        }, {
-            scheduled: true,
-            timezone: "Asia/Kolkata"
-        });
-
-        // Only run immediately on startup if not in development mode
-        if (process.env.NODE_ENV !== 'development' && process.env.SKIP_INITIAL_SYNC !== 'true') {
-            setTimeout(() => {
-                console.log('Running initial Tally sync...');
-                this.syncAllData();
-            }, 5000);
-        } else {
-            console.log('🚧 Development mode: Skipping initial sync. Use manual sync endpoint if needed.');
-        }
+        // Automatic scheduling removed - use manual sync only
+        // Previous cron schedule: '0 * * * *' (every hour at minute 0)
+        
+        // Skip initial sync - manual sync only
+        console.log('🚧 Automatic sync disabled. Use manual sync endpoint when needed.');
     }
 
     // Manual sync method for testing

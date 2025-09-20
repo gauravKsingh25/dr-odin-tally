@@ -11,19 +11,85 @@ class TallyService {
         });
     }
 
-    // Generic method to send XML request to Tally
-    async sendRequest(xmlPayload) {
+    // Generic method to send XML request to Tally with enhanced error handling and retry logic
+    async sendRequest(xmlPayload, retryCount = 0, maxRetries = 3) {
+        const timeouts = [120000, 180000, 300000]; // Progressive timeouts: 2min, 3min, 5min
+        const currentTimeout = timeouts[Math.min(retryCount, timeouts.length - 1)];
+        
         try {
+            console.log(`🔗 Sending request to Tally at ${this.tallyUrl} (attempt ${retryCount + 1}/${maxRetries + 1}, timeout: ${currentTimeout/1000}s)...`);
+            
+            if (!this.tallyUrl) {
+                throw new Error('Tally URL not configured. Please set TALLY_URL environment variable.');
+            }
+            
             const response = await axios.post(this.tallyUrl, xmlPayload, {
-                headers: { 'Content-Type': 'application/xml' },
-                timeout: 120000, // 120 seconds
+                headers: { 
+                    'Content-Type': 'application/xml',
+                    'Accept': 'application/xml'
+                },
+                timeout: currentTimeout,
+                maxContentLength: 100 * 1024 * 1024, // Increased to 100MB max response
+                validateStatus: function (status) {
+                    return status < 500; // Accept anything less than 500 as valid
+                }
             });
             
+            if (response.status >= 400) {
+                throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+            }
+            
+            if (!response.data) {
+                throw new Error('Empty response received from Tally');
+            }
+            
+            console.log(`✅ Received ${response.data.length} bytes from Tally`);
+            
             const parsed = await this.parser.parseStringPromise(response.data);
+            
+            // Check for Tally-specific errors in the response
+            const envelope = parsed?.ENVELOPE ?? parsed;
+            if (envelope?.ERROR) {
+                throw new Error(`Tally Error: ${envelope.ERROR}`);
+            }
+            
             return parsed;
         } catch (error) {
-            console.error('Tally Service Error:', error.message);
-            throw new Error(`Failed to fetch data from Tally: ${error.message}`);
+            console.error(`❌ Tally Service Error (attempt ${retryCount + 1}):`, {
+                message: error.message,
+                code: error.code,
+                response: error.response?.status
+            });
+            
+            // Determine if error is retryable
+            const isRetryable = error.code === 'ETIMEDOUT' || 
+                              error.code === 'ECONNRESET' ||
+                              error.code === 'ENOTFOUND' ||
+                              error.code === 'EAI_AGAIN' ||
+                              (error.response?.status >= 500);
+            
+            // Retry if possible
+            if (isRetryable && retryCount < maxRetries) {
+                const delay = Math.min(1000 * Math.pow(2, retryCount), 10000); // Exponential backoff, max 10s
+                console.log(`⏳ Retrying in ${delay/1000}s...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return this.sendRequest(xmlPayload, retryCount + 1, maxRetries);
+            }
+            
+            // Enhanced error messages for common issues
+            if (error.code === 'ECONNREFUSED') {
+                throw new Error('Cannot connect to Tally. Please ensure Tally is running and the port is configured correctly.');
+            } else if (error.code === 'ETIMEDOUT') {
+                throw new Error(`Request to Tally timed out after ${maxRetries + 1} attempts. The data volume may be too large for the current timeout settings.`);
+            } else if (error.response?.status === 404) {
+                throw new Error('Tally endpoint not found. Please check the Tally URL configuration.');
+            } else if (error.response?.status === 401) {
+                throw new Error('Authentication failed. Please check Tally security settings.');
+            } else if (error.response?.status === 403) {
+                throw new Error('Access forbidden. Please check Tally user permissions.');
+            }
+            
+            throw new Error(`Failed to fetch data from Tally after ${retryCount + 1} attempts: ${error.message}`);
         }
     }
 
@@ -733,20 +799,25 @@ class TallyService {
         </ENVELOPE>`;
     }
 
-    // Helper methods for parsing
+    // Helper methods for parsing with enhanced validation
     safeString(value) {
-        if (value == null) return '';
-        if (typeof value === 'object' && value._ != null) return String(value._);
-        return String(value);
+        if (value == null || value === undefined) return '';
+        if (typeof value === 'object' && value._ != null) return String(value._).trim();
+        return String(value).trim();
     }
 
     safeNumber(value) {
-        if (value == null) return 0;
+        if (value == null || value === undefined) return 0;
+        if (typeof value === 'number' && Number.isFinite(value)) return value;
         if (typeof value === 'object' && value._ != null) value = value._;
+        
         let stringValue = String(value).trim();
+        
+        // Handle empty or invalid strings
+        if (stringValue === '' || stringValue === 'undefined' || stringValue === 'null') return 0;
 
-        // Remove thousand separators
-        stringValue = stringValue.replace(/,/g, '');
+        // Remove thousand separators (both comma and space)
+        stringValue = stringValue.replace(/[,\s]/g, '');
 
         // Handle Dr/Cr notations used by Tally. Treat Cr as negative, Dr as positive
         // Support both suffix and prefix positions (e.g., "1234.50 Cr" or "Cr 1234.50")
@@ -768,8 +839,14 @@ class TallyService {
         stringValue = stringValue.replace(/[^0-9.-]/g, '');
 
         if (stringValue === '' || stringValue === '-' || stringValue === '.') return 0;
+        
         const number = parseFloat(stringValue);
-        return Number.isFinite(number) ? number * sign : 0;
+        if (!Number.isFinite(number)) {
+            console.warn(`Warning: Invalid number conversion for value "${value}", returning 0`);
+            return 0;
+        }
+        
+        return number * sign;
     }
 
     findCollection(parsed) {
@@ -1199,26 +1276,248 @@ class TallyService {
 
         return items.map((item) => {
             const name = this.safeString(item.NAME ?? item.STOCKITEMNAME ?? '');
-            const closingValue = this.safeNumber(item.CLOSINGBALANCE ?? item.CLOSINGVALUE ?? 0);
-            const closingQty = this.safeNumber(item.CLOSINGBALANCEQTY ?? item.CLOSINGQTY ?? 0);
+            const aliasName = this.safeString(item.ALIASNAME ?? '');
+            const description = this.safeString(item.DESCRIPTION ?? item.NARRATION ?? '');
+            
+            // Core quantity and value fields with improved parsing
+            const closingValue = this.safeNumber(item.CLOSINGVALUE ?? item.CLOSINGBALANCEVALUE ?? item.CLOSINGBALANCE ?? 0);
+            const closingQty = this.safeNumber(item.CLOSINGBALANCEQTY ?? item.CLOSINGQTY ?? item.CLOSINGBALANCE ?? 0);
+            const openingValue = this.safeNumber(item.OPENINGVALUE ?? item.OPENINGBALANCE ?? 0);
+            const openingQty = this.safeNumber(item.OPENINGBALANCEQTY ?? item.OPENINGQTY ?? 0);
+            
+            // Rate calculations (price per unit)
+            const closingRate = this.safeNumber(item.CLOSINGRATE ?? 0);
+            const openingRate = this.safeNumber(item.OPENINGRATE ?? 0);
+            
+            // Calculate rates if not provided
+            let calculatedClosingRate = closingRate;
+            if (calculatedClosingRate === 0 && closingQty > 0) {
+                calculatedClosingRate = closingValue / closingQty;
+            }
+            
+            let calculatedOpeningRate = openingRate;
+            if (calculatedOpeningRate === 0 && openingQty > 0) {
+                calculatedOpeningRate = openingValue / openingQty;
+            }
+            
+            // Unit information
             const baseUnits = this.safeString(item.BASEUNITS ?? item.UNITS ?? '');
+            const additionalUnits = this.safeString(item.ADDITIONALUNITS ?? '');
+            
+            // Categories and grouping
             const parent = this.safeString(item.PARENT ?? '');
+            const category = this.safeString(item.CATEGORY ?? '');
+            const stockGroup = parent || category;
+            
+            // Identifiers
             const guid = this.safeString(item.GUID ?? '');
-            const openingBalance = this.safeNumber(item.OPENINGBALANCE ?? 0);
-            const openingQty = this.safeNumber(item.OPENINGBALANCEQTY ?? 0);
-
+            const masterId = this.safeString(item.MASTERID ?? '');
+            const alterId = this.safeString(item.ALTERID ?? '');
+            const stockItemCode = this.safeString(item.STOCKITEMCODE ?? '');
+            
+            // Tax and GST information
+            const gstApplicable = this.safeString(item.GSTAPPLICABLE ?? 'No');
+            const gstTypeOfSupply = this.safeString(item.GSTTYPEOFSUPPLY ?? '');
+            const hsnCode = this.safeString(item.HSNCODE ?? item.HSNMASTERNAME ?? '');
+            const taxClassification = this.safeString(item.TAXCLASSIFICATIONNAME ?? '');
+            
+            // Costing and valuation methods
+            const costingMethod = this.safeString(item.COSTINGMETHOD ?? '');
+            const valuationMethod = this.safeString(item.VALUATIONMETHOD ?? '');
+            
+            // Stock level controls
+            const reorderLevel = this.safeNumber(item.REORDERLEVEL ?? 0);
+            const minLevel = this.safeNumber(item.MINLEVEL ?? 0);
+            const maxLevel = this.safeNumber(item.MAXLEVEL ?? 0);
+            
+            // Conversion factors
+            const denominator = this.safeNumber(item.DENOMINATOR ?? 1);
+            const conversion = this.safeNumber(item.CONVERSION ?? 1);
+            
+            // Boolean flags for stock item behavior
+            const affectsStockValue = item.AFFECTSSTOCKVALUE === 'Yes';
+            const forPurchase = item.FORPURCHASE === 'Yes';
+            const forSales = item.FORSALES === 'Yes';
+            const forProduction = item.FORPRODUCTION === 'Yes';
+            const isMaintainBatch = item.ISMAINTAINBATCH === 'Yes';
+            const isPerishableOn = item.ISPERISHABLEON === 'Yes';
+            const hasMfgDate = item.HASMFGDATE === 'Yes';
+            const allowUseOfExpiredItems = item.ALLOWUSEOFEXPIREDITEMS === 'Yes';
+            const ignoreNegativeStock = item.IGNORENEGATIVESTOCK === 'Yes';
+            const ignoreBatches = item.IGNOREBATCHES === 'Yes';
+            const ignoreGodowns = item.IGNOREGODOWNS === 'Yes';
+            
+            // Extract detailed lists and allocations
+            let batchAllocations = [];
+            const batchAllocationsList = item['BATCHALLOCATIONS.LIST'] ?? null;
+            if (batchAllocationsList) {
+                const batches = Array.isArray(batchAllocationsList) ? batchAllocationsList : [batchAllocationsList];
+                batchAllocations = batches.map(batch => ({
+                    batchName: this.safeString(batch.BATCHNAME ?? batch.NAME ?? ''),
+                    godownName: this.safeString(batch.GODOWNNAME ?? ''),
+                    quantity: this.safeNumber(batch.BILLEDQTY ?? batch.ACTUALQTY ?? batch.QUANTITY ?? 0),
+                    rate: this.safeNumber(batch.RATE ?? 0),
+                    amount: this.safeNumber(batch.AMOUNT ?? 0),
+                    manufacturingDate: batch.MFGDATE ? new Date(batch.MFGDATE) : null,
+                    expiryDate: batch.EXPIRYDATE ? new Date(batch.EXPIRYDATE) : null
+                }));
+            }
+            
+            let godownBalance = [];
+            const godownBalanceList = item['GODOWNBALANCE.LIST'] ?? null;
+            if (godownBalanceList) {
+                const godowns = Array.isArray(godownBalanceList) ? godownBalanceList : [godownBalanceList];
+                godownBalance = godowns.map(godown => ({
+                    godownName: this.safeString(godown.GODOWNNAME ?? godown.NAME ?? ''),
+                    closingBalance: this.safeNumber(godown.CLOSINGBALANCE ?? 0),
+                    openingBalance: this.safeNumber(godown.OPENINGBALANCE ?? 0),
+                    closingValue: this.safeNumber(godown.CLOSINGVALUE ?? 0),
+                    openingValue: this.safeNumber(godown.OPENINGVALUE ?? 0)
+                }));
+            }
+            
+            // Extract standard cost and price lists
+            let standardCostList = [];
+            const standardCosts = item['STANDARDCOSTLIST.LIST'] ?? null;
+            if (standardCosts) {
+                const costs = Array.isArray(standardCosts) ? standardCosts : [standardCosts];
+                standardCostList = costs.map(cost => ({
+                    date: cost.DATE ? new Date(cost.DATE) : null,
+                    rate: this.safeNumber(cost.RATE ?? 0)
+                }));
+            }
+            
+            let standardPriceList = [];
+            const standardPrices = item['STANDARDPRICELIST.LIST'] ?? null;
+            if (standardPrices) {
+                const prices = Array.isArray(standardPrices) ? standardPrices : [standardPrices];
+                standardPriceList = prices.map(price => ({
+                    date: price.DATE ? new Date(price.DATE) : null,
+                    rate: this.safeNumber(price.RATE ?? 0)
+                }));
+            }
+            
+            // Extract GST classification details
+            let gstDetails = {};
+            const gstClassification = item['GSTCLASSIFICATION.LIST'] ?? null;
+            if (gstClassification) {
+                const gstData = Array.isArray(gstClassification) ? gstClassification[0] : gstClassification;
+                gstDetails = {
+                    hsnDescription: this.safeString(gstData.HSNDESCRIPTION ?? ''),
+                    taxabilityType: this.safeString(gstData.TAXABILITYTYPE ?? ''),
+                    igstRate: this.safeNumber(gstData.IGSTRATE ?? 0),
+                    cgstRate: this.safeNumber(gstData.CGSTRATE ?? 0),
+                    sgstRate: this.safeNumber(gstData.SGSTRATE ?? 0),
+                    cessRate: this.safeNumber(gstData.CESSRATE ?? 0),
+                    cessOnQuantity: this.safeNumber(gstData.CESSONQUANTITY ?? 0)
+                };
+            }
+            
+            // Extract VAT details
+            let vatDetails = {};
+            const vatClassification = item['VATCLASSIFICATIONLIST.LIST'] ?? null;
+            if (vatClassification) {
+                const vatData = Array.isArray(vatClassification) ? vatClassification[0] : vatClassification;
+                vatDetails = {
+                    classificationName: this.safeString(vatData.CLASSIFICATIONNAME ?? ''),
+                    taxType: this.safeString(vatData.TAXTYPE ?? ''),
+                    taxRate: this.safeNumber(vatData.TAXRATE ?? 0)
+                };
+            }
+            
+            // Determine stock status
+            let stockStatus = 'Unknown';
+            if (closingQty > maxLevel && maxLevel > 0) {
+                stockStatus = 'Overstock';
+            } else if (closingQty > reorderLevel && reorderLevel > 0) {
+                stockStatus = 'In Stock';
+            } else if (closingQty > minLevel && minLevel > 0) {
+                stockStatus = 'Low Stock';
+            } else if (closingQty > 0) {
+                stockStatus = 'Critical Stock';
+            } else {
+                stockStatus = 'Out of Stock';
+            }
+            
             return {
                 name,
+                aliasName,
+                description,
+                stockItemCode,
+                
+                // Quantities and Values
                 closingValue,
                 closingQty,
-                baseUnits,
-                parent,
-                stockGroup: parent,
-                guid,
-                openingBalance,
+                openingValue,
                 openingQty,
+                
+                // Rates (prices)
+                closingRate: calculatedClosingRate,
+                openingRate: calculatedOpeningRate,
+                costPrice: calculatedClosingRate, // For backward compatibility
+                sellingPrice: calculatedClosingRate, // For backward compatibility
+                
+                // Units
+                baseUnits,
+                additionalUnits,
+                
+                // Categories
+                parent,
+                category,
+                stockGroup,
+                
+                // Identifiers
+                guid,
+                masterId,
+                alterId,
+                
+                // Tax Information
+                gstApplicable,
+                gstTypeOfSupply,
+                hsnCode,
+                taxClassification,
+                gstDetails,
+                vatDetails,
+                
+                // Costing and Valuation
+                costingMethod,
+                valuationMethod,
+                
+                // Stock Level Controls
+                reorderLevel,
+                minimumLevel: minLevel,
+                maximumLevel: maxLevel,
+                
+                // Conversion
+                denominator,
+                conversionFactor: conversion,
+                
+                // Boolean Flags
+                affectsStockValue,
+                forPurchase,
+                forSales,
+                forProduction,
+                isMaintainBatch,
+                isPerishableOn,
+                hasMfgDate,
+                allowUseOfExpiredItems,
+                ignoreNegativeStock,
+                ignoreBatches,
+                ignoreGodowns,
+                
+                // Detailed Allocations
+                batchAllocations,
+                godownDetails: godownBalance,
+                priceDetails: standardPriceList,
+                batchWiseDetails: batchAllocations,
+                
+                // Stock Status
+                stockStatus,
+                
+                // System Fields
                 isActive: true,
-                lastUpdated: new Date()
+                lastUpdated: new Date(),
+                rawData: item // Store complete raw data for debugging and future enhancements
             };
         });
     }

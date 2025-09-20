@@ -23,7 +23,7 @@ module.exports = function (app) {
             data: {
                 isRunning: tallyCronJob.isRunning,
                 lastSync: "Check server logs for details",
-                nextScheduledSync: "Every hour at minute 0"
+                nextScheduledSync: "Automatic sync disabled - manual sync only"
             }
         });
     });
@@ -36,7 +36,7 @@ module.exports = function (app) {
             data: {
                 isRunning: tallyCronJob.isRunning,
                 lastSync: "Check server logs for details",
-                nextScheduledSync: "Every hour at minute 0"
+                nextScheduledSync: "Automatic sync disabled - manual sync only"
             }
         });
     });

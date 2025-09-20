@@ -37,7 +37,7 @@ require("./routes/revenue.routes")(app);
 require("./routes/saleExecutive.routes")(app);
 
 
-// Start Tally cron job for hourly sync
+// Tally cron job instance (manual sync only)
 const TallyCronJob = require('./scripts/tally-cron');
 const tallyCronJob = new TallyCronJob();
 
@@ -45,10 +45,11 @@ let port = process.env.PORT || 7010;
 
 app.listen(port, () => {
     console.log(`🚀 Server listening on port ${port}`);
-    console.log('🔄 Starting Tally integration...');
+    console.log('🔄 Tally integration available (manual sync only)');
     
-    // Start the Tally cron job
-    tallyCronJob.start();
+    // Automatic Tally sync disabled - use manual endpoints
+    // tallyCronJob.start(); // Commented out to disable automatic scheduling
+    console.log('💡 Tally sync will only run via manual API endpoints');
 });
 
 // function getLongestWorld(str) {

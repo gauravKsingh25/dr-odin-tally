@@ -4,14 +4,15 @@ import { Row, Col, Card, Table, Badge, Button, Breadcrumb } from 'react-bootstra
 import './employeeInfo.css';
 import Edit from './Model/edit';
 import MainLoader from '../../../components/MainLoader';
+import ThemeToggle from '../../../components/ThemeToggle';
 import { APICore } from '../../../helpers/api/apiCore';
 
 const api = new APICore();
 
 const LabelValue = ({ label, value }) => (
-    <div className="d-flex justify-content-between py-1">
+    <div className="label-value-item">
         <span className="text-muted">{label}</span>
-        <span className="fw-semibold text-dark">{value || '—'}</span>
+        <span className="fw-semibold">{value || '—'}</span>
     </div>
 );
 
@@ -94,22 +95,27 @@ const EmployeeInfo = () => {
             <Col>
                 <div className="employee-info-page">
                     <div className="page-title-box">
-                        <h4 className="page-title">Employee</h4>
-                        <div className="page-title-right">
-                            <Breadcrumb listProps={{ className: 'm-0' }}>
-                                <Breadcrumb.Item href="/">Dr. Odin</Breadcrumb.Item>
-                                {breadCrumbItems.map((item, index) => (
-                                    item.active ? (
-                                        <Breadcrumb.Item active key={index}>
-                                            {item.label}
-                                        </Breadcrumb.Item>
-                                    ) : (
-                                        <Breadcrumb.Item key={index} href={item.path}>
-                                            {item.label}
-                                        </Breadcrumb.Item>
-                                    )
-                                ))}
-                            </Breadcrumb>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 className="page-title">Employee Details</h4>
+                                <div className="page-title-right">
+                                    <Breadcrumb listProps={{ className: 'm-0' }}>
+                                        <Breadcrumb.Item href="/">Dr. Odin</Breadcrumb.Item>
+                                        {breadCrumbItems.map((item, index) => (
+                                            item.active ? (
+                                                <Breadcrumb.Item active key={index}>
+                                                    {item.label}
+                                                </Breadcrumb.Item>
+                                            ) : (
+                                                <Breadcrumb.Item key={index} href={item.path}>
+                                                    {item.label}
+                                                </Breadcrumb.Item>
+                                            )
+                                        ))}
+                                    </Breadcrumb>
+                                </div>
+                            </div>
+                            <ThemeToggle showText={true} />
                         </div>
                     </div>
                     <div className="employee-info-container">
@@ -117,14 +123,18 @@ const EmployeeInfo = () => {
                     {error && !loading && (
                         <div className="alert alert-danger" role="alert">{error}</div>
                     )}
-                    <div className="d-flex justify-content-end mb-3 gap-2">
+                    <div className="d-flex justify-content-end mb-3 gap-2 employee-actions">
                         <Button variant="primary" onClick={() => setShowEdit(true)}>
-                            <i className="mdi mdi-square-edit-outline me-1"></i>
-                            Edit
+                            <i className="mdi mdi-square-edit-outline me-2"></i>
+                            Edit Employee
                         </Button>
                         <Button variant="outline-secondary" onClick={() => {}}>
-                            <i className="mdi mdi-target me-1"></i>
+                            <i className="mdi mdi-target me-2"></i>
                             View Targets
+                        </Button>
+                        <Button variant="outline-secondary" onClick={() => {}}>
+                            <i className="mdi mdi-chart-line me-2"></i>
+                            Performance
                         </Button>
                     </div>
                     <Card className="unified-panel">
@@ -251,8 +261,8 @@ const EmployeeInfo = () => {
                                                 {expandedVouchers[v._id] && (
                                                     <tr>
                                                         <td colSpan={7}>
-                                                            <div className="p-3 rounded bg-light">
-                                                                <div className="d-flex flex-wrap gap-4">
+                                                            <div className="expandable-row-content">
+                                                                <div className="d-flex flex-wrap gap-4 mb-3">
                                                                     <div>
                                                                         <div className="text-muted small mb-1">Reference</div>
                                                                         <div className="fw-semibold">{v.reference || '—'}</div>
@@ -415,8 +425,8 @@ const EmployeeInfo = () => {
                                                 {expandedLedgers[l._id] && (
                                                     <tr>
                                                         <td colSpan={4}>
-                                                            <div className="p-3 rounded bg-light">
-                                                                <div className="d-flex flex-wrap gap-4">
+                                                            <div className="expandable-row-content">
+                                                                <div className="d-flex flex-wrap gap-4 mb-3">
                                                                     <div>
                                                                         <div className="text-muted small mb-1">Alias</div>
                                                                         <div className="fw-semibold">{l.aliasName || '—'}</div>
