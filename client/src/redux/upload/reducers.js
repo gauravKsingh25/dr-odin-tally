@@ -111,3 +111,39 @@ export const uploadRateDifferenceFile = (state = upload_second_file_initial_stat
             return { ...state };
     }
 };
+
+// Voucher Excel Upload Reducer
+const voucherUploadInitialState = {
+    loading: false,
+    message: "",
+    data: [],
+    uploadProgress: 0
+};
+
+export const voucherUpload = (state = voucherUploadInitialState, action) => {
+    switch (action.type) {
+        case uploadTypes.UPLOAD_VOUCHER_EXCEL_LOADING:
+            return {
+                ...state,
+                loading: true,
+                uploadProgress: 0
+            };
+        case uploadTypes.UPLOAD_VOUCHER_EXCEL_SUCCESS:
+            return {
+                ...action?.payload,
+                loading: false,
+                uploadProgress: 100
+            };
+        case uploadTypes.UPLOAD_VOUCHER_EXCEL_RESET:
+            return voucherUploadInitialState;
+        case uploadTypes.UPLOAD_VOUCHER_EXCEL_ERROR:
+            return {
+                ...state,
+                loading: false,
+                message: action?.payload,
+                status: 400
+            };
+        default:
+            return { ...state };
+    }
+};

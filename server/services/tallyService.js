@@ -13,7 +13,7 @@ class TallyService {
 
     // Generic method to send XML request to Tally with enhanced error handling and retry logic
     async sendRequest(xmlPayload, retryCount = 0, maxRetries = 3) {
-        const timeouts = [120000, 180000, 300000]; // Progressive timeouts: 2min, 3min, 5min
+        const timeouts = [300000, 600000, 900000]; // MUCH LONGER timeouts: 5min, 10min, 15min
         const currentTimeout = timeouts[Math.min(retryCount, timeouts.length - 1)];
         
         try {
@@ -29,7 +29,8 @@ class TallyService {
                     'Accept': 'application/xml'
                 },
                 timeout: currentTimeout,
-                maxContentLength: 100 * 1024 * 1024, // Increased to 100MB max response
+                maxContentLength: 200 * 1024 * 1024, // Increased to 200MB max response
+                maxBodyLength: 200 * 1024 * 1024,
                 validateStatus: function (status) {
                     return status < 500; // Accept anything less than 500 as valid
                 }
@@ -183,6 +184,197 @@ class TallyService {
                                 <NATIVEMETHOD>LEDGERFROMITEM</NATIVEMETHOD>
                                 <NATIVEMETHOD>BILLALLOCATIONS.LIST</NATIVEMETHOD>
                                 <NATIVEMETHOD>FOREXDETAILS.LIST</NATIVEMETHOD>
+                            </COLLECTION>
+                        </TDLMESSAGE>
+                    </TDL>
+                </DESC>
+            </BODY>
+        </ENVELOPE>`;
+    }
+
+    // ULTRA-minimal voucher payload - only absolute essentials to prevent Tally crashes
+    getVouchersPayloadUltraMinimal(fromDate = null, toDate = null) {
+        const formatYmd = (d) => {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}${mm}${dd}`;
+        };
+
+        let from = fromDate;
+        let to = toDate;
+        if (!from || !to) {
+            const defaultFrom = new Date();
+            defaultFrom.setDate(defaultFrom.getDate() - 1);
+            const defaultTo = new Date();
+            from = formatYmd(defaultFrom);
+            to = formatYmd(defaultTo);
+        }
+
+        const dateFilter = `
+                                <FILTER>
+                                    <DATERANGE>
+                                        <FROM>${from}</FROM>
+                                        <TO>${to}</TO>
+                                    </DATERANGE>
+                                </FILTER>`;
+
+        return `
+        <ENVELOPE>
+            <HEADER>
+                <VERSION>1</VERSION>
+                <TALLYREQUEST>Export</TALLYREQUEST>
+                <TYPE>Collection</TYPE>
+                <ID>Ultra Minimal Vouchers</ID>
+            </HEADER>
+            <BODY>
+                <DESC>
+                    <STATICVARIABLES>
+                        <SVEXPORTFORMAT>XML</SVEXPORTFORMAT>
+                    </STATICVARIABLES>
+                    <TDL>
+                        <TDLMESSAGE>
+                            <COLLECTION NAME="Ultra Minimal Vouchers" ISMODIFY="No">
+                                <TYPE>Voucher</TYPE>
+                                ${dateFilter}
+                                <NATIVEMETHOD>DATE</NATIVEMETHOD>
+                                <NATIVEMETHOD>VOUCHERNUMBER</NATIVEMETHOD>
+                                <NATIVEMETHOD>VOUCHERTYPENAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>PARTYNAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>AMOUNT</NATIVEMETHOD>
+                            </COLLECTION>
+                        </TDLMESSAGE>
+                    </TDL>
+                </DESC>
+            </BODY>
+        </ENVELOPE>`;
+    }
+
+    // Ultra-lightweight voucher payload for problematic date ranges
+    getVouchersPayloadMinimal(fromDate = null, toDate = null) {
+        // Ensure we always filter at Tally source
+        const formatYmd = (d) => {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}${mm}${dd}`;
+        };
+
+        let from = fromDate;
+        let to = toDate;
+        if (!from || !to) {
+            const defaultFrom = new Date();
+            defaultFrom.setMonth(defaultFrom.getMonth() - 1);
+            const defaultTo = new Date();
+            from = formatYmd(defaultFrom);
+            to = formatYmd(defaultTo);
+        }
+
+        const dateFilter = `
+                                <FILTER>
+                                    <DATERANGE>
+                                        <FROM>${from}</FROM>
+                                        <TO>${to}</TO>
+                                    </DATERANGE>
+                                </FILTER>`;
+
+        return `
+        <ENVELOPE>
+            <HEADER>
+                <VERSION>1</VERSION>
+                <TALLYREQUEST>Export</TALLYREQUEST>
+                <TYPE>Collection</TYPE>
+                <ID>Minimal Vouchers</ID>
+            </HEADER>
+            <BODY>
+                <DESC>
+                    <STATICVARIABLES>
+                        <SVEXPORTFORMAT>XML</SVEXPORTFORMAT>
+                    </STATICVARIABLES>
+                    <TDL>
+                        <TDLMESSAGE>
+                            <COLLECTION NAME="Minimal Vouchers" ISMODIFY="No">
+                                <TYPE>Voucher</TYPE>
+                                ${dateFilter}
+                                <NATIVEMETHOD>DATE</NATIVEMETHOD>
+                                <NATIVEMETHOD>VOUCHERTYPENAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>VOUCHERNUMBER</NATIVEMETHOD>
+                                <NATIVEMETHOD>NARRATION</NATIVEMETHOD>
+                                <NATIVEMETHOD>GUID</NATIVEMETHOD>
+                                <NATIVEMETHOD>PARTYNAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>AMOUNT</NATIVEMETHOD>
+                            </COLLECTION>
+                        </TDLMESSAGE>
+                    </TDL>
+                </DESC>
+            </BODY>
+        </ENVELOPE>`;
+    }
+
+    // Optimized voucher payload with reduced fields to minimize Tally load
+    getVouchersPayloadOptimized(fromDate = null, toDate = null) {
+        // Ensure we always filter at Tally source from 2022-01-01 till today
+        const formatYmd = (d) => {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}${mm}${dd}`;
+        };
+
+        let from = fromDate;
+        let to = toDate;
+        if (!from || !to) {
+            const defaultFrom = new Date('2022-01-01T00:00:00.000Z');
+            const defaultTo = new Date();
+            from = formatYmd(defaultFrom);
+            to = formatYmd(defaultTo);
+        }
+
+        const dateFilter = `
+                                <FILTER>
+                                    <DATERANGE>
+                                        <FROM>${from}</FROM>
+                                        <TO>${to}</TO>
+                                    </DATERANGE>
+                                </FILTER>`;
+
+        return `
+        <ENVELOPE>
+            <HEADER>
+                <VERSION>1</VERSION>
+                <TALLYREQUEST>Export</TALLYREQUEST>
+                <TYPE>Collection</TYPE>
+                <ID>Essential Vouchers</ID>
+            </HEADER>
+            <BODY>
+                <DESC>
+                    <STATICVARIABLES>
+                        <SVEXPORTFORMAT>XML</SVEXPORTFORMAT>
+                    </STATICVARIABLES>
+                    <TDL>
+                        <TDLMESSAGE>
+                            <COLLECTION NAME="Essential Vouchers" ISMODIFY="No">
+                                <TYPE>Voucher</TYPE>
+                                ${dateFilter}
+                                <NATIVEMETHOD>DATE</NATIVEMETHOD>
+                                <NATIVEMETHOD>VOUCHERTYPENAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>VOUCHERNUMBER</NATIVEMETHOD>
+                                <NATIVEMETHOD>REFERENCE</NATIVEMETHOD>
+                                <NATIVEMETHOD>NARRATION</NATIVEMETHOD>
+                                <NATIVEMETHOD>GUID</NATIVEMETHOD>
+                                <NATIVEMETHOD>MASTERID</NATIVEMETHOD>
+                                <NATIVEMETHOD>PARTYNAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>PARTYLEDGERNAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>BASICBUYERNAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>AMOUNT</NATIVEMETHOD>
+                                <NATIVEMETHOD>COSTCENTRENAME</NATIVEMETHOD>
+                                <NATIVEMETHOD>LEDGERENTRIES.LIST</NATIVEMETHOD>
+                                <NATIVEMETHOD>INVENTORYENTRIES.LIST</NATIVEMETHOD>
+                                <NATIVEMETHOD>CATEGORYALLOCATIONS.LIST</NATIVEMETHOD>
+                                <NATIVEMETHOD>COSTCENTREALLOCATIONS.LIST</NATIVEMETHOD>
+                                <NATIVEMETHOD>BILLALLOCATIONS.LIST</NATIVEMETHOD>
+                                <NATIVEMETHOD>BASICBUYERADDRESS.LIST</NATIVEMETHOD>
+                                <NATIVEMETHOD>GSTDETAILS.LIST</NATIVEMETHOD>
                             </COLLECTION>
                         </TDLMESSAGE>
                     </TDL>
@@ -872,6 +1064,24 @@ class TallyService {
 
     async fetchVouchers(fromDate = null, toDate = null) {
         const xmlPayload = this.getVouchersPayload(fromDate, toDate);
+        return await this.sendRequest(xmlPayload);
+    }
+
+    // Optimized voucher fetching with reduced payload for better performance
+    async fetchVouchersOptimized(fromDate = null, toDate = null) {
+        const xmlPayload = this.getVouchersPayloadOptimized(fromDate, toDate);
+        return await this.sendRequest(xmlPayload);
+    }
+
+    // Minimal voucher fetching for problematic date ranges
+    async fetchVouchersMinimal(fromDate = null, toDate = null) {
+        const xmlPayload = this.getVouchersPayloadMinimal(fromDate, toDate);
+        return await this.sendRequest(xmlPayload);
+    }
+
+    // Ultra-minimal voucher fetching - absolute last resort
+    async fetchVouchersUltraMinimal(fromDate = null, toDate = null) {
+        const xmlPayload = this.getVouchersPayloadUltraMinimal(fromDate, toDate);
         return await this.sendRequest(xmlPayload);
     }
 

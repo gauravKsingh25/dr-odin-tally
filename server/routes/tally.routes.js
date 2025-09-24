@@ -1,5 +1,33 @@
 const tallyController = require("../controllers/tally.controller");
 const { verifyToken } = require("../middlewares/jwt.auth");
+const multer = require("multer");
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
+            file.mimetype === 'application/vnd.ms-excel' ||
+            file.mimetype === 'text/csv') {
+            cb(null, true);
+        } else {
+            cb(new Error('Only Excel and CSV files are allowed'));
+        }
+    }
+});
 
 // Import the TallyCronJob for manual operations
 const TallyCronJob = require("../scripts/tally-cron");
@@ -94,6 +122,7 @@ module.exports = function (app) {
 
     // New Tally Integration routes
     safeRoute('get', "/api/tally/test-connection", verifyToken, tallyController.testTallyConnection);
+    safeRoute('get', "/api/tally/test-minimal", verifyToken, tallyController.testTallyConnection); // Alias for easier testing
     safeRoute('get', "/api/tally/test-ledger-processing", verifyToken, tallyController.testLedgerProcessing);
     safeRoute('post', "/api/tally/sync", verifyToken, tallyController.syncTallyData);
     safeRoute('get', "/api/tally/dashboard", verifyToken, tallyController.getTallyDashboard);
@@ -115,4 +144,7 @@ module.exports = function (app) {
     safeRoute('get', "/api/tally/fetch-vouchers/status", verifyToken, tallyController.getVoucherFetchStatus);
     safeRoute('post', "/tally/fetch-vouchers", verifyToken, tallyController.fetchTallyVouchers);
     safeRoute('get', "/tally/fetch-vouchers/status", verifyToken, tallyController.getVoucherFetchStatus);
+
+    // Voucher Excel Upload
+    safeRoute('post', "/api/tally/upload/vouchers", verifyToken, upload.single('file'), tallyController.uploadVoucherExcel);
 };

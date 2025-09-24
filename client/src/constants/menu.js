@@ -53,8 +53,20 @@ const MENU_ITEMS = [
         label: 'Upload',
         isTitle: false,
         icon:  "uil-upload",
-        url: '/upload',
-       
+        children: [
+            {
+                key: 'upload-monthly',
+                label: 'Monthly Reports',
+                url: '/upload',
+                parentKey: 'upload',
+            },
+            {
+                key: 'upload-vouchers',
+                label: 'Voucher Upload',
+                url: '/upload/vouchers',
+                parentKey: 'upload',
+            },
+        ],
     },
     {
         key: 'staff managment',

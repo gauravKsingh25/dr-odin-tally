@@ -1,6 +1,6 @@
 import { all, fork, put, takeEvery, call } from 'redux-saga/effects';
 import uploadTypes from './constants';
-import { uploadTellyReportApi,uploadSecondTellyReportApi,uploadSalaryReportApi, uploadRateDifferenceReportApi } from './api';
+import { uploadTellyReportApi,uploadSecondTellyReportApi,uploadSalaryReportApi, uploadRateDifferenceReportApi, uploadVoucherExcelApi } from './api';
 
 // active employee create
 function* UploadTellyyReport({
@@ -159,26 +159,62 @@ function* UploadRateDifferenceReport({payload}){
     }
 }
 
+// Voucher Excel Upload
+function* UploadVoucherExcel({payload}){
+    try {
+        yield put({
+            type: uploadTypes.UPLOAD_VOUCHER_EXCEL_LOADING,
+            payload: {},
+        });
+        const response = yield call(uploadVoucherExcelApi, payload);
+        
+        // Handle case when response or response.data is undefined
+        if (response && response.data && (response.data.status === 201 || response.data.status === 200)) {
+            yield put({
+                type: uploadTypes.UPLOAD_VOUCHER_EXCEL_SUCCESS,
+                payload: {...response.data },
+            });
+        } else {
+            yield put({
+                type: uploadTypes.UPLOAD_VOUCHER_EXCEL_ERROR,
+                payload: (response && response.data && response.data.message) || 'Upload failed',
+            });
+        }
+    } catch (error) {
+        console.error('Voucher upload error:', error);
+        yield put({
+            type: uploadTypes.UPLOAD_VOUCHER_EXCEL_ERROR,
+            payload: error?.response?.data?.message || error?.message || 'Upload failed',
+        });
+    }
+}
 
-export function* uploadTellyReportApii(): any {
+
+export function* uploadTellyReportApii() {
     yield takeEvery(uploadTypes.UPLOAD_TELLY, UploadTellyyReport);
 }
-export function* uploadSecondTellyReport():any{
+export function* uploadSecondTellyReport(){
     yield takeEvery(uploadTypes.UPLOAD_SECOND_FILE, UploadSecondTellyReport);
 }
 
-export function* uploadSalaryReportSaga():any {
+export function* uploadSalaryReportSaga() {
     yield takeEvery(uploadTypes.UPLOAD_SALARY_FILE, UploadSalaryReport);
 }
-export function* uploadRateDifferenceReportSaga():any {
+export function* uploadRateDifferenceReportSaga() {
     yield takeEvery(uploadTypes.UPLOAD_RATE_DIFFERENCE_FILE, UploadRateDifferenceReport);
 }
-function* uploadTellyReportSaga(): any {
+
+export function* uploadVoucherExcelSaga() {
+    yield takeEvery(uploadTypes.UPLOAD_VOUCHER_EXCEL, UploadVoucherExcel);
+}
+
+function* uploadTellyReportSaga() {
     yield all([
         fork(uploadTellyReportApii),
         fork(uploadSecondTellyReport),
         fork(uploadSalaryReportSaga),
         fork(uploadRateDifferenceReportSaga),
+        fork(uploadVoucherExcelSaga),
     ]);
 }
 

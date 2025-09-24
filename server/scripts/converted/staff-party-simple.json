@@ -1,0 +1,3600 @@
+{
+  "Vivek Agra": {
+    "totalParties": 30,
+    "totalAmount": 6001706.62,
+    "totalTransactions": 143,
+    "parties": [
+      {
+        "partyName": "ANANT PHARMA AGENCIES",
+        "totalAmount": 1564241.68,
+        "transactionCount": 18,
+        "relationshipDuration": 82
+      },
+      {
+        "partyName": "PRAMA ENTERPRISES  ( LUCKNOW )",
+        "totalAmount": 542594.6,
+        "transactionCount": 15,
+        "relationshipDuration": 66
+      },
+      {
+        "partyName": "RAJPUT SURGICAL (ALIGARH)",
+        "totalAmount": 418020.8,
+        "transactionCount": 4,
+        "relationshipDuration": 53
+      },
+      {
+        "partyName": "SAGAR ENTERPRISES  ( LUCKNOW )",
+        "totalAmount": 355294.8,
+        "transactionCount": 9,
+        "relationshipDuration": 77
+      },
+      {
+        "partyName": "SURGICAL MENSION",
+        "totalAmount": 323566,
+        "transactionCount": 3,
+        "relationshipDuration": 62
+      },
+      {
+        "partyName": "DAKSH LIFECARE LLP",
+        "totalAmount": 285865.16,
+        "transactionCount": 7,
+        "relationshipDuration": 59
+      },
+      {
+        "partyName": "SETH SURGICAL AND MEDICAL (KANPUR)",
+        "totalAmount": 269017.6,
+        "transactionCount": 4,
+        "relationshipDuration": 60
+      },
+      {
+        "partyName": "SCIENTIFIC CORPORATION OF INDIA [BAREILLY]",
+        "totalAmount": 232236.24,
+        "transactionCount": 6,
+        "relationshipDuration": 62
+      },
+      {
+        "partyName": "ALOK MEDICAL AGENCY (ALIGARH)",
+        "totalAmount": 208908.88,
+        "transactionCount": 8,
+        "relationshipDuration": 86
+      },
+      {
+        "partyName": "SRS SURGICALS",
+        "totalAmount": 203867,
+        "transactionCount": 6,
+        "relationshipDuration": 49
+      },
+      {
+        "partyName": "GOPAL AGENCIES (PALIA KALAN)",
+        "totalAmount": 169911.56,
+        "transactionCount": 4,
+        "relationshipDuration": 72
+      },
+      {
+        "partyName": "KRITI ENTERPRISES  (LUCKNOW)",
+        "totalAmount": 161444,
+        "transactionCount": 3,
+        "relationshipDuration": 59
+      },
+      {
+        "partyName": "NARAINA ENTERPRISES",
+        "totalAmount": 158908.24,
+        "transactionCount": 8,
+        "relationshipDuration": 68
+      },
+      {
+        "partyName": "GARG SURGICAL POINT (AGRA)",
+        "totalAmount": 128277.04,
+        "transactionCount": 4,
+        "relationshipDuration": 81
+      },
+      {
+        "partyName": "GS SURGICAL (Raebareli)",
+        "totalAmount": 123906.56,
+        "transactionCount": 4,
+        "relationshipDuration": 53
+      },
+      {
+        "partyName": "TEAM DRP HEALTHCARE",
+        "totalAmount": 115820.4,
+        "transactionCount": 4,
+        "relationshipDuration": 63
+      },
+      {
+        "partyName": "R R ENTERPRISES ( KANPUR )",
+        "totalAmount": 105095.8,
+        "transactionCount": 6,
+        "relationshipDuration": 56
+      },
+      {
+        "partyName": "GULATI SURGICAL & MEDICAL STORE",
+        "totalAmount": 102602.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RADHE SHYAM TRADING COMPANY (MATHURA)",
+        "totalAmount": 85242.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PRADEEP PHARMA AGENCIES (KASHGANJ)",
+        "totalAmount": 64120,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SOLACE ENTERPRISES (BAREILLY)",
+        "totalAmount": 52128.38,
+        "transactionCount": 3,
+        "relationshipDuration": 7
+      },
+      {
+        "partyName": "M/S SHUBH SURGICAL (LUCKNOW)",
+        "totalAmount": 46444.4,
+        "transactionCount": 3,
+        "relationshipDuration": 50
+      },
+      {
+        "partyName": "APNA MEDICAL AND SURGICAL HUB",
+        "totalAmount": 43168.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "BALA JI SURGICALS (JANKIPURAM)",
+        "totalAmount": 42597.04,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "APARNA MEDICALS (OPC) PRIVATE LIMITED",
+        "totalAmount": 40094,
+        "transactionCount": 2,
+        "relationshipDuration": 41
+      },
+      {
+        "partyName": "NEELAM MEDICAL AGENCIES",
+        "totalAmount": 37020.08,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "M. J. TRADING",
+        "totalAmount": 36782.2,
+        "transactionCount": 6,
+        "relationshipDuration": 15
+      },
+      {
+        "partyName": "V AND V HEALTH CARE",
+        "totalAmount": 31860,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KANISHKA ENTERPRISES (FARRUKHABAD )",
+        "totalAmount": 28661.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KAANAV PHARMA",
+        "totalAmount": 24008.56,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Souvik Head": {
+    "totalParties": 43,
+    "totalAmount": 5507240.37,
+    "totalTransactions": 152,
+    "parties": [
+      {
+        "partyName": "SHREE SHYAM STORE  ( Silliguri )",
+        "totalAmount": 767000,
+        "transactionCount": 2,
+        "relationshipDuration": 7
+      },
+      {
+        "partyName": "DEY ENTERPRISE",
+        "totalAmount": 574234.58,
+        "transactionCount": 11,
+        "relationshipDuration": 65
+      },
+      {
+        "partyName": "NAVEEN SURGICAL PVT. LTD.(KOLKATA)",
+        "totalAmount": 397038.28,
+        "transactionCount": 9,
+        "relationshipDuration": 45
+      },
+      {
+        "partyName": "HEALTH BRIDGE",
+        "totalAmount": 303055.76,
+        "transactionCount": 6,
+        "relationshipDuration": 56
+      },
+      {
+        "partyName": "M & D AGENCY",
+        "totalAmount": 294437.66,
+        "transactionCount": 9,
+        "relationshipDuration": 81
+      },
+      {
+        "partyName": "ISTINA MEDISCIENCE LLP  (KOLKATA)",
+        "totalAmount": 277410.4,
+        "transactionCount": 5,
+        "relationshipDuration": 77
+      },
+      {
+        "partyName": "PAREEK ENTERPRISES (BURDWAN)",
+        "totalAmount": 273989.64,
+        "transactionCount": 5,
+        "relationshipDuration": 47
+      },
+      {
+        "partyName": "SG PHARMACEUTICALS (DURGAPUR)",
+        "totalAmount": 246281.92,
+        "transactionCount": 8,
+        "relationshipDuration": 69
+      },
+      {
+        "partyName": "S.B MEDICAL",
+        "totalAmount": 237742.8,
+        "transactionCount": 4,
+        "relationshipDuration": 34
+      },
+      {
+        "partyName": "GRACE & SURGICAL & MEDICAL DEVICE",
+        "totalAmount": 200996.4,
+        "transactionCount": 7,
+        "relationshipDuration": 52
+      },
+      {
+        "partyName": "GHOSH SURGICAL (KANDI)",
+        "totalAmount": 169026.96,
+        "transactionCount": 4,
+        "relationshipDuration": 62
+      },
+      {
+        "partyName": "HERB DISTRIBUTOR",
+        "totalAmount": 153883.36,
+        "transactionCount": 4,
+        "relationshipDuration": 24
+      },
+      {
+        "partyName": "GHOSH SURGICAL (GANGARAMPUR)",
+        "totalAmount": 149087.4,
+        "transactionCount": 3,
+        "relationshipDuration": 33
+      },
+      {
+        "partyName": "GARIA MEDICAL AGENCY (Kolkata)",
+        "totalAmount": 132245.96,
+        "transactionCount": 6,
+        "relationshipDuration": 54
+      },
+      {
+        "partyName": "LIFELINE SURGICALS  (GUWAHATI)",
+        "totalAmount": 100280,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MIDNAPUR MEDICAL SURGICAL (MIDNAPUR)",
+        "totalAmount": 91803.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GHOSAL AND CO (KOLKATA)",
+        "totalAmount": 84583.56,
+        "transactionCount": 5,
+        "relationshipDuration": 11
+      },
+      {
+        "partyName": "H.K SURGICAL",
+        "totalAmount": 81079.2,
+        "transactionCount": 4,
+        "relationshipDuration": 62
+      },
+      {
+        "partyName": "OM SRI SURGI-MED PVT. LTD. (SILIGURI)",
+        "totalAmount": 78082.2,
+        "transactionCount": 4,
+        "relationshipDuration": 59
+      },
+      {
+        "partyName": "DG ENTERPRISES (GUWAHATI)",
+        "totalAmount": 73510.94,
+        "transactionCount": 5,
+        "relationshipDuration": 6
+      },
+      {
+        "partyName": "HORE DIISTRIBUTORS (BALURGHAT)",
+        "totalAmount": 62406,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NARSARIYA DISTRIBUTORS  (WEST BENGAL)",
+        "totalAmount": 61222.69,
+        "transactionCount": 4,
+        "relationshipDuration": 31
+      },
+      {
+        "partyName": "SYNCHRONIC MEDICAL SYSTEMS",
+        "totalAmount": 58687,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PRATIK ENTERPRISES(COOCH BEHAR)",
+        "totalAmount": 57820,
+        "transactionCount": 2,
+        "relationshipDuration": 42
+      },
+      {
+        "partyName": "IMPERIAL SURGICALS ( GUWAHATI )",
+        "totalAmount": 57280.88,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "HIMADRI SURGICAL AGENCY ( SILLIGURI )",
+        "totalAmount": 56018.98,
+        "transactionCount": 4,
+        "relationshipDuration": 53
+      },
+      {
+        "partyName": "ASANSOL SURGICAL MART",
+        "totalAmount": 50294.28,
+        "transactionCount": 3,
+        "relationshipDuration": 36
+      },
+      {
+        "partyName": "SHREE SHYAM SURGICAL  [ KOLKATA ]",
+        "totalAmount": 50042.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NEW B. D. ENTERPRISE",
+        "totalAmount": 50014.8,
+        "transactionCount": 3,
+        "relationshipDuration": 2
+      },
+      {
+        "partyName": "SURGICHEM  (BEHALA)",
+        "totalAmount": 47200,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NEW NANDY ENTERPRISE",
+        "totalAmount": 36236,
+        "transactionCount": 4,
+        "relationshipDuration": 13
+      },
+      {
+        "partyName": "K. R. LYNCH & CO. ( KOLKATA )",
+        "totalAmount": 31920,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "BHABANI ENTERPRISES(BAGNAN)",
+        "totalAmount": 31675.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "BINA ENTERPRISES",
+        "totalAmount": 30533.2,
+        "transactionCount": 3,
+        "relationshipDuration": 1
+      },
+      {
+        "partyName": "MAITY SURGICAL (WEST BENGAL)",
+        "totalAmount": 28507.52,
+        "transactionCount": 4,
+        "relationshipDuration": 7
+      },
+      {
+        "partyName": "MEDI WORLD  (BERHAMPORE)",
+        "totalAmount": 20754.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MANINDRA MEDICAL STORE (MURSHIDABAD)",
+        "totalAmount": 19180,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RAIGANJ SURGICAL AND MEDICINE {RAIGANJ}",
+        "totalAmount": 17216.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHIVAM TRADER (KOLKATA)",
+        "totalAmount": 15930,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SURAKSHA MEDICINE & ORTHOPAEDIC",
+        "totalAmount": 13216,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AMS DRUGS ( HOOGHLY )",
+        "totalAmount": 12015.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GANESH ENTERPRISE (BOLPUR)",
+        "totalAmount": 11056,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAA ENTERPRISE  ( DURGAPUR )",
+        "totalAmount": 2242,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Anoop Srivastav Up": {
+    "totalParties": 29,
+    "totalAmount": 4556198.53,
+    "totalTransactions": 107,
+    "parties": [
+      {
+        "partyName": "RAISE  SURGIMED INC.",
+        "totalAmount": 849975.98,
+        "transactionCount": 21,
+        "relationshipDuration": 82
+      },
+      {
+        "partyName": "ALOK MEDICAL AND SURGICAL (VARANASI)",
+        "totalAmount": 720862.8,
+        "transactionCount": 7,
+        "relationshipDuration": 80
+      },
+      {
+        "partyName": "J.P. REHABILATION",
+        "totalAmount": 653336.72,
+        "transactionCount": 5,
+        "relationshipDuration": 89
+      },
+      {
+        "partyName": "SATVIK VACCINES AND SURGICALS",
+        "totalAmount": 358523.92,
+        "transactionCount": 6,
+        "relationshipDuration": 81
+      },
+      {
+        "partyName": "HH CARES  ( VARANASI )",
+        "totalAmount": 331771.23,
+        "transactionCount": 5,
+        "relationshipDuration": 51
+      },
+      {
+        "partyName": "MADHU MEDICAL & SURGICAL AGENCY (JAUNPUR)",
+        "totalAmount": 188107.64,
+        "transactionCount": 7,
+        "relationshipDuration": 53
+      },
+      {
+        "partyName": "RUDRA PHARMA DISTRIBUTORS (ALLAHABAD)",
+        "totalAmount": 171449.72,
+        "transactionCount": 3,
+        "relationshipDuration": 27
+      },
+      {
+        "partyName": "NATIONAL DISTRIBUTOR",
+        "totalAmount": 147355.76,
+        "transactionCount": 4,
+        "relationshipDuration": 8
+      },
+      {
+        "partyName": "DAMAN AND SONS (VARANASI)",
+        "totalAmount": 138162.32,
+        "transactionCount": 6,
+        "relationshipDuration": 57
+      },
+      {
+        "partyName": "ASN SURGUCALS (GORAKHPUR)",
+        "totalAmount": 129009.44,
+        "transactionCount": 5,
+        "relationshipDuration": 44
+      },
+      {
+        "partyName": "AKARSH AGENCIES (BHADOHI)",
+        "totalAmount": 118728.04,
+        "transactionCount": 7,
+        "relationshipDuration": 49
+      },
+      {
+        "partyName": "GOPAL AGENCY (PRAYGRAJ)",
+        "totalAmount": 81182.6,
+        "transactionCount": 3,
+        "relationshipDuration": 14
+      },
+      {
+        "partyName": "SHANTI SURGICAL ( PRAYAGRAJ )",
+        "totalAmount": 77876,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GANGA ENTERPRISES (MIRZAPUR)",
+        "totalAmount": 77146.2,
+        "transactionCount": 3,
+        "relationshipDuration": 39
+      },
+      {
+        "partyName": "SUPRIME SURGICAL ( PRAYAGRAJ )",
+        "totalAmount": 77046.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ARUN MEDICAL AGENCY (MAU)",
+        "totalAmount": 51018,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "D K MEDICAL  AGENCY",
+        "totalAmount": 49417.56,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AVADH MEDICAL AND SURGICAL PALACE",
+        "totalAmount": 49280,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SAMRIDHI MEDICAL AND SURGICALS (GORAKHPUR)",
+        "totalAmount": 43448.72,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "D RAJ MEDICOS AND PHARMACY (PRAYAGRAJ)",
+        "totalAmount": 39343.12,
+        "transactionCount": 3,
+        "relationshipDuration": 21
+      },
+      {
+        "partyName": "MEDICO SURGICALS (GORAKHPUR)",
+        "totalAmount": 39318,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KUMAR SURGICALS (GORAKHPUR)",
+        "totalAmount": 34034,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "VARTIKA MEDICALS AND SURGICALS (AZAMGARH)",
+        "totalAmount": 33264.88,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MEDIHUT LIFE CARE PRIVATE LIMITED [ BILANDPUR ]",
+        "totalAmount": 26759.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SATYAM PHARMA AND SURGICAL (GORAKHPUR)",
+        "totalAmount": 21725.36,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "CARE SURGICAL AND MEDICAL AGENCY (PRAYAGRAJ)",
+        "totalAmount": 19116,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ASHA SURGICAL(GORAKHPUR)",
+        "totalAmount": 14560,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHAGUN SURGICAL AND MEDICAL STORE (PRAYAGRAJ)",
+        "totalAmount": 10838.32,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHREYASI MEDICAL AND SURGICALS",
+        "totalAmount": 3540,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Shyamal Mishra Head Mh": {
+    "totalParties": 24,
+    "totalAmount": 3980956.93,
+    "totalTransactions": 78,
+    "parties": [
+      {
+        "partyName": "APEX INTERNATIONAL",
+        "totalAmount": 1686181.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "LIFEYELID ENTERPRISES",
+        "totalAmount": 632480,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PARAM HEALTH SOLUTION LLP",
+        "totalAmount": 142423.44,
+        "transactionCount": 8,
+        "relationshipDuration": 76
+      },
+      {
+        "partyName": "JAY SURGICAL AGENCY (JALGAON)",
+        "totalAmount": 130712.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ARHAM PHARMACEUTICALS (AKOLA)",
+        "totalAmount": 129953.16,
+        "transactionCount": 7,
+        "relationshipDuration": 83
+      },
+      {
+        "partyName": "SIDDHI CORPORATION",
+        "totalAmount": 126747.44,
+        "transactionCount": 9,
+        "relationshipDuration": 59
+      },
+      {
+        "partyName": "PROLIFE PHARMA AND SURGICALS",
+        "totalAmount": 117113.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NIYATI SALES",
+        "totalAmount": 105423.36,
+        "transactionCount": 5,
+        "relationshipDuration": 56
+      },
+      {
+        "partyName": "RAHUL DISTRIBUTIORS",
+        "totalAmount": 99164.74,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ANNAPURNA DISTRIBUTORS(NASHIK)",
+        "totalAmount": 98073.84,
+        "transactionCount": 4,
+        "relationshipDuration": 58
+      },
+      {
+        "partyName": "NILESH TRADERS (MUMBAI)",
+        "totalAmount": 93176.68,
+        "transactionCount": 6,
+        "relationshipDuration": 65
+      },
+      {
+        "partyName": "UBALE MEDICAL & GENERAL STORES",
+        "totalAmount": 84724,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ASHAPUR MEDICA AGENCY",
+        "totalAmount": 81652.4,
+        "transactionCount": 5,
+        "relationshipDuration": 45
+      },
+      {
+        "partyName": "GLODAC SURGICO",
+        "totalAmount": 75756,
+        "transactionCount": 2,
+        "relationshipDuration": 41
+      },
+      {
+        "partyName": "PRITESH PHARMACEUTICALS & DISTRIBUTORS",
+        "totalAmount": 70656,
+        "transactionCount": 2,
+        "relationshipDuration": 55
+      },
+      {
+        "partyName": "WELCOME GIFTS ( MUMBAI )",
+        "totalAmount": 52543.36,
+        "transactionCount": 4,
+        "relationshipDuration": 51
+      },
+      {
+        "partyName": "S.K SURGICAL(SAWANTWADI)",
+        "totalAmount": 50353.04,
+        "transactionCount": 4,
+        "relationshipDuration": 74
+      },
+      {
+        "partyName": "CHIRAYU HEALTHSTOP (KARAD)",
+        "totalAmount": 46231,
+        "transactionCount": 3,
+        "relationshipDuration": 10
+      },
+      {
+        "partyName": "SURANA AGENCIES (NASHIK)",
+        "totalAmount": 37885.36,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PLUS HEALTHCARE",
+        "totalAmount": 37524,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NACHIKET  ADATIYA",
+        "totalAmount": 37524,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PADMALAYA SURGICAL AND CRITICAL CARE ( JALGAON )",
+        "totalAmount": 21135.51,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MEDIHOUSE ( Nashik )",
+        "totalAmount": 13786.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MALHAR DISTRIBUTORS(KAMOTHE)",
+        "totalAmount": 9735,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Brijmohan Head Raj": {
+    "totalParties": 63,
+    "totalAmount": 3727379.83,
+    "totalTransactions": 166,
+    "parties": [
+      {
+        "partyName": "ARISE MEDICARE SYSTEMS PVT. LTD.",
+        "totalAmount": 299329.92,
+        "transactionCount": 7,
+        "relationshipDuration": 66
+      },
+      {
+        "partyName": "VINAYAK ENTERPRISES (JAIPUR)",
+        "totalAmount": 290980.96,
+        "transactionCount": 7,
+        "relationshipDuration": 81
+      },
+      {
+        "partyName": "SOOFI MEDICOS",
+        "totalAmount": 238855.6,
+        "transactionCount": 7,
+        "relationshipDuration": 73
+      },
+      {
+        "partyName": "NIVATI HEALTH PRIVATE LIMITED",
+        "totalAmount": 172636.5,
+        "transactionCount": 3,
+        "relationshipDuration": 1
+      },
+      {
+        "partyName": "N.K.MEDICAL & SURGICAL (JAIPUR )",
+        "totalAmount": 120193.6,
+        "transactionCount": 6,
+        "relationshipDuration": 59
+      },
+      {
+        "partyName": "CHAMUNDA MEDICAL AGENCY (NAGAUR)",
+        "totalAmount": 117828.8,
+        "transactionCount": 3,
+        "relationshipDuration": 67
+      },
+      {
+        "partyName": "SOLUTION INDIA (JAIPUR)",
+        "totalAmount": 117600,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "POWER UP SURGICAL (JAIPUR)",
+        "totalAmount": 115739.2,
+        "transactionCount": 4,
+        "relationshipDuration": 44
+      },
+      {
+        "partyName": "1MILE HEALTHCARE",
+        "totalAmount": 112563.92,
+        "transactionCount": 7,
+        "relationshipDuration": 39
+      },
+      {
+        "partyName": "MEENU ENTERPRISES  (Jaipur)",
+        "totalAmount": 94678.2,
+        "transactionCount": 5,
+        "relationshipDuration": 65
+      },
+      {
+        "partyName": "VINAYAK SURGICALS(SARDARSHAHAR)",
+        "totalAmount": 78951.2,
+        "transactionCount": 4,
+        "relationshipDuration": 51
+      },
+      {
+        "partyName": "SURGICAL AND PHARMA CENTRE (BHILWARA)",
+        "totalAmount": 77637.6,
+        "transactionCount": 3,
+        "relationshipDuration": 45
+      },
+      {
+        "partyName": "CHAUHAN MEDISURJICO(ALWAR)",
+        "totalAmount": 77437.68,
+        "transactionCount": 3,
+        "relationshipDuration": 32
+      },
+      {
+        "partyName": "LUCKY SURGIMED (Bhilwara)",
+        "totalAmount": 76232.24,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PRIME HEALTH CARE (SIKAR)",
+        "totalAmount": 73869.76,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SINGHSONS (AJMER)",
+        "totalAmount": 63163.48,
+        "transactionCount": 3,
+        "relationshipDuration": 39
+      },
+      {
+        "partyName": "LAXMI SURGICAL AND PHARMA (Nagaur)",
+        "totalAmount": 61780.72,
+        "transactionCount": 4,
+        "relationshipDuration": 46
+      },
+      {
+        "partyName": "SURAJ DISTRIBUTORS  [ KOTA]",
+        "totalAmount": 59236.8,
+        "transactionCount": 5,
+        "relationshipDuration": 60
+      },
+      {
+        "partyName": "MEDI KIND PHARMA & SURGICAL",
+        "totalAmount": 58902.64,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHRI SHYAM SURGI PHARMA (JAIPUR)",
+        "totalAmount": 57718.24,
+        "transactionCount": 4,
+        "relationshipDuration": 44
+      },
+      {
+        "partyName": "SHREE NATH MEDICOSE (PALI)",
+        "totalAmount": 57363.48,
+        "transactionCount": 4,
+        "relationshipDuration": 37
+      },
+      {
+        "partyName": "BOMBAY TRADING COMPANY (BIKANER)",
+        "totalAmount": 57120,
+        "transactionCount": 2,
+        "relationshipDuration": 63
+      },
+      {
+        "partyName": "ACE INDIA MEDICAL AND SURGICALS (UDAIPUR)",
+        "totalAmount": 56805.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MEDILINE EQUIPMENTS",
+        "totalAmount": 53749.2,
+        "transactionCount": 3,
+        "relationshipDuration": 13
+      },
+      {
+        "partyName": "BHATI MEDICAL & SURGICAL ( JODHPUR )",
+        "totalAmount": 52516.2,
+        "transactionCount": 3,
+        "relationshipDuration": 39
+      },
+      {
+        "partyName": "THE SURGICAL HOUSE  (SIKAR)",
+        "totalAmount": 48990.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "Laxmi Surgical & Medical Agency",
+        "totalAmount": 48406,
+        "transactionCount": 2,
+        "relationshipDuration": 88
+      },
+      {
+        "partyName": "ARUN MEDICOS (JODHPUR)",
+        "totalAmount": 44901.84,
+        "transactionCount": 3,
+        "relationshipDuration": 2
+      },
+      {
+        "partyName": "SHREE SURGICAL AND PHARMA (NAGAUR)",
+        "totalAmount": 42773.84,
+        "transactionCount": 3,
+        "relationshipDuration": 57
+      },
+      {
+        "partyName": "SHRI SHIV SURGICAL AND MEDICAL (KOTA)",
+        "totalAmount": 42122.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MEDI CRAFT (JAIPUR)",
+        "totalAmount": 38758,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SURAJ SURGICALS (KOTA)",
+        "totalAmount": 38329.36,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KAPIL SURGICALS ( JAIPUR )",
+        "totalAmount": 37800,
+        "transactionCount": 2,
+        "relationshipDuration": 29
+      },
+      {
+        "partyName": "TIMES MEDICAL (BARMER)",
+        "totalAmount": 37639.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHREE KRISHNA SURGICAL (JAIPUR)",
+        "totalAmount": 36424.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AGARWAL MEDICAL DISTRUBUTORS",
+        "totalAmount": 36396.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "JHALANI MEDICAL & SURGICALS",
+        "totalAmount": 35853.84,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RAINBOW MEDICAL AND SURGICAL",
+        "totalAmount": 34496,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "HANU SURGICALS",
+        "totalAmount": 31871.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GOVIND AGENCIES (JAIPUR)",
+        "totalAmount": 31360,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "M.B. PHARAM (KOTA)",
+        "totalAmount": 31215.28,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHYAM SURGICAL ( BEHROR )",
+        "totalAmount": 31203.21,
+        "transactionCount": 6,
+        "relationshipDuration": 4
+      },
+      {
+        "partyName": "VEDIOTRONICS (KOTA )",
+        "totalAmount": 29917.84,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHRI KRISHNA MEDICAL & SURGICAL AGENCY (BIKANER)",
+        "totalAmount": 28917.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ADITI DISTRIBUTORS (KOTA)",
+        "totalAmount": 28320,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHARMA MEDICALS ( JAIPUR  )",
+        "totalAmount": 26208,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ANNAPURNA MEDICAL AND SURGICALS (NIMKA THANA)",
+        "totalAmount": 25839.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "LAXMI SURGICALS  (JODHPUR )",
+        "totalAmount": 25661.84,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "VINAYAK SURGICALS (UDAIPUR)",
+        "totalAmount": 24656,
+        "transactionCount": 2,
+        "relationshipDuration": 38
+      },
+      {
+        "partyName": "SURGICAL HOUSE (BHILWARA)",
+        "totalAmount": 23591.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHRI NARAYAN DAS MEDICAL AGENCY (JAIPUR)",
+        "totalAmount": 21840,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "UMA DISTRIBUTORS  [ KOTA]",
+        "totalAmount": 21504,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GARG SURGI PHARMA",
+        "totalAmount": 20430.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GOYAL SURGI PHARMA  ( JAIPUR )",
+        "totalAmount": 20430.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NAKODA DISTRIBUTOR AND SURGICALS (JALORE)",
+        "totalAmount": 20174.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHREE JI MEDICOS (SUMERPUR)",
+        "totalAmount": 19467.76,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ICON SURGICALS  [SRI GANGANAGAR]",
+        "totalAmount": 18916,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "LAXMI SURGICAL & DRUG STORE  (Sawai Madhopur)",
+        "totalAmount": 16240,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RUDRA SURGICALS  (JAIPUR)",
+        "totalAmount": 15967.28,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "JAI GANPATI DISTRIBUTORS (CHOMU)",
+        "totalAmount": 13786.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHRI VINAYAK DRUG AND DISTRIBUTORS  [BHILWARA ]",
+        "totalAmount": 12768,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAHADEV SURGICAL & GENERAL STORE",
+        "totalAmount": 12656,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GOVIND MARKETING (JAIPUR)",
+        "totalAmount": 8652,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Venkatesh Ap": {
+    "totalParties": 48,
+    "totalAmount": 3618202.54,
+    "totalTransactions": 139,
+    "parties": [
+      {
+        "partyName": "SRI SRINIVASA MEDICAL ENTERPRISES",
+        "totalAmount": 334399.2,
+        "transactionCount": 6,
+        "relationshipDuration": 52
+      },
+      {
+        "partyName": "PRASANNA MEDICAL AND SURGICALS",
+        "totalAmount": 239095.6,
+        "transactionCount": 5,
+        "relationshipDuration": 42
+      },
+      {
+        "partyName": "EMPIRE SCIENTIFIC AND SURGICALS",
+        "totalAmount": 227410,
+        "transactionCount": 2,
+        "relationshipDuration": 30
+      },
+      {
+        "partyName": "SRI BALAJI AGENCIES  (KURNOOL)",
+        "totalAmount": 220223.64,
+        "transactionCount": 8,
+        "relationshipDuration": 86
+      },
+      {
+        "partyName": "S.R ENTERPRISES (ELURU)",
+        "totalAmount": 186954.24,
+        "transactionCount": 4,
+        "relationshipDuration": 31
+      },
+      {
+        "partyName": "CARE SURGICAL (HYDERABAD)",
+        "totalAmount": 160270,
+        "transactionCount": 8,
+        "relationshipDuration": 79
+      },
+      {
+        "partyName": "SRINIVASA SURGIWORLD (ONGOLE)",
+        "totalAmount": 149002.78,
+        "transactionCount": 7,
+        "relationshipDuration": 66
+      },
+      {
+        "partyName": "M.R. SURGICALS AND PHARMACEUTICALS",
+        "totalAmount": 142967.4,
+        "transactionCount": 6,
+        "relationshipDuration": 70
+      },
+      {
+        "partyName": "SDS AGENCIES   (VIJAYAWADA)",
+        "totalAmount": 116998.8,
+        "transactionCount": 3,
+        "relationshipDuration": 35
+      },
+      {
+        "partyName": "RIVAAN HEALTHCARE PRIVATE LIMITED ( TIRUPATI )",
+        "totalAmount": 106402.8,
+        "transactionCount": 3,
+        "relationshipDuration": 13
+      },
+      {
+        "partyName": "SRI SAI VIGNESHWARA MEDICAL AGENCY",
+        "totalAmount": 100664.2,
+        "transactionCount": 7,
+        "relationshipDuration": 58
+      },
+      {
+        "partyName": "CHAMUNDI SURGICALS ( BEEMAVARAM )",
+        "totalAmount": 94597.7,
+        "transactionCount": 3,
+        "relationshipDuration": 65
+      },
+      {
+        "partyName": "V.S SURGICAL WORLD  ( KHAMMAM )",
+        "totalAmount": 89219.4,
+        "transactionCount": 3,
+        "relationshipDuration": 65
+      },
+      {
+        "partyName": "SAI MANIKANTA MEDICAL AGENCIES ( ONGOLE )",
+        "totalAmount": 80908,
+        "transactionCount": 4,
+        "relationshipDuration": 48
+      },
+      {
+        "partyName": "SAI HEMANAND MEDICAL AGENCIES ( Narasaraopet )",
+        "totalAmount": 75964.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SREE PHARMA (TIRUPATI)",
+        "totalAmount": 71019,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "LAXMI ENTERPRISES  ( HYDRABAD )",
+        "totalAmount": 70998.48,
+        "transactionCount": 3,
+        "relationshipDuration": 40
+      },
+      {
+        "partyName": "SRIHARI MEDICAL STORES  (TIRUPATI)",
+        "totalAmount": 69549,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "CHALLA PHARMA AND SURGICALS",
+        "totalAmount": 69374.8,
+        "transactionCount": 3,
+        "relationshipDuration": 28
+      },
+      {
+        "partyName": "MEGA MEDICALS & SURGICAL LLP",
+        "totalAmount": 64012.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SURYA MEDICAL AND SURGICALS (TADEPALLIGUDEM)",
+        "totalAmount": 56525,
+        "transactionCount": 2,
+        "relationshipDuration": 43
+      },
+      {
+        "partyName": "SRI LAXMI PHARMACEUTICALS",
+        "totalAmount": 53661,
+        "transactionCount": 2,
+        "relationshipDuration": 44
+      },
+      {
+        "partyName": "SVS SUMITRA SURGICALS ( SRIKAKULAM )",
+        "totalAmount": 52610,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI ABHAYA SURGICALS (KAKINADA)",
+        "totalAmount": 49927.65,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI SRINIVAS SURGICAL & MEDICAL AGENCIES(KONASEEMA)",
+        "totalAmount": 46376.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI DEVI MEDICAL AND SURGICALS",
+        "totalAmount": 46131,
+        "transactionCount": 2,
+        "relationshipDuration": 45
+      },
+      {
+        "partyName": "Skanda Medical and Surgicals  ( AP )",
+        "totalAmount": 43732.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ASWINI AGENCIES  (A.P.)",
+        "totalAmount": 43397.8,
+        "transactionCount": 4,
+        "relationshipDuration": 80
+      },
+      {
+        "partyName": "RR SURGINEEDS (ONGOLE)",
+        "totalAmount": 42205.44,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "VARADA MEDICAL DEVICES  (Hydrabad )",
+        "totalAmount": 40186.4,
+        "transactionCount": 3,
+        "relationshipDuration": 30
+      },
+      {
+        "partyName": "SS INDUSTRIES (VIJAYAWADA)",
+        "totalAmount": 39616.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GEETHA KRISHNA MEDICALS AND SURGICALS",
+        "totalAmount": 37475.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SREE SAMHITHA SURGICALS & MEDICALS",
+        "totalAmount": 36700.12,
+        "transactionCount": 6,
+        "relationshipDuration": 64
+      },
+      {
+        "partyName": "SRI VAISHNAVI MEDICAL AGENCIES (HYDRABAD)",
+        "totalAmount": 36140,
+        "transactionCount": 2,
+        "relationshipDuration": 2
+      },
+      {
+        "partyName": "SRI RAGHAVENDRA SURGICALS  ( GUNTUR )",
+        "totalAmount": 34832,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "V L K ENTERPRISES ( KAKINADA )",
+        "totalAmount": 30954.4,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SLV MEDICALS AND SURGICALS   (ANANTAPUR",
+        "totalAmount": 30304,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI BHAVANI SURGICALS & MEDICAL DISTRIBUTORS",
+        "totalAmount": 30240,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI KIRAN PRANAY SURGICALS",
+        "totalAmount": 25932.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "WELCOME SURGICAL ( NELLORE )",
+        "totalAmount": 25684.9,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "DIVYA PHARMACEUTICALS (HYDRABAD )",
+        "totalAmount": 25271.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "K V R DISTRIBUTORS ( HYDRABAD )",
+        "totalAmount": 22228.92,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SSR SURGICALS (VISHAKHAPATNAM)",
+        "totalAmount": 18280.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI VENKATESWARA PHARMA  (KHAMMAM )",
+        "totalAmount": 17137.76,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "Sri Venkateswara Galaxy Medical Distributors Private Limited",
+        "totalAmount": 17136,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "BELDI MEDICAL ENTERPRISES LLP ( Guntur )",
+        "totalAmount": 16966.31,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI LAKSHMI GANAPATHI PHARMA",
+        "totalAmount": 15972.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RAVINDRA AGENCIES (HYDRABAD)",
+        "totalAmount": 12544,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Rohit Jha Guj": {
+    "totalParties": 42,
+    "totalAmount": 3388867.25,
+    "totalTransactions": 143,
+    "parties": [
+      {
+        "partyName": "BHAVANI MEDICARE",
+        "totalAmount": 407713.92,
+        "transactionCount": 8,
+        "relationshipDuration": 89
+      },
+      {
+        "partyName": "SUN SURGICAL (SURAT)",
+        "totalAmount": 320804.56,
+        "transactionCount": 8,
+        "relationshipDuration": 58
+      },
+      {
+        "partyName": "KAILASH ENTERPRISE (GUJARAT)",
+        "totalAmount": 298106.24,
+        "transactionCount": 4,
+        "relationshipDuration": 16
+      },
+      {
+        "partyName": "RUDRAKSH SURGICAL AND MEDICINE (SURAT)",
+        "totalAmount": 201561.2,
+        "transactionCount": 4,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "RIDDHI SIDDHI SURGICAL(AHEMDABAD)",
+        "totalAmount": 187884.88,
+        "transactionCount": 8,
+        "relationshipDuration": 71
+      },
+      {
+        "partyName": "SHANTI MEDICARE (SURAT)",
+        "totalAmount": 161913.2,
+        "transactionCount": 8,
+        "relationshipDuration": 84
+      },
+      {
+        "partyName": "VARDHAMAN SURGICAL CO (VADODARA)",
+        "totalAmount": 153517.8,
+        "transactionCount": 7,
+        "relationshipDuration": 76
+      },
+      {
+        "partyName": "A. B. C. MEDICAL & SURGICAL CO",
+        "totalAmount": 143720,
+        "transactionCount": 7,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "NAVIN SURGICAL  [  ANAND  ]",
+        "totalAmount": 125655.8,
+        "transactionCount": 4,
+        "relationshipDuration": 60
+      },
+      {
+        "partyName": "DYNAMIC SURGICAL",
+        "totalAmount": 108558.04,
+        "transactionCount": 8,
+        "relationshipDuration": 80
+      },
+      {
+        "partyName": "GUJARAT SURGICAL (DAHOD)",
+        "totalAmount": 106726.4,
+        "transactionCount": 5,
+        "relationshipDuration": 55
+      },
+      {
+        "partyName": "KEYA MEDICAL AGENCY (BARODA)_",
+        "totalAmount": 100519.84,
+        "transactionCount": 7,
+        "relationshipDuration": 50
+      },
+      {
+        "partyName": "SIDDHARTH ENTERPRISE (AHMEDABAD)",
+        "totalAmount": 90010.24,
+        "transactionCount": 5,
+        "relationshipDuration": 77
+      },
+      {
+        "partyName": "Jasva Health Care ( RAJKOT )",
+        "totalAmount": 87896.48,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "G B SURGICAL( AHMEDABAD )",
+        "totalAmount": 72625.92,
+        "transactionCount": 5,
+        "relationshipDuration": 55
+      },
+      {
+        "partyName": "PATRIOT  PHARMA (ANKLESHWAR)",
+        "totalAmount": 65403.6,
+        "transactionCount": 4,
+        "relationshipDuration": 72
+      },
+      {
+        "partyName": "AJ ENTERPRISE ( Ahmedabad )",
+        "totalAmount": 58165.2,
+        "transactionCount": 4,
+        "relationshipDuration": 59
+      },
+      {
+        "partyName": "SPARK HEALTHCARE (SURAT)",
+        "totalAmount": 58075.52,
+        "transactionCount": 4,
+        "relationshipDuration": 36
+      },
+      {
+        "partyName": "SHREE NATHJI REMEDIES",
+        "totalAmount": 50733.96,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MELIFE HEALTHCARE ( SURAT)",
+        "totalAmount": 48391.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "LAHER SURGICARE (SURAT)",
+        "totalAmount": 46952.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "WESTERN SURGICAL (RAJKOT)",
+        "totalAmount": 40383.84,
+        "transactionCount": 3,
+        "relationshipDuration": 42
+      },
+      {
+        "partyName": "EKTA SURGICALS   (ANAND )",
+        "totalAmount": 39032,
+        "transactionCount": 2,
+        "relationshipDuration": 25
+      },
+      {
+        "partyName": "ABC CORPORATION & MANGLESHWER DISTRIBUTOR",
+        "totalAmount": 37056,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "DURGA HEALTH CARE  (PALANPUR)",
+        "totalAmount": 32897.4,
+        "transactionCount": 3,
+        "relationshipDuration": 26
+      },
+      {
+        "partyName": "AASHIRVAD SURGICAL ( JAMNAGAR )",
+        "totalAmount": 30016,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ARYAN ENTERPRISE (VAPI)",
+        "totalAmount": 29382,
+        "transactionCount": 2,
+        "relationshipDuration": 8
+      },
+      {
+        "partyName": "VIVEK ENTERPRISES (Himmat Nagar)",
+        "totalAmount": 28209.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHREE DRUGS AND SURGICALS  (JAMNAGAR)",
+        "totalAmount": 28000,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MITANSH SURGICAL  (SURAT)",
+        "totalAmount": 27328,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PERFECT ENTERPRISES (AHAMDABAD)",
+        "totalAmount": 24885.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "DARSHAN SURGICAL AND PHARMA",
+        "totalAmount": 23026.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GOODLUCK SURGICAL CO  (MEHSANA)",
+        "totalAmount": 22125,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAHALAXMI PHARMA CARE (KALOL)",
+        "totalAmount": 21952,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHIVAM SURGICAL  ( AHMEDABAD )",
+        "totalAmount": 20429.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "JAINCO SUPPLIERS (GUJRAT)",
+        "totalAmount": 19700.88,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AADHYA HEALTH CARE (PALANPURA)",
+        "totalAmount": 15554.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SURGICAL STEPS (ANAND)",
+        "totalAmount": 15488,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "CN SURGICAL (Nadiad)",
+        "totalAmount": 13440,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHREE HARI HEALTHCARE (GUJRAT)",
+        "totalAmount": 10107.68,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAHAVIR SURGICAL CO. (Mehsana)",
+        "totalAmount": 8426.45,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "OM SURGICAL (JAM NAGAR)",
+        "totalAmount": 6490,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Vikas Kumar Chk": {
+    "totalParties": 40,
+    "totalAmount": 3253467.31,
+    "totalTransactions": 118,
+    "parties": [
+      {
+        "partyName": "PRAVEEN BROTHERS  (RANCHI)",
+        "totalAmount": 301516,
+        "transactionCount": 3,
+        "relationshipDuration": 55
+      },
+      {
+        "partyName": "BIJAYA ENTERPRISES (CUTTACK)",
+        "totalAmount": 226643.8,
+        "transactionCount": 4,
+        "relationshipDuration": 39
+      },
+      {
+        "partyName": "VEDANT DISTRIBUTORS",
+        "totalAmount": 226339.96,
+        "transactionCount": 6,
+        "relationshipDuration": 52
+      },
+      {
+        "partyName": "MANVEE AGENCY",
+        "totalAmount": 187052.8,
+        "transactionCount": 5,
+        "relationshipDuration": 54
+      },
+      {
+        "partyName": "BHARAT SURGICALS   (Ranchi)",
+        "totalAmount": 159504,
+        "transactionCount": 4,
+        "relationshipDuration": 77
+      },
+      {
+        "partyName": "ARIHANT CORPORATION (JAMSHEDPUR)",
+        "totalAmount": 148928.6,
+        "transactionCount": 7,
+        "relationshipDuration": 78
+      },
+      {
+        "partyName": "SRI GANESH SURGICAL EMPORIUM (GIRIDIH)",
+        "totalAmount": 138878.56,
+        "transactionCount": 7,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "MEDILIFE SURGICAL(RANCHI)",
+        "totalAmount": 137760,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KAILASH AGENCY (CUTTACK)",
+        "totalAmount": 128862,
+        "transactionCount": 2,
+        "relationshipDuration": 13
+      },
+      {
+        "partyName": "MODI AGENCIES (ODISHA)",
+        "totalAmount": 113169.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PRASANTA ENTERPRISERS",
+        "totalAmount": 102424.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "D. G. ENTERPRISERS",
+        "totalAmount": 101689.35,
+        "transactionCount": 8,
+        "relationshipDuration": 84
+      },
+      {
+        "partyName": "SAI AGENCIES (RANCHI)",
+        "totalAmount": 93184.88,
+        "transactionCount": 6,
+        "relationshipDuration": 34
+      },
+      {
+        "partyName": "SUSAMA AGENCIES  ( BHUBANESHWAR )",
+        "totalAmount": 79480.01,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ARYA MEDICAL AGENCY   [ HAZARBAGH ]",
+        "totalAmount": 77633.32,
+        "transactionCount": 5,
+        "relationshipDuration": 52
+      },
+      {
+        "partyName": "SHREE SAI ENTERPRISES (RANCHI)",
+        "totalAmount": 76035.44,
+        "transactionCount": 3,
+        "relationshipDuration": 12
+      },
+      {
+        "partyName": "SARASWATI SURGICALS (BHUBANESWAR)",
+        "totalAmount": 72579.4,
+        "transactionCount": 3,
+        "relationshipDuration": 31
+      },
+      {
+        "partyName": "ADITYA ENTERPRISES (DALTONGANJ)",
+        "totalAmount": 67215.2,
+        "transactionCount": 4,
+        "relationshipDuration": 18
+      },
+      {
+        "partyName": "R.K. ENTERPRISES (JAMSHEDPUR)",
+        "totalAmount": 65894.08,
+        "transactionCount": 3,
+        "relationshipDuration": 33
+      },
+      {
+        "partyName": "MAA AMBE SURGICAL AND CHEMICALS (RANCHI)",
+        "totalAmount": 65506.32,
+        "transactionCount": 4,
+        "relationshipDuration": 36
+      },
+      {
+        "partyName": "DILLIP PHARMACEUTICALS (BHUBANESWAR)",
+        "totalAmount": 61735.25,
+        "transactionCount": 3,
+        "relationshipDuration": 51
+      },
+      {
+        "partyName": "GLOBAL AGENCIES (JHARIA)",
+        "totalAmount": 60210.32,
+        "transactionCount": 3,
+        "relationshipDuration": 35
+      },
+      {
+        "partyName": "B.S. MEDICAL AGENCY (DUMKA)",
+        "totalAmount": 58290,
+        "transactionCount": 4,
+        "relationshipDuration": 27
+      },
+      {
+        "partyName": "SAINATH SURGICALS CHEMICALS AND MEDICAL",
+        "totalAmount": 50401.76,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SURGICAL HOUSE  (SIMDEGA)",
+        "totalAmount": 48386.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "G.S.DISTRIBUTORS (RAMGARH)",
+        "totalAmount": 45675.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "UMA TRADERS (ODISHA)",
+        "totalAmount": 35400,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "FRIENDS SALES CORPORATION (JAMSHEDPUR)",
+        "totalAmount": 34160,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KRISHNA SURGICAL EMPORIUM ( RANCHI )",
+        "totalAmount": 34050.64,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "G.P. SPECIALITY  ( RANCHI )",
+        "totalAmount": 33760,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KIRAN SURGICAL & EQUIPMENTS (Ranchi)",
+        "totalAmount": 31254,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "OM ASPX ENTERPRISES  [  Deoghar ]",
+        "totalAmount": 30235.64,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NEELKANTH MEDICRAFT",
+        "totalAmount": 29588.14,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "M/S AYUSH PHARMACEUTICALS",
+        "totalAmount": 29160,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAA ENTERPRISES (BOKARO)",
+        "totalAmount": 23542,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SIDDHI VINYAK SALES   (RANCHI)",
+        "totalAmount": 22904.88,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHAMBHU DISTRIBUTORS ( JHARKHAND)",
+        "totalAmount": 22244.56,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "CHEMI EQUIP (JASMSHEDPUR)",
+        "totalAmount": 16240,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI RAM ENTERPRISES (DHANBAD)",
+        "totalAmount": 15930,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "CHOKADOLA ASSOCIATES",
+        "totalAmount": 0.2,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Rahul  Sharma Uk": {
+    "totalParties": 16,
+    "totalAmount": 3077520,
+    "totalTransactions": 128,
+    "parties": [
+      {
+        "partyName": "AARVI SURGICAL (DEHRADUN)",
+        "totalAmount": 569530.8,
+        "transactionCount": 16,
+        "relationshipDuration": 89
+      },
+      {
+        "partyName": "KRISHNA SURGICALS & MEDICALS (HARIDWAR)",
+        "totalAmount": 561122.4,
+        "transactionCount": 13,
+        "relationshipDuration": 78
+      },
+      {
+        "partyName": "RAMA PHARMACEUTICALS (SAHARANPUR)",
+        "totalAmount": 377457.16,
+        "transactionCount": 19,
+        "relationshipDuration": 89
+      },
+      {
+        "partyName": "S.R BIOTECH",
+        "totalAmount": 312990.72,
+        "transactionCount": 10,
+        "relationshipDuration": 77
+      },
+      {
+        "partyName": "VISHAL MEDICINE & SURGICAL (ROORKEE)",
+        "totalAmount": 219339.2,
+        "transactionCount": 10,
+        "relationshipDuration": 67
+      },
+      {
+        "partyName": "BINDAL SURGICAL AND MEDICINE AGENCY",
+        "totalAmount": 211362.92,
+        "transactionCount": 13,
+        "relationshipDuration": 79
+      },
+      {
+        "partyName": "MAA SHAKUMBARI MEDICAL AND SURGICAL",
+        "totalAmount": 185802.83,
+        "transactionCount": 10,
+        "relationshipDuration": 80
+      },
+      {
+        "partyName": "DS MEDICO AND SURGICAL (BIJNOR)",
+        "totalAmount": 142459.2,
+        "transactionCount": 7,
+        "relationshipDuration": 73
+      },
+      {
+        "partyName": "CHAUDHARY SURGICO PHARMA",
+        "totalAmount": 104817.2,
+        "transactionCount": 5,
+        "relationshipDuration": 58
+      },
+      {
+        "partyName": "PREMI SURGICAL COMPANY (MEERUT)",
+        "totalAmount": 104674.8,
+        "transactionCount": 6,
+        "relationshipDuration": 31
+      },
+      {
+        "partyName": "AMITABH AGENCY",
+        "totalAmount": 80407.84,
+        "transactionCount": 5,
+        "relationshipDuration": 72
+      },
+      {
+        "partyName": "GURU NANAK MEDICALS & SURGICALS (RUDRAPUR)",
+        "totalAmount": 57211.6,
+        "transactionCount": 4,
+        "relationshipDuration": 28
+      },
+      {
+        "partyName": "NATIONAL PHARMA (BAGHPAT)",
+        "totalAmount": 55362.4,
+        "transactionCount": 3,
+        "relationshipDuration": 7
+      },
+      {
+        "partyName": "PLANET SURGICALS (HALDWANI)",
+        "totalAmount": 52752.47,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KUKRETI MEDICINE COMPANY (KOTDWAR)",
+        "totalAmount": 42228.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RADHE GOVIND TRADERS  (Haldwani)",
+        "totalAmount": 0.06,
+        "transactionCount": 2,
+        "relationshipDuration": 13
+      }
+    ]
+  },
+  "Deepak Kamboj(Head)": {
+    "totalParties": 17,
+    "totalAmount": 2901692.27,
+    "totalTransactions": 71,
+    "parties": [
+      {
+        "partyName": "J.K. SURGICAL OF INDIA  (  MANIMAJRA  )",
+        "totalAmount": 586116.3,
+        "transactionCount": 12,
+        "relationshipDuration": 58
+      },
+      {
+        "partyName": "GOYAL BROTHERS MEDICAL AND SURGICALS",
+        "totalAmount": 558030.75,
+        "transactionCount": 9,
+        "relationshipDuration": 67
+      },
+      {
+        "partyName": "AREVA LIFE SCIENCES",
+        "totalAmount": 266637.72,
+        "transactionCount": 8,
+        "relationshipDuration": 74
+      },
+      {
+        "partyName": "AJAY MEDICAL AGENCY",
+        "totalAmount": 255584.78,
+        "transactionCount": 7,
+        "relationshipDuration": 40
+      },
+      {
+        "partyName": "SHIRDI SAI SALES",
+        "totalAmount": 208091.6,
+        "transactionCount": 7,
+        "relationshipDuration": 73
+      },
+      {
+        "partyName": "DEV MEDICAL AGENCY (PANIPAT)",
+        "totalAmount": 149444.16,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ALPIC PHARMA",
+        "totalAmount": 139352.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ANIL CHEMISTS",
+        "totalAmount": 123591.72,
+        "transactionCount": 5,
+        "relationshipDuration": 69
+      },
+      {
+        "partyName": "WALIA MEDICAL STORE (HAMIRPUR)",
+        "totalAmount": 120578.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PLANET SURGICALS (HALDWANI)",
+        "totalAmount": 88218.52,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GARG MEDICAL AND SURGICAL AGENCIES (PARWANO)",
+        "totalAmount": 85435.28,
+        "transactionCount": 5,
+        "relationshipDuration": 48
+      },
+      {
+        "partyName": "S.R BIOTECH",
+        "totalAmount": 82656,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "HIMALYA MEDICAL STORE (UNA)",
+        "totalAmount": 82653.44,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "DND ENTERPRISES",
+        "totalAmount": 65136,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "YADAV SURGICALS",
+        "totalAmount": 52957.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PREMI SURGICAL COMPANY (MEERUT)",
+        "totalAmount": 33152,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ASHISH ENTERPRISES (AMBALA)",
+        "totalAmount": 4055.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Naresh (Head)": {
+    "totalParties": 52,
+    "totalAmount": 2762539.31,
+    "totalTransactions": 164,
+    "parties": [
+      {
+        "partyName": "JAIN ENTERPRISES (JALANDHAR)",
+        "totalAmount": 220920.56,
+        "transactionCount": 9,
+        "relationshipDuration": 66
+      },
+      {
+        "partyName": "AAR VEE PHARMACEUTICALS (PATHANKOT)",
+        "totalAmount": 207648,
+        "transactionCount": 3,
+        "relationshipDuration": 50
+      },
+      {
+        "partyName": "JALANDHAR ENTERPRISES",
+        "totalAmount": 174982.48,
+        "transactionCount": 12,
+        "relationshipDuration": 74
+      },
+      {
+        "partyName": "SATNAM SURGIMED (JALANDHAR)",
+        "totalAmount": 143248,
+        "transactionCount": 2,
+        "relationshipDuration": 2
+      },
+      {
+        "partyName": "HILIP HEALTHCARE (PATIALA)",
+        "totalAmount": 121992.8,
+        "transactionCount": 4,
+        "relationshipDuration": 70
+      },
+      {
+        "partyName": "MUKUL SURGICALS  [ LUDHIANA ]",
+        "totalAmount": 115394.4,
+        "transactionCount": 8,
+        "relationshipDuration": 53
+      },
+      {
+        "partyName": "JAGDEEP MEDICAL HALL (NABHA)",
+        "totalAmount": 114546,
+        "transactionCount": 3,
+        "relationshipDuration": 70
+      },
+      {
+        "partyName": "TRIDEV PHARMACEUTICALS   [BHATINDA]",
+        "totalAmount": 107743.44,
+        "transactionCount": 3,
+        "relationshipDuration": 2
+      },
+      {
+        "partyName": "SHUBHAM AGENCIES (HOSHIARPUR)",
+        "totalAmount": 99357.88,
+        "transactionCount": 16,
+        "relationshipDuration": 70
+      },
+      {
+        "partyName": "I D SURGICAL PHARMACEUTICALS",
+        "totalAmount": 91504,
+        "transactionCount": 3,
+        "relationshipDuration": 28
+      },
+      {
+        "partyName": "SHAKTI ENTERPRISES (JALANDHAR)",
+        "totalAmount": 84128,
+        "transactionCount": 2,
+        "relationshipDuration": 66
+      },
+      {
+        "partyName": "MY HEALTH CARE",
+        "totalAmount": 83078.8,
+        "transactionCount": 5,
+        "relationshipDuration": 12
+      },
+      {
+        "partyName": "KAPOOR ENTERPRISES (HOSHIARPUR)",
+        "totalAmount": 74655.92,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHIV SHAKTI SURGICALS (JALLANDHAR)",
+        "totalAmount": 73101.96,
+        "transactionCount": 4,
+        "relationshipDuration": 35
+      },
+      {
+        "partyName": "SARUP  AGENCIES",
+        "totalAmount": 72192,
+        "transactionCount": 2,
+        "relationshipDuration": 20
+      },
+      {
+        "partyName": "JASSI MEDICOS",
+        "totalAmount": 52174.8,
+        "transactionCount": 4,
+        "relationshipDuration": 58
+      },
+      {
+        "partyName": "LAXMI TRADERS (NAWASHEHAR)",
+        "totalAmount": 49004.76,
+        "transactionCount": 4,
+        "relationshipDuration": 48
+      },
+      {
+        "partyName": "KARAM CHAND VISHAL KUMAR  (PATHANKOT)",
+        "totalAmount": 48741.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "B K & Sons",
+        "totalAmount": 47040,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ASHISH MEDICAL AGENCY",
+        "totalAmount": 45557.76,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAHAJAN PHARMACEUTICALS (JAMMU)",
+        "totalAmount": 44246.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RR PHARMACEUTICALS",
+        "totalAmount": 43868.7,
+        "transactionCount": 4,
+        "relationshipDuration": 33
+      },
+      {
+        "partyName": "POPULAR MEDICAL HALL (MALERKOTLA)",
+        "totalAmount": 43448.72,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RELU RAM & SONS  (PATIALA)",
+        "totalAmount": 43275.32,
+        "transactionCount": 5,
+        "relationshipDuration": 30
+      },
+      {
+        "partyName": "VELMED MEDICAL & SURGICAL",
+        "totalAmount": 43241.92,
+        "transactionCount": 5,
+        "relationshipDuration": 80
+      },
+      {
+        "partyName": "KIRPA ENTERPRISES ( LUDHIANA )",
+        "totalAmount": 41664,
+        "transactionCount": 2,
+        "relationshipDuration": 26
+      },
+      {
+        "partyName": "D.H.L. LIFE SCIENCE",
+        "totalAmount": 41440,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "VIBGYOR PHARMACEUTICALS",
+        "totalAmount": 41440,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SUPER SURGICALS (LUDHIANA)",
+        "totalAmount": 36026.6,
+        "transactionCount": 5,
+        "relationshipDuration": 71
+      },
+      {
+        "partyName": "NORTHERN INDIA SURGICAL CO.",
+        "totalAmount": 35848.16,
+        "transactionCount": 6,
+        "relationshipDuration": 75
+      },
+      {
+        "partyName": "HI-LIFE MEDICARE ( LUDHIANA )",
+        "totalAmount": 27329.6,
+        "transactionCount": 3,
+        "relationshipDuration": 40
+      },
+      {
+        "partyName": "JYOTI MEDICINE CENTRE & SURGICAL GOODS (MOGA)",
+        "totalAmount": 24024,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PUNJAB SURGICALS (MALERKOTLA)",
+        "totalAmount": 23418.8,
+        "transactionCount": 3,
+        "relationshipDuration": 15
+      },
+      {
+        "partyName": "ATTAR MEDICOS (KHANNA)",
+        "totalAmount": 22512,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "R S SURGICALS (LUDHIANA)",
+        "totalAmount": 21459.36,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RAKESH MEDICOS (MALERKOTLA)",
+        "totalAmount": 20972.52,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "THE HEALTHCARE AND SURGICAL STORE",
+        "totalAmount": 19656,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "HEALTHY HAPPINESS (KAPURTHALA)",
+        "totalAmount": 19565,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "G.S. SURGICARE (AMRITSAR)",
+        "totalAmount": 18571.2,
+        "transactionCount": 3,
+        "relationshipDuration": 13
+      },
+      {
+        "partyName": "SUNIL ENTERPRISES",
+        "totalAmount": 18144,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KHANNA SURGIMED (AMRITSAR)",
+        "totalAmount": 15994.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAHAJAN AND MAHAJAN PHARMACEUTICALS",
+        "totalAmount": 15388.67,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "DPT ENTERPRISES",
+        "totalAmount": 15359.6,
+        "transactionCount": 3,
+        "relationshipDuration": 8
+      },
+      {
+        "partyName": "PUNJAB SURGICAL AND MEDICINE CENTRE (PATIALA)",
+        "totalAmount": 15235.04,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "LIFE HEALTH CARE ( LUDHIANA )",
+        "totalAmount": 12768,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHIV TRADING COMPANY (JAMMU)",
+        "totalAmount": 12570.7,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "N.S TRADERS (JAMMU)",
+        "totalAmount": 8977.5,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GUPTA MEDICINE TRADERS",
+        "totalAmount": 6956.06,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "Abhinav Sharma",
+        "totalAmount": 2124,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MODERN SURGICAL HOUSE",
+        "totalAmount": 0.2,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AMAR MEDICOSE  [  JALANDHAR  ]",
+        "totalAmount": 0.12,
+        "transactionCount": 2,
+        "relationshipDuration": 40
+      },
+      {
+        "partyName": "ISHAN TRADER(PHAGWARA)",
+        "totalAmount": -0.24,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Irfan Ka": {
+    "totalParties": 32,
+    "totalAmount": 2451912.61,
+    "totalTransactions": 73,
+    "parties": [
+      {
+        "partyName": "RAZA PHARMA",
+        "totalAmount": 235484.4,
+        "transactionCount": 5,
+        "relationshipDuration": 70
+      },
+      {
+        "partyName": "M. RATAN AGENCIES  (BENGALURU)",
+        "totalAmount": 186156,
+        "transactionCount": 5,
+        "relationshipDuration": 33
+      },
+      {
+        "partyName": "RAMDEV DRUG HOUSE",
+        "totalAmount": 178368.08,
+        "transactionCount": 3,
+        "relationshipDuration": 33
+      },
+      {
+        "partyName": "MITHUN SURGICALS  ( BENGALORE )",
+        "totalAmount": 173880,
+        "transactionCount": 4,
+        "relationshipDuration": 72
+      },
+      {
+        "partyName": "GANAPATI DISTRIBUTORS   [  BANGALORE  ]",
+        "totalAmount": 172246,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GOOBERZ MEDICAL DISTRIBUTOR (TUMAKURU)",
+        "totalAmount": 120016,
+        "transactionCount": 4,
+        "relationshipDuration": 9
+      },
+      {
+        "partyName": "RAMDEV PHARMA( JAYANAGAR)",
+        "totalAmount": 109243.2,
+        "transactionCount": 4,
+        "relationshipDuration": 44
+      },
+      {
+        "partyName": "RANA RAMDEV MEDICO PRIVATE LIMITED",
+        "totalAmount": 107681.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "FAST SURGICAL(JAYANAGAR)",
+        "totalAmount": 100252,
+        "transactionCount": 2,
+        "relationshipDuration": 26
+      },
+      {
+        "partyName": "SRI GANESHA ENTERPRISES  (BENGALORE)",
+        "totalAmount": 79734.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRIRAM DRUG HOUSE ( CHINTAMANI )",
+        "totalAmount": 77880,
+        "transactionCount": 2,
+        "relationshipDuration": 84
+      },
+      {
+        "partyName": "Rajendra Surgicals  (Rajaji Nagar )",
+        "totalAmount": 69408,
+        "transactionCount": 2,
+        "relationshipDuration": 29
+      },
+      {
+        "partyName": "BHOOMI ENTERPRISES   ( BANGALORE )",
+        "totalAmount": 66852,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "BASH HEAL HOME HEALTH CARE SERVICES PRIVATE LIMITED",
+        "totalAmount": 66080.43,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PRITHVI MEDIC AID  (BANGALORE)",
+        "totalAmount": 64589.2,
+        "transactionCount": 3,
+        "relationshipDuration": 23
+      },
+      {
+        "partyName": "PATEL SURGICAL &  EQUIPMENT",
+        "totalAmount": 64304.64,
+        "transactionCount": 4,
+        "relationshipDuration": 30
+      },
+      {
+        "partyName": "SRI LB PHARMA (  BENGALORE )",
+        "totalAmount": 63258.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RADHA MEDICALS DENTAL & SURGICAL DIVISION",
+        "totalAmount": 62530.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "THE MYSORE SURGICAL HOUSE",
+        "totalAmount": 58635.9,
+        "transactionCount": 3,
+        "relationshipDuration": 13
+      },
+      {
+        "partyName": "RAMDEV AGENCIES",
+        "totalAmount": 47571.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "CELEBRATE HEALTH  (MAGADI ROAD)",
+        "totalAmount": 47332.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ASHAPURA DRUG HOUSE (BANGLORE)",
+        "totalAmount": 47082,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "BROTHERS AGENCIES ( BANGLORE)",
+        "totalAmount": 41664,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAHAVEER SURGICALS ( Chamarajpet )",
+        "totalAmount": 40197.76,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "BANGALORE SURGICAL (GOVINDAPURA)",
+        "totalAmount": 36160.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "JINESHWAR PHARMA(Banglore)",
+        "totalAmount": 36108,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "OMKAR PHARMA ( CHKKABALLAPUR )",
+        "totalAmount": 26433.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "ARHAM ORTHO & SURGI NEEDS ( BENGALORE )",
+        "totalAmount": 20944,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI DEEPAK PHARMA AGENCY",
+        "totalAmount": 18762,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PREDOS PHARMACEUTICALS   [  Bengaloe ]",
+        "totalAmount": 16284,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "OM MARKETING ( BANGLORE)",
+        "totalAmount": 9968,
+        "transactionCount": 2,
+        "relationshipDuration": 49
+      },
+      {
+        "partyName": "C.M. KHADER & SONS SURGICAL & GENERAL",
+        "totalAmount": 6804,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Raghu Ta": {
+    "totalParties": 45,
+    "totalAmount": 2419717.59,
+    "totalTransactions": 156,
+    "parties": [
+      {
+        "partyName": "SRI VENKATESHWARA PHARMA MEDICAL AND SURGICAL DISTR",
+        "totalAmount": 178905.1,
+        "transactionCount": 4,
+        "relationshipDuration": 69
+      },
+      {
+        "partyName": "MANASA PHARMA DISTRIBUTORS  [ KARIM NAGAR ]",
+        "totalAmount": 178144.04,
+        "transactionCount": 9,
+        "relationshipDuration": 75
+      },
+      {
+        "partyName": "SURGICARE SHOPPIE",
+        "totalAmount": 159111.4,
+        "transactionCount": 6,
+        "relationshipDuration": 72
+      },
+      {
+        "partyName": "INDIAN INJECTABLE & SURGICAL PHARMA DISTRIBUTORS",
+        "totalAmount": 140859.8,
+        "transactionCount": 11,
+        "relationshipDuration": 57
+      },
+      {
+        "partyName": "SRI GAYATHRI SURGICALS (KAMAREDDY)",
+        "totalAmount": 132525,
+        "transactionCount": 6,
+        "relationshipDuration": 45
+      },
+      {
+        "partyName": "SREE BALAJI SURGICALS (VIVEKANANDA)",
+        "totalAmount": 128819.05,
+        "transactionCount": 6,
+        "relationshipDuration": 66
+      },
+      {
+        "partyName": "SAI MARUTHI MEDICAL AND SURGICAL AGENCIES",
+        "totalAmount": 119932.86,
+        "transactionCount": 7,
+        "relationshipDuration": 79
+      },
+      {
+        "partyName": "MH PHARMA (VIVEKANANDA )",
+        "totalAmount": 119594.12,
+        "transactionCount": 8,
+        "relationshipDuration": 69
+      },
+      {
+        "partyName": "SRI LAXMI PHARMA DISTRIBUTORS (KAMAREDDY)",
+        "totalAmount": 111019,
+        "transactionCount": 7,
+        "relationshipDuration": 82
+      },
+      {
+        "partyName": "AMAR PHARMA SCIENTIFIC & EQUIPMENTS (KARIMNAGAR)",
+        "totalAmount": 110018.88,
+        "transactionCount": 7,
+        "relationshipDuration": 80
+      },
+      {
+        "partyName": "NEW LIFE LINE PHARMA DISTRIBUTORS",
+        "totalAmount": 65272.16,
+        "transactionCount": 4,
+        "relationshipDuration": 23
+      },
+      {
+        "partyName": "MAHESHWARI PHARMACY MANCHERIAL",
+        "totalAmount": 57579.5,
+        "transactionCount": 6,
+        "relationshipDuration": 47
+      },
+      {
+        "partyName": "SMS SURGICAL",
+        "totalAmount": 55687.25,
+        "transactionCount": 4,
+        "relationshipDuration": 33
+      },
+      {
+        "partyName": "UNIVERSAL SURGICALS (HYDERABAD)",
+        "totalAmount": 52221.28,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "M/s. MEDIMART PHARMACY",
+        "totalAmount": 50217.86,
+        "transactionCount": 4,
+        "relationshipDuration": 77
+      },
+      {
+        "partyName": "VARAHI MEDICAL AND SURGICALS",
+        "totalAmount": 43745.7,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI SHARADHA SURGICALS (SIDHIPETA)",
+        "totalAmount": 43614.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RAJANNA PHARMACY WHOLE SALE AND RETAIL",
+        "totalAmount": 42893.15,
+        "transactionCount": 4,
+        "relationshipDuration": 67
+      },
+      {
+        "partyName": "TELANGANA MEDICAL & INJECTABLE DISTRIBUTORS",
+        "totalAmount": 40145.08,
+        "transactionCount": 4,
+        "relationshipDuration": 30
+      },
+      {
+        "partyName": "RAJA RAJESWARA SURGICAL DISTRIBUTOR",
+        "totalAmount": 38199.64,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AKSHITHA ENTERPRISES (HYDERABAD)",
+        "totalAmount": 36846.1,
+        "transactionCount": 4,
+        "relationshipDuration": 25
+      },
+      {
+        "partyName": "SRI NEELIMA PHARMACEUTICALS  (HYDRABAD)",
+        "totalAmount": 35537.65,
+        "transactionCount": 3,
+        "relationshipDuration": 27
+      },
+      {
+        "partyName": "JANANEE MEDICAL AND SURGICALS (KARIMNAGAR)",
+        "totalAmount": 35413.6,
+        "transactionCount": 3,
+        "relationshipDuration": 17
+      },
+      {
+        "partyName": "SRI LAXMI PHARMA(HYDRABAD)",
+        "totalAmount": 34891.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI VENKATA LARVEN PHARMACEUTICALS",
+        "totalAmount": 34738.96,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NEW SRI SAI PHARMA AND SURGICALS",
+        "totalAmount": 33170,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI RAJA RAJESHWARA ENTERPRISES [ GODAVARIKHANI ]",
+        "totalAmount": 30887.28,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NATARAJ SCIENTIFIC AND SURGICALS",
+        "totalAmount": 29616.8,
+        "transactionCount": 5,
+        "relationshipDuration": 56
+      },
+      {
+        "partyName": "LOTUS PHARMACY & SURGICALS",
+        "totalAmount": 28761.02,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PARAMOUNT SURGICALS (HYDERABAD)",
+        "totalAmount": 27617.8,
+        "transactionCount": 3,
+        "relationshipDuration": 30
+      },
+      {
+        "partyName": "OM SAI SURGGICAL (HYDERABAD)",
+        "totalAmount": 24789.44,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI VIGNA HEALTHCARE   (SAI NAGAR)",
+        "totalAmount": 24258.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KARIMNAGAR MEDILINES",
+        "totalAmount": 23751,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SUJATHA SURGICALS (HYDERABAD)",
+        "totalAmount": 21948,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SAI BHAGWAN SURGICAL AND PHARMACEUTICALS SIRCILLA",
+        "totalAmount": 19450.54,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHIVA SURGICALS & MEDICALS (TELANGANA)",
+        "totalAmount": 17880.96,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AYYAPPA PHARMACY AND DISTRIBUTORS",
+        "totalAmount": 17812.62,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI KANAKAMAHALAXMI PHARMA AND SURGICALS",
+        "totalAmount": 15120,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI LAKSHMI VENKATESHWARA ENTERPRISES",
+        "totalAmount": 15035.95,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GPR TECH DIAGNO PLASTICS (ECIL)",
+        "totalAmount": 10825.72,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "RAMA SURGICALS (SECUNDERABAD)",
+        "totalAmount": 9933,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAA SAI SURGICALS",
+        "totalAmount": 9930.64,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "LAKSHMI KARTHIKEYA MEDICAL AND SURGICAL AGENCIES",
+        "totalAmount": 7073,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "VR MEDITECH ENTERPRISES (TELANGANA)",
+        "totalAmount": 5042.64,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SRI GANAPATHI PHARMA DISTRIBUTORS (ALWAL)",
+        "totalAmount": 878.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Pankaj Sharma Pb": {
+    "totalParties": 22,
+    "totalAmount": 2343519.15,
+    "totalTransactions": 105,
+    "parties": [
+      {
+        "partyName": "AAR VEE PHARMACEUTICALS (PATHANKOT)",
+        "totalAmount": 328316.32,
+        "transactionCount": 12,
+        "relationshipDuration": 88
+      },
+      {
+        "partyName": "TRIDEV PHARMACEUTICALS   [BHATINDA]",
+        "totalAmount": 275951.68,
+        "transactionCount": 7,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "G.S. SURGICARE (AMRITSAR)",
+        "totalAmount": 242954.59,
+        "transactionCount": 12,
+        "relationshipDuration": 89
+      },
+      {
+        "partyName": "DPT ENTERPRISES",
+        "totalAmount": 219129,
+        "transactionCount": 7,
+        "relationshipDuration": 23
+      },
+      {
+        "partyName": "KARAM CHAND VISHAL KUMAR  (PATHANKOT)",
+        "totalAmount": 204039.68,
+        "transactionCount": 9,
+        "relationshipDuration": 83
+      },
+      {
+        "partyName": "SUNIL ENTERPRISES",
+        "totalAmount": 123318.24,
+        "transactionCount": 6,
+        "relationshipDuration": 62
+      },
+      {
+        "partyName": "ESS ESS KHANNA SURGICAL INDIAN (MEDCAL ENCALVE)",
+        "totalAmount": 120314.4,
+        "transactionCount": 4,
+        "relationshipDuration": 65
+      },
+      {
+        "partyName": "B K & Sons",
+        "totalAmount": 110299,
+        "transactionCount": 2,
+        "relationshipDuration": 31
+      },
+      {
+        "partyName": "JYOTI MEDICINE CENTRE & SURGICAL GOODS (MOGA)",
+        "totalAmount": 100221.04,
+        "transactionCount": 8,
+        "relationshipDuration": 79
+      },
+      {
+        "partyName": "GANDHI MEDICAL STORE ( AMRITSAR )",
+        "totalAmount": 93541.04,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "DARSHAN TRADERS (BATALA)",
+        "totalAmount": 88480,
+        "transactionCount": 2,
+        "relationshipDuration": 13
+      },
+      {
+        "partyName": "VIBGYOR PHARMACEUTICALS",
+        "totalAmount": 75343.6,
+        "transactionCount": 4,
+        "relationshipDuration": 84
+      },
+      {
+        "partyName": "KHANNA SURGIMED (AMRITSAR)",
+        "totalAmount": 74522.56,
+        "transactionCount": 5,
+        "relationshipDuration": 43
+      },
+      {
+        "partyName": "BEE GEE SURGICAL CO   ( BHATINDA )",
+        "totalAmount": 61244.16,
+        "transactionCount": 5,
+        "relationshipDuration": 65
+      },
+      {
+        "partyName": "BEDI MEDICOS & SURGICALS (GURDASPUR)",
+        "totalAmount": 56213.2,
+        "transactionCount": 4,
+        "relationshipDuration": 44
+      },
+      {
+        "partyName": "SHYAM HEALTH CARE(ABOHAR)",
+        "totalAmount": 43363,
+        "transactionCount": 2,
+        "relationshipDuration": 45
+      },
+      {
+        "partyName": "KHANNA SURGICALS  [ CIRCULAR ROAD ]",
+        "totalAmount": 35917,
+        "transactionCount": 2,
+        "relationshipDuration": 43
+      },
+      {
+        "partyName": "GROVER MEDICAL AGENCY (ZIRA)",
+        "totalAmount": 27771.54,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GURU NANAK MEDICOS (AMRITSAR)",
+        "totalAmount": 26192.2,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHAGUN PHARMA (FARIDKOT)",
+        "totalAmount": 23653,
+        "transactionCount": 2,
+        "relationshipDuration": 45
+      },
+      {
+        "partyName": "PREM MEDICAL AGENCY (MUKTSAR)",
+        "totalAmount": 12733.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SAAHIL ENTERPRISES",
+        "totalAmount": 0.3,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Mandeep Singh Hp": {
+    "totalParties": 11,
+    "totalAmount": 2054435.84,
+    "totalTransactions": 60,
+    "parties": [
+      {
+        "partyName": "ALPIC PHARMA",
+        "totalAmount": 738111.48,
+        "transactionCount": 8,
+        "relationshipDuration": 52
+      },
+      {
+        "partyName": "DND ENTERPRISES",
+        "totalAmount": 249473.88,
+        "transactionCount": 7,
+        "relationshipDuration": 63
+      },
+      {
+        "partyName": "WALIA MEDICAL STORE (HAMIRPUR)",
+        "totalAmount": 238143.96,
+        "transactionCount": 7,
+        "relationshipDuration": 74
+      },
+      {
+        "partyName": "RUDRANSH ENTERPRISES (KANGRA)",
+        "totalAmount": 168015.96,
+        "transactionCount": 3,
+        "relationshipDuration": 43
+      },
+      {
+        "partyName": "SUDARSHAN MEDICAL AGENCIES",
+        "totalAmount": 152133.72,
+        "transactionCount": 9,
+        "relationshipDuration": 86
+      },
+      {
+        "partyName": "RANGRA MEDICAL AGENCY  [HAMIRPUR]",
+        "totalAmount": 146198.8,
+        "transactionCount": 7,
+        "relationshipDuration": 55
+      },
+      {
+        "partyName": "DHAWAN ENTERPRISES",
+        "totalAmount": 126272.8,
+        "transactionCount": 5,
+        "relationshipDuration": 69
+      },
+      {
+        "partyName": "ESS AAR ENTERPRISES",
+        "totalAmount": 102407.8,
+        "transactionCount": 8,
+        "relationshipDuration": 79
+      },
+      {
+        "partyName": "A.R. ENTERPRISES (MANDI)",
+        "totalAmount": 60140,
+        "transactionCount": 2,
+        "relationshipDuration": 76
+      },
+      {
+        "partyName": "ARCHIE MEDICAL STORE (HAMIRPUR)",
+        "totalAmount": 38109.28,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "HIMALYA MEDICAL STORE (UNA)",
+        "totalAmount": 35428.16,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Pradeep Pandey Br": {
+    "totalParties": 9,
+    "totalAmount": 1779862.78,
+    "totalTransactions": 33,
+    "parties": [
+      {
+        "partyName": "SRI SAI ENTERPRISES   (PATNA)",
+        "totalAmount": 839903.5,
+        "transactionCount": 10,
+        "relationshipDuration": 75
+      },
+      {
+        "partyName": "SURGI HUB (PATNA)",
+        "totalAmount": 234965.76,
+        "transactionCount": 7,
+        "relationshipDuration": 62
+      },
+      {
+        "partyName": "SAHU SURGICALS (PATNA)",
+        "totalAmount": 200189.6,
+        "transactionCount": 4,
+        "relationshipDuration": 22
+      },
+      {
+        "partyName": "NEELA SURGICAL CENTRE (Muzaffarpur)",
+        "totalAmount": 159751.92,
+        "transactionCount": 3,
+        "relationshipDuration": 66
+      },
+      {
+        "partyName": "KORAL HEALTHCARE (PATNA)",
+        "totalAmount": 128780.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MANISH SURGICAL ( Hajipur )",
+        "totalAmount": 104258.2,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SAMVAD ENTERPRISES",
+        "totalAmount": 89580,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SSV ENTERPRISES",
+        "totalAmount": 22433.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "VEDANT DISTRIBUTORS",
+        "totalAmount": 0.2,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Naveen Kl": {
+    "totalParties": 23,
+    "totalAmount": 1529324.5,
+    "totalTransactions": 74,
+    "parties": [
+      {
+        "partyName": "SUPRIYA DRUGS AND SURGICALS",
+        "totalAmount": 303688.28,
+        "transactionCount": 10,
+        "relationshipDuration": 44
+      },
+      {
+        "partyName": "SOLAR SURGICALS INDIA",
+        "totalAmount": 186297.36,
+        "transactionCount": 7,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "SARASWATHY AGENCY (TRIVANDRUM)",
+        "totalAmount": 126732.04,
+        "transactionCount": 6,
+        "relationshipDuration": 79
+      },
+      {
+        "partyName": "ULTRAONE HEALTHCARE   (KANNUR)",
+        "totalAmount": 114691.6,
+        "transactionCount": 5,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "COSMIC SURGICALS",
+        "totalAmount": 106118.2,
+        "transactionCount": 6,
+        "relationshipDuration": 67
+      },
+      {
+        "partyName": "LIFE INDIA MARKETING ( KANNUR )",
+        "totalAmount": 103485.4,
+        "transactionCount": 3,
+        "relationshipDuration": 21
+      },
+      {
+        "partyName": "BIOMEDIZONE",
+        "totalAmount": 73920,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "CALICUT SURGICALS",
+        "totalAmount": 67910.5,
+        "transactionCount": 5,
+        "relationshipDuration": 26
+      },
+      {
+        "partyName": "M.S DISTRIBUTERS (KOLLAM)",
+        "totalAmount": 50304.32,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "KAIRALI MEDICALS   [ KANNUR ]",
+        "totalAmount": 44624.8,
+        "transactionCount": 3,
+        "relationshipDuration": 14
+      },
+      {
+        "partyName": "HUMANITY HEALTHCARE (KANNUR)",
+        "totalAmount": 42584.72,
+        "transactionCount": 3,
+        "relationshipDuration": 84
+      },
+      {
+        "partyName": "THINKAL DRUGS (KOTTAYAM)",
+        "totalAmount": 41664,
+        "transactionCount": 2,
+        "relationshipDuration": 58
+      },
+      {
+        "partyName": "MEDILAND SURGICAL DISTRIBUTORS( THIRUVALLA )",
+        "totalAmount": 38940,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "COCHIN SURGICAL SUPPLIERS",
+        "totalAmount": 38510,
+        "transactionCount": 2,
+        "relationshipDuration": 4
+      },
+      {
+        "partyName": "MEDIGRAPHIC (VARKALA )",
+        "totalAmount": 34449.52,
+        "transactionCount": 3,
+        "relationshipDuration": 48
+      },
+      {
+        "partyName": "MINI ASSOCIATES",
+        "totalAmount": 27161.2,
+        "transactionCount": 3,
+        "relationshipDuration": 14
+      },
+      {
+        "partyName": "STANDARD SURGICAL SYNDICATE",
+        "totalAmount": 24137.24,
+        "transactionCount": 3,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SUN SURGICALS AND HEALTHCARE ( taliparamba )",
+        "totalAmount": 21037.92,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SOORYA LIFE CARE SURGICALS & MEDICAL ACCESSORIES LLP",
+        "totalAmount": 20768,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "VENSURG HEALTHCARE PRIVATE LIMITED",
+        "totalAmount": 19824,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MEDADE HEALTHCARE (KOZHIKODE)",
+        "totalAmount": 17355,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "AR ASSOCIATES          (TRIVANDRUM)",
+        "totalAmount": 14794.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "FALCON SURGICALS (KANNUR)",
+        "totalAmount": 10325.6,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Sandeep Saiwan Mh": {
+    "totalParties": 7,
+    "totalAmount": 1356212.95,
+    "totalTransactions": 28,
+    "parties": [
+      {
+        "partyName": "CHANDRA ENTERPRISES",
+        "totalAmount": 803812.16,
+        "transactionCount": 7,
+        "relationshipDuration": 67
+      },
+      {
+        "partyName": "D.N. ASSOCIATES (NAGPUR)",
+        "totalAmount": 114276,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "MAHAVIR MEDISURGE  [ Amravati  ]",
+        "totalAmount": 101416.27,
+        "transactionCount": 5,
+        "relationshipDuration": 54
+      },
+      {
+        "partyName": "HARIOM AGENCIES (AMRAVATI)",
+        "totalAmount": 95963.96,
+        "transactionCount": 5,
+        "relationshipDuration": 47
+      },
+      {
+        "partyName": "MANISH AGENCIES ( YAVATMAL)",
+        "totalAmount": 90222.56,
+        "transactionCount": 3,
+        "relationshipDuration": 41
+      },
+      {
+        "partyName": "ADITYA ENTERPRISES (NAGPUR)",
+        "totalAmount": 86708.8,
+        "transactionCount": 5,
+        "relationshipDuration": 7
+      },
+      {
+        "partyName": "JAYLAXMI SURGICAL   {BULDHANA ]",
+        "totalAmount": 63813.2,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "NIlesh Sahupukar Mh": {
+    "totalParties": 12,
+    "totalAmount": 1323757.33,
+    "totalTransactions": 49,
+    "parties": [
+      {
+        "partyName": "RUSHABH SURGICALS",
+        "totalAmount": 442292.84,
+        "transactionCount": 14,
+        "relationshipDuration": 82
+      },
+      {
+        "partyName": "KRISHNA AGENCY (PUNE)",
+        "totalAmount": 299185.4,
+        "transactionCount": 6,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "PRIME SURGICAL AND PHARMA [ PUNE ]",
+        "totalAmount": 106010.12,
+        "transactionCount": 6,
+        "relationshipDuration": 72
+      },
+      {
+        "partyName": "OM REMEDIES ( AKLUJ)",
+        "totalAmount": 85105.15,
+        "transactionCount": 3,
+        "relationshipDuration": 53
+      },
+      {
+        "partyName": "SANI SURGICAL (LATUR)",
+        "totalAmount": 79698.8,
+        "transactionCount": 3,
+        "relationshipDuration": 61
+      },
+      {
+        "partyName": "AUNSH ENTERPRISES  (Beed)",
+        "totalAmount": 77448.38,
+        "transactionCount": 4,
+        "relationshipDuration": 38
+      },
+      {
+        "partyName": "HUMA PHARMA & SURGICAL ( Solapur )",
+        "totalAmount": 63808.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "DWARKA PHARMA (PUNE)",
+        "totalAmount": 62140.4,
+        "transactionCount": 3,
+        "relationshipDuration": 35
+      },
+      {
+        "partyName": "TIRUPATI SURGICAL (KALAMB)",
+        "totalAmount": 38450.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "PURVA DISTRIBUTORS (SOLAPUR)",
+        "totalAmount": 30106.4,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "GANESH SURGICAL(BEED)",
+        "totalAmount": 25387.84,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "SHREE MORYA AGENCIES (AHEMEDNAGAR)",
+        "totalAmount": 14122.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Siddharth Sharma": {
+    "totalParties": 6,
+    "totalAmount": 284422.86,
+    "totalTransactions": 15,
+    "parties": [
+      {
+        "partyName": "UNIVERSAL SURGICAL (GURGAON)",
+        "totalAmount": 118235.22,
+        "transactionCount": 8,
+        "relationshipDuration": 69
+      },
+      {
+        "partyName": "MEDLIFE PHARMACY",
+        "totalAmount": 115636.64,
+        "transactionCount": 3,
+        "relationshipDuration": 30
+      },
+      {
+        "partyName": "APARNA MEDICALS (OPC) PRIVATE LIMITED",
+        "totalAmount": 19470,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "TRIDENT PHARMACEUTICAL AND SURGICAL (GURUGRAM)",
+        "totalAmount": 17192,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "NEW SAGAR MEDICOS  (JHAJJAR)",
+        "totalAmount": 12768,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      },
+      {
+        "partyName": "Hari Ram",
+        "totalAmount": 1121,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Munish Rana Chd": {
+    "totalParties": 2,
+    "totalAmount": 75482.8,
+    "totalTransactions": 4,
+    "parties": [
+      {
+        "partyName": "GARG MEDICAL AND SURGICAL AGENCIES (PARWANO)",
+        "totalAmount": 43496,
+        "transactionCount": 2,
+        "relationshipDuration": 7
+      },
+      {
+        "partyName": "SHIRDI SAI SALES",
+        "totalAmount": 31986.8,
+        "transactionCount": 2,
+        "relationshipDuration": 0
+      }
+    ]
+  },
+  "Soumitra (West Bengal)": {
+    "totalParties": 1,
+    "totalAmount": 54480,
+    "totalTransactions": 1,
+    "parties": [
+      {
+        "partyName": "ARATI DRUGS & SURGICALS (GUWAHATI)",
+        "totalAmount": 54480,
+        "transactionCount": 1,
+        "relationshipDuration": 0
+      }
+    ]
+  }
+}

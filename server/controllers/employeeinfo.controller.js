@@ -365,22 +365,74 @@ exports.getEmployeeDetail = async (req, res) => {
 
         // Aggregate all parties (employee + all subordinates)
         let allParties = Array.isArray(employee.party) ? [...employee.party] : [];
+        console.log(`[DEBUG] Employee ${employee.empName} has parties:`, employee.party);
+        
         for (const sub of allSubordinates) {
             if (Array.isArray(sub.party)) {
                 allParties = allParties.concat(sub.party);
             }
         }
-        // Remove duplicates
-        allParties = [...new Set(allParties.filter(Boolean))];
+        // Remove duplicates and filter out empty values
+        allParties = [...new Set(allParties.filter(party => party && party.trim() !== '' && party !== 'Party A' && party !== 'Party B'))];
+        console.log(`[DEBUG] Total valid parties for ${employee.empName}:`, allParties.length, allParties.slice(0, 5));
 
         // Fetch invoices for all parties
         const TallyVoucher = require("../models/tallyVoucher.model");
         let invoices = [];
         if (allParties.length > 0) {
-            invoices = await TallyVoucher.find({
+            // Query both party and partyledgername fields to ensure we catch all vouchers
+            const rawInvoices = await TallyVoucher.find({
                 companyId: companyId,
-                party: { $in: allParties }
-            }).sort({ date: -1 });
+                $or: [
+                    { party: { $in: allParties } },
+                    { partyledgername: { $in: allParties } }
+                ]
+            }).sort({ date: -1 }).limit(1000); // Limit to prevent excessive data
+            
+            // Process invoices to add debit/credit information and transaction nature
+            invoices = rawInvoices.map(invoice => {
+                // Determine if this is income or expense based on voucher type and amount
+                let transactionType = 'Unknown';
+                let debitCreditType = 'Dr'; // Default
+                
+                if (invoice.voucherType === 'Sales') {
+                    // For sales, positive amount typically means income (customer owes us money)
+                    transactionType = invoice.amount >= 0 ? 'Income' : 'Return';
+                    debitCreditType = invoice.amount >= 0 ? 'Dr' : 'Cr';
+                } else if (invoice.voucherType === 'Purchase') {
+                    // For purchases, positive amount typically means expense (we owe supplier money)
+                    transactionType = invoice.amount >= 0 ? 'Expense' : 'Return';
+                    debitCreditType = invoice.amount >= 0 ? 'Cr' : 'Dr';
+                } else if (invoice.voucherType === 'Payment') {
+                    transactionType = 'Payment';
+                    debitCreditType = 'Cr';
+                } else if (invoice.voucherType === 'Receipt') {
+                    transactionType = 'Receipt';
+                    debitCreditType = 'Dr';
+                }
+                
+                // Convert to plain object and add our fields
+                const invoiceObj = invoice.toObject();
+                return {
+                    ...invoiceObj,
+                    transactionType,
+                    debitCreditType,
+                    // Add a computed field for display
+                    displayAmount: Math.abs(invoice.amount || 0),
+                    isPositive: (invoice.amount || 0) >= 0
+                };
+            });
+            
+            console.log(`[DEBUG] Found ${invoices.length} invoices for ${employee.empName}`);
+            if (invoices.length > 0) {
+                console.log(`[DEBUG] Sample invoice details:`, invoices.slice(0, 2).map(inv => ({
+                    voucherNumber: inv.voucherNumber,
+                    party: inv.party || inv.partyledgername,
+                    amount: inv.amount,
+                    transactionType: inv.transactionType,
+                    debitCreditType: inv.debitCreditType
+                })));
+            }
         }
 
         return res.status(200).json({

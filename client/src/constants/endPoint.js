@@ -15,6 +15,7 @@ export const SECOND_TELLY_FILE_UPLOAD = "/tally/create"
 export const TELLY_REPORT_UPLOAD = "/credit/create"
 export const UPLOAD_SALARY_REPORT = "/salary/insert"
 export const UPLOAD_RATE_DIFFERENCE_REPORT = "/tally/rateDifference"
+export const UPLOAD_VOUCHER_EXCEL = "/tally/upload/vouchers"
 
 
 export const GET_REPORTING_MANAGER_BY_DESIGNATION = "/empinfo/get?"

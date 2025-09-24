@@ -5,7 +5,7 @@ import Auth from './auth/reducers';
 import Layout from './layout/reducers';
 import {MonthListReducer} from './month/reducers';
 import { GetDesignationReducer,getZoneListReducer } from './addEmployee/reducers';
-import { uploadTellyReportS,uploadSecondTellyFIle,uploadSalaryFile,uploadRateDifferenceFile } from './upload/reducers';
+import { uploadTellyReportS,uploadSecondTellyFIle,uploadSalaryFile,uploadRateDifferenceFile, voucherUpload } from './upload/reducers';
 import { StateCreateReducer,getStateReducer ,createCityReducer,getCityReducer,InsertDesignationReducer,UpdateStateReducer,UpdateDesignationReducer,CreateProjectionReducer,GetProjectionReducer,UpdateProjectionReducer,UpdateCityReducer,deleteDesignationReducer,deleteCityReducer,
    getZoneReducer ,deleteStateReducer,createZoneReducer,getCityByState,deleteZoneReducer,getStateByZoneReducer,UpdateZoneReducer,getFullMonthReucer,addMonthTaregtReducer} from './setting/reducers';
 import {TotalMonthSaleReducer,TotalExpenditureReducer,MonthExpenditureReducer,TargetAchievedReducer,ProductReportReducer,AnnualSaleGraphReducer,OverallDataReducer,SaleExecutiveReportReducer,RevenueByLocationtReducer,NorthZoneReportReducer,
@@ -57,7 +57,7 @@ export default (combineReducers({
     deleteDesignationReducer,
     deleteCityReducer,
     deleteStateReducer,
-    NorthZoneReportReducer,SouthZoneReportReducer,EastZoneReportReducer,WestZoneReportReducer,WestZoneReportReducer,BdeListReducer,
+    NorthZoneReportReducer,SouthZoneReportReducer,EastZoneReportReducer,WestZoneReportReducer,BdeListReducer,
     CentralZoneReportReducer,
     getCityByState,
     getStateByZoneReducer,
@@ -75,9 +75,7 @@ export default (combineReducers({
     BdeEastListReducer,
     BdeWestListReducer,
     BdeCenterListReducer,
-    ProductCSVReportReducer
+    ProductCSVReportReducer,
+    voucherUpload
 
-  
-    
-
-}): any);
+}));

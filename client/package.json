@@ -80,6 +80,7 @@
     "simplebar-react": "^2.3.6",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^1.0.1",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.9"
   },
   "scripts": {

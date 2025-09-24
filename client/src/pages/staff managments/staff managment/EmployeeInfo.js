@@ -33,7 +33,12 @@ const EmployeeInfo = () => {
                 setLoading(true);
                 setError('');
                 const res = await api.get('empinfo/' + id);
-                if (mounted) setData(res.data.response);
+                if (mounted) {
+                    console.log('Employee Detail API Response:', res.data.response);
+                    console.log('Employee parties:', res.data.response?.employee?.party);
+                    console.log('Invoices count:', res.data.response?.invoices?.length || 0);
+                    setData(res.data.response);
+                }
             } catch (e) {
                 if (mounted) setError(typeof e === 'string' ? e : 'Failed to load employee');
             } finally {
@@ -48,6 +53,19 @@ const EmployeeInfo = () => {
 
     useEffect(() => {
         const fetchRelated = async () => {
+            // Use the invoices data from the employee detail API response instead of making separate calls
+            if (data?.invoices) {
+                console.log(`Using invoices from employee detail API: ${data.invoices.length} invoices`);
+                setRelated({ 
+                    vouchers: data.invoices, 
+                    ledgers: [], // We can fetch ledgers separately if needed
+                    loading: false, 
+                    error: '' 
+                });
+                return;
+            }
+            
+            // Fallback to the old method if no invoices in response
             if (!data?.employee?.empName) return;
             setRelated((s) => ({ ...s, loading: true, error: '' }));
             try {
@@ -60,15 +78,22 @@ const EmployeeInfo = () => {
                 // Filter vouchers by employee's party list if present
                 const parties = Array.isArray(data.employee.party) ? data.employee.party : [];
                 if (parties.length > 0) {
-                    vouchers = vouchers.filter(v => v.party && parties.includes(v.party));
+                    console.log(`Filtering ${vouchers.length} vouchers by ${parties.length} parties`);
+                    vouchers = vouchers.filter(v => {
+                        const matchesParty = v.party && parties.includes(v.party);
+                        const matchesPartyledger = v.partyledgername && parties.includes(v.partyledgername);
+                        return matchesParty || matchesPartyledger;
+                    });
+                    console.log(`After filtering: ${vouchers.length} vouchers`);
                 }
                 setRelated({ vouchers, ledgers, loading: false, error: '' });
             } catch (e) {
+                console.error('Error fetching related data:', e);
                 setRelated({ vouchers: [], ledgers: [], loading: false, error: 'Failed to load related invoices/ledgers' });
             }
         };
         fetchRelated();
-    }, [data?.employee?.empName, data?.employee?.party, data?.employee?.empId]);
+    }, [data?.employee?.empName, data?.employee?.party, data?.employee?.empId, data?.invoices]);
 
     const employee = data?.employee || {};
     const reportingManager = data?.reportingManager;
@@ -80,14 +105,55 @@ const EmployeeInfo = () => {
         { label: employee?.empName || 'Employee', path: '#', active: true },
     ];
 
-    // Calculate total sales from vouchers
-    const totalSales = related.vouchers.reduce((sum, v) => typeof v.amount === 'number' ? sum + v.amount : sum, 0);
+    // Calculate total sales from vouchers with proper debit/credit handling
+    const salesCalculation = related.vouchers.reduce((acc, v) => {
+        const amount = typeof v.amount === 'number' ? v.amount : 0;
+        const displayAmount = Math.abs(amount);
+        
+        // Count different types of transactions
+        if (v.voucherType === 'Sales') {
+            if (amount >= 0) {
+                acc.totalSales += displayAmount;
+                acc.salesCount += 1;
+            } else {
+                acc.salesReturns += displayAmount;
+                acc.returnsCount += 1;
+            }
+        } else if (v.voucherType === 'Purchase') {
+            if (amount >= 0) {
+                acc.totalExpenses += displayAmount;
+                acc.expensesCount += 1;
+            }
+        } else if (v.voucherType === 'Payment') {
+            acc.totalPayments += displayAmount;
+            acc.paymentsCount += 1;
+        } else if (v.voucherType === 'Receipt') {
+            acc.totalReceipts += displayAmount;
+            acc.receiptsCount += 1;
+        }
+        
+        return acc;
+    }, {
+        totalSales: 0,
+        totalExpenses: 0,
+        totalPayments: 0,
+        totalReceipts: 0,
+        salesReturns: 0,
+        salesCount: 0,
+        expensesCount: 0,
+        paymentsCount: 0,
+        receiptsCount: 0,
+        returnsCount: 0
+    });
+
+    const netSales = salesCalculation.totalSales - salesCalculation.salesReturns;
+    
     const kpis = [
         { label: 'Monthly Target', value: employee?.mnthtarget },
         { label: 'Yearly Target', value: employee?.yrlytarget },
-        { label: 'Total Sales', value: totalSales ? totalSales.toLocaleString('en-IN') : '—' },
-        { label: 'Expenses', value: employee?.expenses },
-        { label: 'Performance %', value: employee?.percent },
+        { label: 'Total Sales', value: salesCalculation.totalSales ? `₹${salesCalculation.totalSales.toLocaleString('en-IN')}` : '—' },
+        { label: 'Expenses', value: salesCalculation.totalExpenses ? `₹${salesCalculation.totalExpenses.toLocaleString('en-IN')}` : '—' },
+        { label: 'Total Transactions', value: related.vouchers.length || '—' },
     ];
 
     return (
@@ -166,6 +232,30 @@ const EmployeeInfo = () => {
                                             <LabelValue label="Status" value={employee?.status ? 'Active' : 'Left'} />
                                             <LabelValue label="Monthly Target" value={employee?.mnthtarget} />
                                             <LabelValue label="Yearly Target" value={employee?.yrlytarget} />
+                                            <div className="label-value-item">
+                                                <span className="text-muted">Responsible Parties</span>
+                                                <span className="fw-semibold">
+                                                    {Array.isArray(employee?.party) && employee.party.length > 0 
+                                                        ? `${employee.party.length} parties` 
+                                                        : '—'
+                                                    }
+                                                </span>
+                                            </div>
+                                            {Array.isArray(employee?.party) && employee.party.length > 0 && (
+                                                <div className="mt-2">
+                                                    <div className="text-muted small mb-1">Sample Parties:</div>
+                                                    <div className="small">
+                                                        {employee.party.slice(0, 3).map((party, index) => (
+                                                            <div key={index} className="text-truncate" style={{ maxWidth: '250px' }}>
+                                                                {index + 1}. {party}
+                                                            </div>
+                                                        ))}
+                                                        {employee.party.length > 3 && (
+                                                            <div className="text-muted">... and {employee.party.length - 3} more</div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </Card.Body>
                                     </Card>
                                 </Col>
@@ -231,6 +321,45 @@ const EmployeeInfo = () => {
                             {related.error && !related.loading && (
                                 <div className="alert alert-warning" role="alert">{related.error}</div>
                             )}
+                            
+                            {/* Transaction Summary */}
+                            {related.vouchers.length > 0 && (
+                                <Row className="mb-3">
+                                    <Col md={3}>
+                                        <Card className="bg-light">
+                                            <Card.Body className="py-2 text-center">
+                                                <div className="text-success h5 mb-1">₹{salesCalculation.totalSales.toLocaleString('en-IN')}</div>
+                                                <div className="small text-muted">Sales ({salesCalculation.salesCount})</div>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                    <Col md={3}>
+                                        <Card className="bg-light">
+                                            <Card.Body className="py-2 text-center">
+                                                <div className="text-danger h5 mb-1">₹{salesCalculation.salesReturns.toLocaleString('en-IN')}</div>
+                                                <div className="small text-muted">Returns ({salesCalculation.returnsCount})</div>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                    <Col md={3}>
+                                        <Card className="bg-light">
+                                            <Card.Body className="py-2 text-center">
+                                                <div className="text-warning h5 mb-1">₹{salesCalculation.totalExpenses.toLocaleString('en-IN')}</div>
+                                                <div className="small text-muted">Expenses ({salesCalculation.expensesCount})</div>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                    <Col md={3}>
+                                        <Card className="bg-light">
+                                            <Card.Body className="py-2 text-center">
+                                                <div className="text-info h5 mb-1">{related.vouchers.length}</div>
+                                                <div className="small text-muted">Total Transactions</div>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                </Row>
+                            )}
+                            
                             <div className="table-responsive">
                                 <Table className="mb-0 table-centered">
                                     <thead>
@@ -240,6 +369,7 @@ const EmployeeInfo = () => {
                                             <th>Voucher No.</th>
                                             <th>Type</th>
                                             <th>Party</th>
+                                            <th>Dr/Cr</th>
                                             <th>Amount</th>
                                             <th>Narration</th>
                                         </tr>
@@ -253,10 +383,21 @@ const EmployeeInfo = () => {
                                                     </td>
                                                     <td>{v.date ? new Date(v.date).toLocaleDateString() : '—'}</td>
                                                     <td>{v.voucherNumber}</td>
-                                                    <td>{v.voucherType}</td>
-                                                    <td>{v.party || '—'}</td>
-                                                    <td>{typeof v.amount === 'number' ? v.amount.toLocaleString('en-IN') : '—'}</td>
-                                                    <td className="text-truncate" style={{ maxWidth: 300 }}>{v.narration || '—'}</td>
+                                                    <td>
+                                                        <span className={`badge ${v.voucherType === 'Sales' ? 'bg-success' : v.voucherType === 'Purchase' ? 'bg-warning' : 'bg-info'}`}>
+                                                            {v.voucherType}
+                                                        </span>
+                                                    </td>
+                                                    <td className="text-truncate" style={{ maxWidth: 200 }}>{v.party || v.partyledgername || '—'}</td>
+                                                    <td>
+                                                        <span className={`badge ${v.debitCreditType === 'Dr' ? 'bg-primary' : 'bg-secondary'}`}>
+                                                            {v.debitCreditType || 'Dr'}
+                                                        </span>
+                                                    </td>
+                                                    <td className={v.amount < 0 ? 'text-danger' : ''}>
+                                                        ₹{typeof v.displayAmount === 'number' ? v.displayAmount.toLocaleString('en-IN') : Math.abs(v.amount || 0).toLocaleString('en-IN')}
+                                                    </td>
+                                                    <td className="text-truncate" style={{ maxWidth: 200 }}>{v.narration || '—'}</td>
                                                 </tr>
                                                 {expandedVouchers[v._id] && (
                                                     <tr>

@@ -304,6 +304,198 @@ exports.getVoucherFetchStatus = (req, res) => {
     });
 };
 
+// Helper function to process voucher records in bulk for better performance
+async function processVoucherRecords(vouchers, companyId, voucherFetchState) {
+    const VendorTransaction = require('../models/vendorTransaction.model');
+    const SalesExecutive = require('../models/salesExecutive.model');
+    
+    if (!vouchers.length) return;
+    
+    try {
+        const bulkVouchers = [];
+        const bulkProducts = [];
+        const bulkVendors = [];
+        const bulkExecutives = [];
+
+        // Prepare bulk operations for all vouchers
+        for (const voucher of vouchers) {
+            // Parse date using helper function
+            let parsedDate = parseTallyDate(voucher.date);
+
+            // Skip voucher if critical data is missing
+            if (!voucher.voucherNumber) {
+                console.warn(`Skipping voucher with missing voucher number:`, voucher);
+                continue;
+            }
+
+            // Improved deduplication: Use compound unique key for better duplicate detection
+            const query = voucher.guid && voucher.guid.trim() !== ''
+                ? { guid: voucher.guid.trim(), companyId }
+                : {
+                    voucherNumber: voucher.voucherNumber,
+                    voucherType: voucher.voucherType || '',
+                    ...(parsedDate && { date: parsedDate }),
+                    companyId
+                };
+            
+            // Prepare voucher bulk operation
+            bulkVouchers.push({
+                updateOne: {
+                    filter: query,
+                    update: {
+                        $set: {
+                            ...voucher,
+                            ...(voucher.raw || {}),
+                            companyId,
+                            date: parsedDate,
+                            year: parsedDate ? parsedDate.getFullYear() : null,
+                            lastUpdated: new Date()
+                        }
+                    },
+                    upsert: true
+                }
+            });
+
+            // --- Product sales extraction (existing tallyModel) ---
+            let inventory = voucher.raw?.INVENTORYENTRIES?.LIST || voucher.raw?.['INVENTORYENTRIES.LIST'] || [];
+            if (!Array.isArray(inventory)) inventory = [inventory];
+            for (const item of inventory) {
+                const productObj = {
+                    ...item,
+                    date: parsedDate,
+                    company: voucher.party,
+                    product: item.STOCKITEMNAME || item.STOCKITEM || '',
+                    employee: '',
+                    invoice: voucher.voucherNumber,
+                    totalPcs: item.BILLEDQTY || item.ACTUALQTY || '',
+                    productPcs: item.BILLEDQTY || item.ACTUALQTY || '',
+                    productPrice: item.AMOUNT || 0,
+                    totalAmount: item.AMOUNT || 0,
+                    tax: '',
+                    netAmount: item.AMOUNT || 0,
+                    companyid: companyId,
+                    monthId: null,
+                    year: parsedDate ? parsedDate.getFullYear() : date.getFullYear()
+                };
+                
+                bulkProducts.push({
+                    updateOne: {
+                        filter: {
+                            ...(productObj.date && { date: productObj.date }),
+                            invoice: productObj.invoice,
+                            company: productObj.company,
+                            product: productObj.product,
+                            companyid: companyId,
+                            year: productObj.year
+                        },
+                        update: { $set: productObj },
+                        upsert: true
+                    }
+                });
+            }
+
+            // --- Vendor transaction extraction ---
+            if ((voucher.voucherType && voucher.voucherType.toLowerCase().includes('purchase')) || (voucher.party)) {
+                const vendorObj = {
+                    ...voucher,
+                    date: parsedDate,
+                    voucherNumber: voucher.voucherNumber,
+                    voucherType: voucher.voucherType,
+                    vendorName: voucher.party,
+                    amount: voucher.amount,
+                    narration: voucher.narration,
+                    companyId,
+                    year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
+                    lastUpdated: new Date()
+                };
+                
+                bulkVendors.push({
+                    updateOne: {
+                        filter: {
+                            ...(vendorObj.date && { date: vendorObj.date }),
+                            voucherNumber: vendorObj.voucherNumber,
+                            vendorName: vendorObj.vendorName,
+                            companyId,
+                            year: vendorObj.year
+                        },
+                        update: { $set: vendorObj },
+                        upsert: true
+                    }
+                });
+            }
+
+            // --- Sales executive extraction ---
+            let execName = '';
+            if (voucher.narration && voucher.narration.toLowerCase().includes('sales by')) {
+                const match = voucher.narration.match(/sales by[:\-]?\s*([a-zA-Z .]+)/i);
+                if (match && match[1]) execName = match[1].trim();
+            }
+            let costCenter = '';
+            if (voucher.raw?.COSTCENTRENAME) costCenter = String(voucher.raw.COSTCENTRENAME);
+            else if (voucher.raw?.COSTCENTRE && voucher.raw.COSTCENTRE.NAME) costCenter = String(voucher.raw.COSTCENTRE.NAME);
+            if (!execName && costCenter) execName = costCenter;
+            
+            if (execName) {
+                const execObj = {
+                    ...voucher,
+                    date: parsedDate,
+                    voucherNumber: voucher.voucherNumber,
+                    voucherType: voucher.voucherType,
+                    party: voucher.party,
+                    executive: execName,
+                    amount: voucher.amount,
+                    narration: voucher.narration,
+                    companyId,
+                    year: parsedDate ? parsedDate.getFullYear() : date.getFullYear(),
+                    lastUpdated: new Date()
+                };
+                
+                bulkExecutives.push({
+                    updateOne: {
+                        filter: {
+                            ...(execObj.date && { date: execObj.date }),
+                            voucherNumber: execObj.voucherNumber,
+                            executive: execObj.executive,
+                            companyId,
+                            year: execObj.year
+                        },
+                        update: { $set: execObj },
+                        upsert: true
+                    }
+                });
+            }
+        }
+
+        // Execute bulk operations with error handling
+        const bulkResults = await Promise.allSettled([
+            bulkVouchers.length > 0 ? TallyVoucher.bulkWrite(bulkVouchers, { ordered: false }) : Promise.resolve({ upsertedCount: 0 }),
+            bulkProducts.length > 0 ? tallyModel.bulkWrite(bulkProducts, { ordered: false }) : Promise.resolve({ upsertedCount: 0 }),
+            bulkVendors.length > 0 ? VendorTransaction.bulkWrite(bulkVendors, { ordered: false }) : Promise.resolve({ upsertedCount: 0 }),
+            bulkExecutives.length > 0 ? SalesExecutive.bulkWrite(bulkExecutives, { ordered: false }) : Promise.resolve({ upsertedCount: 0 })
+        ]);
+
+        // Update counters based on actual upserts
+        bulkResults.forEach((result, index) => {
+            if (result.status === 'fulfilled') {
+                const upsertedCount = result.value.upsertedCount || 0;
+                switch (index) {
+                    case 0: voucherFetchState.totals.vouchers += upsertedCount; break;
+                    case 1: voucherFetchState.totals.products += upsertedCount; break;
+                    case 2: voucherFetchState.totals.vendors += upsertedCount; break;
+                    case 3: voucherFetchState.totals.executives += upsertedCount; break;
+                }
+            } else {
+                console.error(`Bulk operation ${index} failed:`, result.reason);
+                voucherFetchState.errors.push(`Bulk operation failed: ${result.reason.message}`);
+            }
+        });
+
+    } catch (error) {
+        console.error('Error processing voucher records:', error);
+        voucherFetchState.errors.push(`Error processing vouchers: ${error.message}`);
+    }
+}
+
 // Helper function to process a single voucher record
 async function processVoucherRecord(voucher, companyId, voucherFetchState) {
     const VendorTransaction = require('../models/vendorTransaction.model');
@@ -468,7 +660,7 @@ async function processVoucherRecord(voucher, companyId, voucherFetchState) {
     }
 }
 
-async function runVoucherFetch(companyId) {
+async function runVoucherFetch(companyId, customFromDate = null, customToDate = null) {
     const VendorTransaction = require('../models/vendorTransaction.model');
     const SalesExecutive = require('../models/salesExecutive.model');
 
@@ -481,23 +673,71 @@ async function runVoucherFetch(companyId) {
     voucherFetchState.errors = [];
 
     try {
-        console.log('🔄 Starting voucher fetch process...');
+        console.log('🔄 Starting optimized voucher fetch process...');
         console.log(`📊 Company ID: ${companyId}`);
 
-        // Clear existing voucher collections first
-        console.log('🗑️ Clearing existing voucher data...');
+        // Incremental clearing: Clear in smaller batches to avoid memory issues
+        console.log('🗑️ Clearing existing voucher data incrementally...');
+        const clearBatchSize = 1000;
+        
+        // Clear TallyVoucher in batches using findAndDelete approach
+        let totalCleared = 0;
+        while (true) {
+            // Find documents to delete in batches
+            const docsToDelete = await TallyVoucher.find({ companyId }).limit(clearBatchSize).select('_id');
+            if (docsToDelete.length === 0) break;
+            
+            const idsToDelete = docsToDelete.map(doc => doc._id);
+            const result = await TallyVoucher.deleteMany({ _id: { $in: idsToDelete } });
+            
+            totalCleared += result.deletedCount;
+            console.log(`Cleared ${totalCleared} voucher records so far...`);
+            
+            // Small delay to prevent overwhelming the database
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Clear other collections normally (they're typically smaller)
+        console.log('🗑️ Clearing related collections...');
         await Promise.all([
-            TallyVoucher.deleteMany({ companyId }),
             tallyModel.deleteMany({ companyId }),
             VendorTransaction.deleteMany({ companyId }),
             SalesExecutive.deleteMany({ companyId })
         ]);
         console.log('✅ Existing voucher data cleared successfully');
 
-        // Fetch vouchers from January 1, 2023 till now as requested
-        const fromDate = new Date('2023-01-01');
-        const toDate = new Date();
-        const batchDays = 15; // Optimized batch size: smaller batches for better reliability
+        // HEALTH CHECK: Test Tally connectivity with yesterday's data first
+        console.log('🔍 Testing Tally connectivity before starting batch process...');
+        try {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const testFrom = yesterday.toISOString().split('T')[0].replace(/-/g, '');
+            const testTo = yesterday.toISOString().split('T')[0].replace(/-/g, '');
+            
+            const testData = await tallyService.fetchVouchersUltraMinimal(testFrom, testTo);
+            const testNormalized = tallyService.normalizeVouchers(testData);
+            console.log(`✅ Health check passed: ${testNormalized.length} vouchers found for ${testFrom}`);
+        } catch (healthErr) {
+            console.error(`❌ Health check FAILED: ${healthErr.message}`);
+            voucherFetchState.errors.push(`Health check failed: ${healthErr.message}`);
+            throw new Error(`Tally connectivity test failed. Cannot proceed with voucher fetch: ${healthErr.message}`);
+        }
+
+        // Use custom date range if provided, otherwise default to last 1 YEAR ONLY (not 6 months)
+        let fromDate, toDate;
+        if (customFromDate && customToDate) {
+            fromDate = new Date(customFromDate);
+            toDate = new Date(customToDate);
+            console.log(`📅 Using custom date range: ${fromDate.toDateString()} to ${toDate.toDateString()}`);
+        } else {
+            // Fetch vouchers from ONLY last 1 year to drastically reduce load
+            fromDate = new Date();
+            fromDate.setFullYear(fromDate.getFullYear() - 1); // Only last 1 year
+            toDate = new Date();
+            console.log(`📅 Using default date range (LAST 1 YEAR ONLY): ${fromDate.toDateString()} to ${toDate.toDateString()}`);
+        }
+        
+        const batchDays = 1; // SINGLE DAY batches only - maximum reliability
         let start = new Date(fromDate);
         let end = new Date(toDate);
 
@@ -512,7 +752,14 @@ async function runVoucherFetch(companyId) {
         voucherFetchState.batchTotal = Math.ceil(((end - start) / (1000 * 60 * 60 * 24) + 1) / batchDays);
         
         console.log(`📅 Fetching vouchers from ${fromDate.toDateString()} to ${toDate.toDateString()}`);
-        console.log(`📊 Total batches planned: ${voucherFetchState.batchTotal} (${batchDays} days per batch)`);
+        console.log(`📊 Total batches planned: ${voucherFetchState.batchTotal} (${batchDays} day per batch - SINGLE DAY ONLY)`);
+        console.log(`⚠️  ULTRA-CONSERVATIVE MODE: 10s delays, 5min+ timeouts, ultra-minimal payloads`);
+
+        // Rate limiting variables - MUCH longer delays to give Tally maximum recovery time
+        const requestDelay = 10000;  // Increased from 5s to 10s delay between requests
+        const batchDelay = 20000;    // Increased from 10s to 20s delay between batches for maximum Tally recovery
+        let consecutiveErrors = 0;
+        const maxConsecutiveErrors = 1; // Reduced to 1 - stop immediately on any error and recover
 
         while (start <= end && voucherFetchState.isRunning) {
             voucherFetchState.batchCount++;
@@ -524,46 +771,46 @@ async function runVoucherFetch(companyId) {
             const batchFrom = batchStart.toISOString().split('T')[0].replace(/-/g, '');
             const batchTo = batchEnd.toISOString().split('T')[0].replace(/-/g, '');
 
+            // Adaptive delay based on consecutive errors
+            if (consecutiveErrors > 0) {
+                const backoffDelay = Math.min(requestDelay * Math.pow(2, consecutiveErrors), 30000); // Max 30s
+                console.log(`⏳ Applying backoff delay: ${backoffDelay/1000}s due to ${consecutiveErrors} consecutive errors`);
+                await new Promise(resolve => setTimeout(resolve, backoffDelay));
+            } else {
+                // Regular delay between requests
+                console.log(`⏳ Rate limiting delay: ${requestDelay/1000}s`);
+                await new Promise(resolve => setTimeout(resolve, requestDelay));
+            }
+
             let voucherData;
             try {
-                voucherData = await tallyService.fetchVouchers(batchFrom, batchTo);
+                console.log(`🔄 Fetching batch ${voucherFetchState.batchCount}/${voucherFetchState.batchTotal} (${batchFrom}-${batchTo})...`);
+                
+                // START with ultra-minimal payload to prevent crashes
+                let voucherData;
+                try {
+                    console.log(`🟡 Trying ultra-minimal payload first for maximum reliability...`);
+                    voucherData = await tallyService.fetchVouchersUltraMinimal(batchFrom, batchTo);
+                } catch (ultraErr) {
+                    console.log(`⚠️ Ultra-minimal failed, this indicates serious Tally issues: ${ultraErr.message}`);
+                    throw ultraErr; // If even ultra-minimal fails, there's a bigger problem
+                }
+                
+                consecutiveErrors = 0; // Reset error counter on success
             } catch (err) {
+                consecutiveErrors++;
                 const msg = `Voucher batch ${batchFrom}-${batchTo} error: ${err.message}`;
                 console.error(msg);
                 voucherFetchState.errors.push(msg);
                 
-                // Try smaller sub-batches if main batch fails
-                if (batchDays > 3) {
-                    console.log(`🔄 Attempting smaller batches for failed range ${batchFrom}-${batchTo}`);
-                    const smallBatchDays = Math.max(1, Math.floor(batchDays / 3));
-                    let subStart = new Date(batchStart);
-                    
-                    while (subStart <= batchEnd) {
-                        let subEnd = new Date(subStart);
-                        subEnd.setDate(subEnd.getDate() + smallBatchDays - 1);
-                        if (subEnd > batchEnd) subEnd = new Date(batchEnd);
-                        
-                        const subFrom = subStart.toISOString().split('T')[0].replace(/-/g, '');
-                        const subTo = subEnd.toISOString().split('T')[0].replace(/-/g, '');
-                        
-                        try {
-                            const subVoucherData = await tallyService.fetchVouchers(subFrom, subTo);
-                            const subNormalizedVouchers = tallyService.normalizeVouchers(subVoucherData);
-                            console.log(`✅ Sub-batch ${subFrom}-${subTo}: ${subNormalizedVouchers.length} vouchers recovered`);
-                            
-                            // Process sub-batch vouchers
-                            for (const voucher of subNormalizedVouchers) {
-                                await processVoucherRecord(voucher, companyId, voucherFetchState);
-                            }
-                        } catch (subErr) {
-                            console.error(`❌ Sub-batch ${subFrom}-${subTo} also failed: ${subErr.message}`);
-                            voucherFetchState.errors.push(`Sub-batch ${subFrom}-${subTo} error: ${subErr.message}`);
-                        }
-                        
-                        subStart.setDate(subStart.getDate() + smallBatchDays);
-                    }
+                // Circuit breaker: Stop if too many consecutive errors - IMMEDIATE PAUSE
+                if (consecutiveErrors >= maxConsecutiveErrors) {
+                    console.error(`❌ Circuit breaker triggered: ${consecutiveErrors} consecutive errors. Pausing for LONG recovery...`);
+                    await new Promise(resolve => setTimeout(resolve, 120000)); // 2 minute recovery pause
+                    consecutiveErrors = 0; // Reset after recovery pause
                 }
                 
+                // Skip sub-batches for single-day batches - they're already minimal
                 start.setDate(start.getDate() + batchDays);
                 voucherFetchState.percent = Math.round((voucherFetchState.batchCount / Math.max(1, voucherFetchState.batchTotal)) * 100);
                 voucherFetchState.lastBatch = { range: `${batchFrom}-${batchTo}`, count: 0, error: err.message };
@@ -576,10 +823,20 @@ async function runVoucherFetch(companyId) {
             // Log batch progress
             voucherFetchState.percent = Math.round((voucherFetchState.batchCount / Math.max(1, voucherFetchState.batchTotal)) * 100);
             voucherFetchState.lastBatch = { range: `${batchFrom}-${batchTo}`, count: batchVoucherCount };
-            console.log(`Voucher batch ${voucherFetchState.batchCount}/${voucherFetchState.batchTotal} (${batchFrom}-${batchTo}): ${batchVoucherCount} vouchers. Progress: ${voucherFetchState.percent}%`);
+            console.log(`✅ Voucher batch ${voucherFetchState.batchCount}/${voucherFetchState.batchTotal} (${batchFrom}-${batchTo}): ${batchVoucherCount} vouchers. Progress: ${voucherFetchState.percent}%`);
 
-            for (const voucher of normalizedVouchers) {
-                await processVoucherRecord(voucher, companyId, voucherFetchState);
+            // Process vouchers with bulk operations for better performance
+            const dbBatchSize = 50; // Process 50 vouchers at a time to reduce memory usage
+            for (let i = 0; i < normalizedVouchers.length; i += dbBatchSize) {
+                const voucherBatch = normalizedVouchers.slice(i, i + dbBatchSize);
+                
+                // Use bulk processing for better performance
+                await processVoucherRecords(voucherBatch, companyId, voucherFetchState);
+                
+                // Small delay between micro-batches to prevent database overload
+                if (i + dbBatchSize < normalizedVouchers.length) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
             }
 
             // Save checkpoint after successful batch processing
@@ -588,6 +845,10 @@ async function runVoucherFetch(companyId) {
                 batchCount: voucherFetchState.batchCount,
                 totals: { ...voucherFetchState.totals }
             };
+
+            // Delay between successful batches to give Tally time to recover
+            console.log(`⏳ Batch completed. Waiting ${batchDelay/1000}s before next batch...`);
+            await new Promise(resolve => setTimeout(resolve, batchDelay));
 
             start.setDate(start.getDate() + batchDays);
         }
@@ -937,6 +1198,10 @@ exports.fetchTallyVouchers = async (req, res) => {
 exports.fetchTallyVouchers = async (req, res) => {
     try {
         const companyId = mongoose.Types.ObjectId(req.userid);
+        
+        // Allow custom date range from request body
+        let customFromDate = req.body?.fromDate;
+        let customToDate = req.body?.toDate;
 
         if (voucherFetchState.isRunning) {
             return res.status(200).json({
@@ -949,7 +1214,9 @@ exports.fetchTallyVouchers = async (req, res) => {
         // Reset and start in background
         resetVoucherFetchState();
         voucherFetchState.isRunning = true;
-        setImmediate(() => runVoucherFetch(companyId));
+        
+        // Pass custom date range to the background function
+        setImmediate(() => runVoucherFetch(companyId, customFromDate, customToDate));
 
         return res.status(202).json({
             status: 202,
@@ -961,6 +1228,42 @@ exports.fetchTallyVouchers = async (req, res) => {
         return res.status(500).json({
             status: 500,
             message: 'Failed to start voucher fetch',
+            error: error.message
+        });
+    }
+};
+
+// Test Tally connection and fetch a small sample
+exports.testTallyConnection = async (req, res) => {
+    try {
+        const tallyService = new (require('../services/tallyService'))();
+        
+        // Test with just yesterday's data
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const today = new Date();
+        
+        const from = yesterday.toISOString().split('T')[0].replace(/-/g, '');
+        const to = today.toISOString().split('T')[0].replace(/-/g, '');
+        
+        console.log(`🧪 Testing Tally connection with minimal data: ${from}-${to}`);
+        
+        const testData = await tallyService.fetchVouchersMinimal(from, to);
+        const normalized = tallyService.normalizeVouchers(testData);
+        
+        res.status(200).json({
+            status: 200,
+            message: 'Tally connection test successful',
+            data: {
+                dateRange: `${from}-${to}`,
+                voucherCount: normalized.length,
+                sampleVouchers: normalized.slice(0, 3) // Show first 3 for testing
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Tally connection test failed',
             error: error.message
         });
     }
@@ -1946,6 +2249,131 @@ exports.getComprehensiveDashboard = async (req, res) => {
         res.status(500).json({
             status: 500,
             message: "Failed to fetch comprehensive dashboard data",
+            error: error.message
+        });
+    }
+};
+
+// ============= VOUCHER EXCEL UPLOAD CONTROLLER =============
+
+exports.uploadVoucherExcel = async (req, res) => {
+    try {
+        const companyId = mongoose.Types.ObjectId(req.userid);
+        const voucherData = JSON.parse(req.body.voucherData || '[]');
+        const fileName = req.body.fileName || 'voucher-upload.xlsx';
+        
+        console.log(`📤 Starting voucher Excel upload for company: ${companyId}`);
+        console.log(`📊 Processing ${voucherData.length} vouchers from file: ${fileName}`);
+        
+        if (!voucherData || voucherData.length === 0) {
+            return res.status(400).json({
+                status: 400,
+                message: "No voucher data provided"
+            });
+        }
+
+        // Track upload statistics
+        const uploadStats = {
+            total: voucherData.length,
+            uploaded: 0,
+            duplicates: 0,
+            errors: 0,
+            errorDetails: []
+        };
+
+        // Process vouchers in batches for better performance
+        const batchSize = 50;
+        const bulkOps = [];
+        
+        for (const voucher of voucherData) {
+            try {
+                // Parse and validate date
+                const voucherDate = new Date(voucher.date);
+                if (isNaN(voucherDate.getTime())) {
+                    uploadStats.errors++;
+                    uploadStats.errorDetails.push(`Invalid date for voucher: ${voucher.voucherNumber}`);
+                    continue;
+                }
+
+                // Prepare voucher document
+                const voucherDoc = {
+                    date: voucherDate,
+                    voucherNumber: String(voucher.voucherNumber || '').trim(),
+                    voucherType: String(voucher.voucherType || '').trim(),
+                    voucherTypeName: String(voucher.voucherTypeName || '').trim(),
+                    party: String(voucher.party || '').trim(),
+                    partyledgername: String(voucher.partyledgername || '').trim(),
+                    amount: parseFloat(voucher.amount || 0),
+                    narration: String(voucher.narration || '').trim(),
+                    reference: String(voucher.reference || '').trim(),
+                    isDeemedPositive: Boolean(voucher.isDeemedPositive),
+                    companyId: companyId,
+                    year: voucherDate.getFullYear(),
+                    lastUpdated: new Date(),
+                    // Store upload metadata
+                    uploadSource: 'excel',
+                    uploadFileName: fileName,
+                    uploadDate: new Date()
+                };
+
+                // Create unique filter to prevent duplicates
+                const filter = {
+                    voucherNumber: voucherDoc.voucherNumber,
+                    voucherType: voucherDoc.voucherType,
+                    date: voucherDoc.date,
+                    companyId: companyId
+                };
+
+                // Add to bulk operations
+                bulkOps.push({
+                    updateOne: {
+                        filter: filter,
+                        update: { $set: voucherDoc },
+                        upsert: true
+                    }
+                });
+
+            } catch (voucherError) {
+                uploadStats.errors++;
+                uploadStats.errorDetails.push(`Error processing voucher ${voucher.voucherNumber}: ${voucherError.message}`);
+                console.error(`❌ Error processing voucher ${voucher.voucherNumber}:`, voucherError.message);
+            }
+        }
+
+        // Execute bulk operations
+        if (bulkOps.length > 0) {
+            console.log(`💾 Executing bulk write operations for ${bulkOps.length} vouchers...`);
+            
+            const bulkResult = await TallyVoucher.bulkWrite(bulkOps, { ordered: false });
+            
+            uploadStats.uploaded = bulkResult.upsertedCount + bulkResult.modifiedCount;
+            uploadStats.duplicates = bulkOps.length - uploadStats.uploaded - uploadStats.errors;
+            
+            console.log(`✅ Voucher upload completed:`);
+            console.log(`   - Total processed: ${uploadStats.total}`);
+            console.log(`   - Successfully uploaded: ${uploadStats.uploaded}`);
+            console.log(`   - Duplicates skipped: ${uploadStats.duplicates}`);
+            console.log(`   - Errors: ${uploadStats.errors}`);
+        }
+
+        // Clean up any temporary files (if uploaded)
+        // Note: Since we're receiving JSON data, no file cleanup needed
+
+        // Return success response
+        res.status(201).json({
+            status: 201,
+            message: "Voucher upload completed successfully",
+            data: {
+                uploadStats,
+                summary: `${uploadStats.uploaded} vouchers uploaded, ${uploadStats.duplicates} duplicates skipped, ${uploadStats.errors} errors`
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Voucher upload error:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to upload vouchers",
             error: error.message
         });
     }

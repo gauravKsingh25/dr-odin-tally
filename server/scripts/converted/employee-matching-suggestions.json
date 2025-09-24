@@ -1,0 +1,268 @@
+{
+  "summary": {
+    "totalUnmatchedEmployees": 32,
+    "potentialMatches": 2,
+    "noMatches": 30
+  },
+  "suggestions": [
+    {
+      "employeeName": "Vishwash Sharma",
+      "employeeId": "68c17869ae3f56ce422bb76c",
+      "suggestedMatch": "Siddharth Sharma",
+      "matchScore": 60,
+      "matchReason": "last_name_exact",
+      "partiesCount": 6,
+      "parties": [
+        "UNIVERSAL SURGICAL (GURGAON)",
+        "MEDLIFE PHARMACY",
+        "APARNA MEDICALS (OPC) PRIVATE LIMITED",
+        "TRIDENT PHARMACEUTICAL AND SURGICAL (GURUGRAM)",
+        "NEW SAGAR MEDICOS  (JHAJJAR)",
+        "Hari Ram"
+      ],
+      "currentParties": [
+        "Party A",
+        "Party B"
+      ]
+    },
+    {
+      "employeeName": "Dilip Singh",
+      "employeeId": "68c17869ae3f56ce422bb76f",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "SHIVANK",
+      "employeeId": "68c17869ae3f56ce422bb772",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "SWAPNIL TIWARI",
+      "employeeId": "68c1786aae3f56ce422bb775",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Mohammed Haness Bhatt",
+      "employeeId": "68c1786aae3f56ce422bb77f",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "PARDIUM SHARMA",
+      "employeeId": "68c1786aae3f56ce422bb785",
+      "suggestedMatch": "Siddharth Sharma",
+      "matchScore": 60,
+      "matchReason": "last_name_exact",
+      "partiesCount": 6,
+      "parties": [
+        "UNIVERSAL SURGICAL (GURGAON)",
+        "MEDLIFE PHARMACY",
+        "APARNA MEDICALS (OPC) PRIVATE LIMITED",
+        "TRIDENT PHARMACEUTICAL AND SURGICAL (GURUGRAM)",
+        "NEW SAGAR MEDICOS  (JHAJJAR)",
+        "Hari Ram"
+      ],
+      "currentParties": [
+        "Party A",
+        "Party B"
+      ]
+    },
+    {
+      "employeeName": "DHEERAJ MEHTA",
+      "employeeId": "68c1786aae3f56ce422bb788",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "SHUBHAM TANDEL",
+      "employeeId": "68c1786bae3f56ce422bb794",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "ANIL BHATIA",
+      "employeeId": "68c1786bae3f56ce422bb797",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Chaman Tiwari",
+      "employeeId": "68c1786bae3f56ce422bb79d",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Harshit Shukla",
+      "employeeId": "68c1786bae3f56ce422bb7a6",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "AMIT PRAJAPATI (NEW)",
+      "employeeId": "68c1786bae3f56ce422bb7a9",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "YASHPAL GUJAR",
+      "employeeId": "68c1786cae3f56ce422bb7af",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Dhanesh Kumar Mokhedi",
+      "employeeId": "68c1786cae3f56ce422bb7b2",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "KOUSHIK GHOSH",
+      "employeeId": "68c1786cae3f56ce422bb7b8",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "SEKHAR GHOSH",
+      "employeeId": "68c1786cae3f56ce422bb7bb",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Prabal Bhattacharjee (New)",
+      "employeeId": "68c1786cae3f56ce422bb7be",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "ROSHAN MAHANAMA",
+      "employeeId": "68c1786cae3f56ce422bb7c6",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "AMAN KUMAR",
+      "employeeId": "68c1786cae3f56ce422bb7c9",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "NAVIN KUMAR SINGH (NEW)",
+      "employeeId": "68c1786dae3f56ce422bb7cf",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Dhiraj Kumar",
+      "employeeId": "68c1786dae3f56ce422bb7d7",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "MANIVANAN VC",
+      "employeeId": "68c1786dae3f56ce422bb7da",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "AKASH CHANNAPUR",
+      "employeeId": "68c1786dae3f56ce422bb7dd",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Y Raghu Reddy",
+      "employeeId": "68c1786dae3f56ce422bb7e3",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "S.SURESH",
+      "employeeId": "68c1786dae3f56ce422bb7eb",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "KUMARSENA",
+      "employeeId": "68c1786dae3f56ce422bb7ee",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Shaymal Mishra",
+      "employeeId": "68c1786dae3f56ce422bb7f1",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "Sandip Dashratha saiwan",
+      "employeeId": "68c1786eae3f56ce422bb7f9",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "PRATIK BHAVSAR",
+      "employeeId": "68c1786eae3f56ce422bb7ff",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "ANAND MISHRA",
+      "employeeId": "68c1786eae3f56ce422bb802",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "SHUBHAM MISHRA",
+      "employeeId": "68c1786eae3f56ce422bb805",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    },
+    {
+      "employeeName": "KAKADIYA JAYESH",
+      "employeeId": "68c1786eae3f56ce422bb808",
+      "suggestedMatch": null,
+      "matchScore": 0,
+      "matchReason": "no_match"
+    }
+  ],
+  "instructions": {
+    "howToUse": "Review the suggestions and run the update script with approved matches",
+    "confidenceGuide": {
+      "90-100": "Very high confidence - likely correct",
+      "70-89": "High confidence - probably correct",
+      "50-69": "Medium confidence - needs manual review"
+    }
+  },
+  "timestamp": "2025-09-23T19:51:12.294Z"
+}

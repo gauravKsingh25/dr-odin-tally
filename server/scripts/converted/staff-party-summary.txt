@@ -1,0 +1,204 @@
+============================================================
+STAFF-PARTY CONNECTION SUMMARY REPORT
+============================================================
+Generated on: 24/9/2025, 12:40:51 am
+Total Staff Members: 22
+
+1. Vivek Agra
+   └── Parties: 30
+   └── Transactions: 143
+   └── Total Amount: ₹60,01,706.62
+   └── Top 3 Parties by Amount:
+       1. ANANT PHARMA AGENCIES: ₹15,64,241.68 (18 transactions)
+       2. PRAMA ENTERPRISES  ( LUCKNOW ): ₹5,42,594.6 (15 transactions)
+       3. RAJPUT SURGICAL (ALIGARH): ₹4,18,020.8 (4 transactions)
+
+2. Souvik Head
+   └── Parties: 43
+   └── Transactions: 152
+   └── Total Amount: ₹55,07,240.37
+   └── Top 3 Parties by Amount:
+       1. SHREE SHYAM STORE  ( Silliguri ): ₹7,67,000 (2 transactions)
+       2. DEY ENTERPRISE: ₹5,74,234.58 (11 transactions)
+       3. NAVEEN SURGICAL PVT. LTD.(KOLKATA): ₹3,97,038.28 (9 transactions)
+
+3. Anoop Srivastav Up
+   └── Parties: 29
+   └── Transactions: 107
+   └── Total Amount: ₹45,56,198.53
+   └── Top 3 Parties by Amount:
+       1. RAISE  SURGIMED INC.: ₹8,49,975.98 (21 transactions)
+       2. ALOK MEDICAL AND SURGICAL (VARANASI): ₹7,20,862.8 (7 transactions)
+       3. J.P. REHABILATION: ₹6,53,336.72 (5 transactions)
+
+4. Shyamal Mishra Head Mh
+   └── Parties: 24
+   └── Transactions: 78
+   └── Total Amount: ₹39,80,956.93
+   └── Top 3 Parties by Amount:
+       1. APEX INTERNATIONAL: ₹16,86,181.6 (2 transactions)
+       2. LIFEYELID ENTERPRISES: ₹6,32,480 (1 transactions)
+       3. PARAM HEALTH SOLUTION LLP: ₹1,42,423.44 (8 transactions)
+
+5. Brijmohan Head Raj
+   └── Parties: 63
+   └── Transactions: 166
+   └── Total Amount: ₹37,27,379.83
+   └── Top 3 Parties by Amount:
+       1. ARISE MEDICARE SYSTEMS PVT. LTD.: ₹2,99,329.92 (7 transactions)
+       2. VINAYAK ENTERPRISES (JAIPUR): ₹2,90,980.96 (7 transactions)
+       3. SOOFI MEDICOS: ₹2,38,855.6 (7 transactions)
+
+6. Venkatesh Ap
+   └── Parties: 48
+   └── Transactions: 139
+   └── Total Amount: ₹36,18,202.54
+   └── Top 3 Parties by Amount:
+       1. SRI SRINIVASA MEDICAL ENTERPRISES: ₹3,34,399.2 (6 transactions)
+       2. PRASANNA MEDICAL AND SURGICALS: ₹2,39,095.6 (5 transactions)
+       3. EMPIRE SCIENTIFIC AND SURGICALS: ₹2,27,410 (2 transactions)
+
+7. Rohit Jha Guj
+   └── Parties: 42
+   └── Transactions: 143
+   └── Total Amount: ₹33,88,867.25
+   └── Top 3 Parties by Amount:
+       1. BHAVANI MEDICARE: ₹4,07,713.92 (8 transactions)
+       2. SUN SURGICAL (SURAT): ₹3,20,804.56 (8 transactions)
+       3. KAILASH ENTERPRISE (GUJARAT): ₹2,98,106.24 (4 transactions)
+
+8. Vikas Kumar Chk
+   └── Parties: 40
+   └── Transactions: 118
+   └── Total Amount: ₹32,53,467.31
+   └── Top 3 Parties by Amount:
+       1. PRAVEEN BROTHERS  (RANCHI): ₹3,01,516 (3 transactions)
+       2. BIJAYA ENTERPRISES (CUTTACK): ₹2,26,643.8 (4 transactions)
+       3. VEDANT DISTRIBUTORS: ₹2,26,339.96 (6 transactions)
+
+9. Rahul  Sharma Uk
+   └── Parties: 16
+   └── Transactions: 128
+   └── Total Amount: ₹30,77,520
+   └── Top 3 Parties by Amount:
+       1. AARVI SURGICAL (DEHRADUN): ₹5,69,530.8 (16 transactions)
+       2. KRISHNA SURGICALS & MEDICALS (HARIDWAR): ₹5,61,122.4 (13 transactions)
+       3. RAMA PHARMACEUTICALS (SAHARANPUR): ₹3,77,457.16 (19 transactions)
+
+10. Deepak Kamboj(Head)
+   └── Parties: 17
+   └── Transactions: 71
+   └── Total Amount: ₹29,01,692.27
+   └── Top 3 Parties by Amount:
+       1. J.K. SURGICAL OF INDIA  (  MANIMAJRA  ): ₹5,86,116.3 (12 transactions)
+       2. GOYAL BROTHERS MEDICAL AND SURGICALS: ₹5,58,030.75 (9 transactions)
+       3. AREVA LIFE SCIENCES: ₹2,66,637.72 (8 transactions)
+
+11. Naresh (Head)
+   └── Parties: 52
+   └── Transactions: 164
+   └── Total Amount: ₹27,62,539.31
+   └── Top 3 Parties by Amount:
+       1. JAIN ENTERPRISES (JALANDHAR): ₹2,20,920.56 (9 transactions)
+       2. AAR VEE PHARMACEUTICALS (PATHANKOT): ₹2,07,648 (3 transactions)
+       3. JALANDHAR ENTERPRISES: ₹1,74,982.48 (12 transactions)
+
+12. Irfan Ka
+   └── Parties: 32
+   └── Transactions: 73
+   └── Total Amount: ₹24,51,912.61
+   └── Top 3 Parties by Amount:
+       1. RAZA PHARMA: ₹2,35,484.4 (5 transactions)
+       2. M. RATAN AGENCIES  (BENGALURU): ₹1,86,156 (5 transactions)
+       3. RAMDEV DRUG HOUSE: ₹1,78,368.08 (3 transactions)
+
+13. Raghu Ta
+   └── Parties: 45
+   └── Transactions: 156
+   └── Total Amount: ₹24,19,717.59
+   └── Top 3 Parties by Amount:
+       1. SRI VENKATESHWARA PHARMA MEDICAL AND SURGICAL DISTR: ₹1,78,905.1 (4 transactions)
+       2. MANASA PHARMA DISTRIBUTORS  [ KARIM NAGAR ]: ₹1,78,144.04 (9 transactions)
+       3. SURGICARE SHOPPIE: ₹1,59,111.4 (6 transactions)
+
+14. Pankaj Sharma Pb
+   └── Parties: 22
+   └── Transactions: 105
+   └── Total Amount: ₹23,43,519.15
+   └── Top 3 Parties by Amount:
+       1. AAR VEE PHARMACEUTICALS (PATHANKOT): ₹3,28,316.32 (12 transactions)
+       2. TRIDEV PHARMACEUTICALS   [BHATINDA]: ₹2,75,951.68 (7 transactions)
+       3. G.S. SURGICARE (AMRITSAR): ₹2,42,954.59 (12 transactions)
+
+15. Mandeep Singh Hp
+   └── Parties: 11
+   └── Transactions: 60
+   └── Total Amount: ₹20,54,435.84
+   └── Top 3 Parties by Amount:
+       1. ALPIC PHARMA: ₹7,38,111.48 (8 transactions)
+       2. DND ENTERPRISES: ₹2,49,473.88 (7 transactions)
+       3. WALIA MEDICAL STORE (HAMIRPUR): ₹2,38,143.96 (7 transactions)
+
+16. Pradeep Pandey Br
+   └── Parties: 9
+   └── Transactions: 33
+   └── Total Amount: ₹17,79,862.78
+   └── Top 3 Parties by Amount:
+       1. SRI SAI ENTERPRISES   (PATNA): ₹8,39,903.5 (10 transactions)
+       2. SURGI HUB (PATNA): ₹2,34,965.76 (7 transactions)
+       3. SAHU SURGICALS (PATNA): ₹2,00,189.6 (4 transactions)
+
+17. Naveen Kl
+   └── Parties: 23
+   └── Transactions: 74
+   └── Total Amount: ₹15,29,324.5
+   └── Top 3 Parties by Amount:
+       1. SUPRIYA DRUGS AND SURGICALS: ₹3,03,688.28 (10 transactions)
+       2. SOLAR SURGICALS INDIA: ₹1,86,297.36 (7 transactions)
+       3. SARASWATHY AGENCY (TRIVANDRUM): ₹1,26,732.04 (6 transactions)
+
+18. Sandeep Saiwan Mh
+   └── Parties: 7
+   └── Transactions: 28
+   └── Total Amount: ₹13,56,212.95
+   └── Top 3 Parties by Amount:
+       1. CHANDRA ENTERPRISES: ₹8,03,812.16 (7 transactions)
+       2. D.N. ASSOCIATES (NAGPUR): ₹1,14,276 (1 transactions)
+       3. MAHAVIR MEDISURGE  [ Amravati  ]: ₹1,01,416.27 (5 transactions)
+
+19. NIlesh Sahupukar Mh
+   └── Parties: 12
+   └── Transactions: 49
+   └── Total Amount: ₹13,23,757.33
+   └── Top 3 Parties by Amount:
+       1. RUSHABH SURGICALS: ₹4,42,292.84 (14 transactions)
+       2. KRISHNA AGENCY (PUNE): ₹2,99,185.4 (6 transactions)
+       3. PRIME SURGICAL AND PHARMA [ PUNE ]: ₹1,06,010.12 (6 transactions)
+
+20. Siddharth Sharma
+   └── Parties: 6
+   └── Transactions: 15
+   └── Total Amount: ₹2,84,422.86
+   └── Top 3 Parties by Amount:
+       1. UNIVERSAL SURGICAL (GURGAON): ₹1,18,235.22 (8 transactions)
+       2. MEDLIFE PHARMACY: ₹1,15,636.64 (3 transactions)
+       3. APARNA MEDICALS (OPC) PRIVATE LIMITED: ₹19,470 (1 transactions)
+
+21. Munish Rana Chd
+   └── Parties: 2
+   └── Transactions: 4
+   └── Total Amount: ₹75,482.8
+   └── Top 3 Parties by Amount:
+       1. GARG MEDICAL AND SURGICAL AGENCIES (PARWANO): ₹43,496 (2 transactions)
+       2. SHIRDI SAI SALES: ₹31,986.8 (2 transactions)
+
+22. Soumitra (West Bengal)
+   └── Parties: 1
+   └── Transactions: 1
+   └── Total Amount: ₹54,480
+   └── Top 3 Parties by Amount:
+       1. ARATI DRUGS & SURGICALS (GUWAHATI): ₹54,480 (1 transactions)
+
+============================================================
+END OF REPORT
+============================================================

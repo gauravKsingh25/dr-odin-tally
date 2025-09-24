@@ -4,7 +4,14 @@
   "description": "login form ",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "test-tally": "node test-tally.js",
+    "test-tally-ps": "powershell -ExecutionPolicy Bypass -File test-tally.ps1",
+    "test-tally-bash": "bash test-tally.sh",
+    "pre-import-check": "node scripts/preImportCheck.js",
+    "validate-schema": "node scripts/validateSchema.js",
+    "import-sales-data": "node scripts/importSalesData.js",
+    "import:sales": "npm run pre-import-check && npm run validate-schema && npm run import-sales-data"
   },
   "author": "",
   "license": "ISC",
@@ -31,6 +38,7 @@
     "sequelize": "^6.31.0",
     "validator": "^13.9.0",
     "vercel": "^28.16.13",
+    "xlsx": "^0.18.5",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
