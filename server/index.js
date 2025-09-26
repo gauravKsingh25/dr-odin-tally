@@ -57,8 +57,9 @@ const tallyCronJob = new TallyCronJob();
 
 let port = process.env.PORT || 7010;
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`🚀 Server listening on port ${port}`);
+    console.log(`🌐 Server accessible at http://0.0.0.0:${port}`);
     console.log('🔄 Tally integration with FULL SYNC enabled');
     
     // Start automatic Tally full sync scheduler
