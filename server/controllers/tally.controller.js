@@ -2256,8 +2256,36 @@ exports.getComprehensiveDashboard = async (req, res) => {
 
 // ============= VOUCHER EXCEL UPLOAD CONTROLLER =============
 
+// Ensure database indexes are configured (run once on startup)
+let indexesEnsured = false;
+async function ensureVoucherIndexes() {
+    if (indexesEnsured) return;
+    
+    try {
+        console.log('🔧 Ensuring voucher database indexes...');
+        const existingIndexes = await TallyVoucher.collection.getIndexes();
+        const requiredIndexName = 'voucherNumber_1_companyId_1';
+        
+        if (!existingIndexes[requiredIndexName] || !existingIndexes[requiredIndexName].unique) {
+            console.log('⚠️  Creating unique index for voucher duplicate prevention...');
+            await TallyVoucher.collection.createIndex(
+                { voucherNumber: 1, companyId: 1 }, 
+                { unique: true, name: requiredIndexName, background: true }
+            );
+            console.log('✅ Unique index created successfully');
+        }
+        indexesEnsured = true;
+    } catch (error) {
+        console.error('❌ Failed to ensure indexes:', error);
+        // Don't fail the upload, but log the warning
+    }
+}
+
 exports.uploadVoucherExcel = async (req, res) => {
     try {
+        // Ensure database indexes are configured
+        await ensureVoucherIndexes();
+        
         const companyId = mongoose.Types.ObjectId(req.userid);
         const voucherData = JSON.parse(req.body.voucherData || '[]');
         const fileName = req.body.fileName || 'voucher-upload.xlsx';
@@ -2272,33 +2300,119 @@ exports.uploadVoucherExcel = async (req, res) => {
             });
         }
 
-        // Track upload statistics
+        // Track upload statistics with enhanced details
         const uploadStats = {
             total: voucherData.length,
             uploaded: 0,
             duplicates: 0,
+            dbDuplicates: 0, // Duplicates found in database
+            fileDuplicates: 0, // Duplicates within the uploaded file
             errors: 0,
-            errorDetails: []
+            errorDetails: [],
+            duplicateDetails: []
         };
 
-        // Process vouchers in batches for better performance
-        const batchSize = 50;
-        const bulkOps = [];
+        // Step 1: Check for duplicates within the uploaded file
+        const seenVouchers = new Map();
+        const uniqueVouchers = [];
         
         for (const voucher of voucherData) {
+            const voucherNumber = String(voucher.voucherNumber || '').trim();
+            
+            if (!voucherNumber) {
+                uploadStats.errors++;
+                uploadStats.errorDetails.push(`Empty voucher number at row ${voucherData.indexOf(voucher) + 1}`);
+                continue;
+            }
+            
+            // Create a unique key based on voucher number (primary key)
+            const uniqueKey = `${voucherNumber.toLowerCase()}`;
+            
+            if (seenVouchers.has(uniqueKey)) {
+                uploadStats.fileDuplicates++;
+                uploadStats.duplicateDetails.push(`Duplicate voucher number within file: ${voucherNumber} (rows ${seenVouchers.get(uniqueKey)} and ${voucherData.indexOf(voucher) + 1})`);
+                continue;
+            }
+            
+            seenVouchers.set(uniqueKey, voucherData.indexOf(voucher) + 1);
+            uniqueVouchers.push(voucher);
+        }
+        
+        console.log(`📋 File validation: ${uniqueVouchers.length} unique vouchers, ${uploadStats.fileDuplicates} duplicates within file`);
+
+        // Step 2: Check for existing vouchers in database (Enhanced check)
+        const voucherNumbers = uniqueVouchers.map(v => String(v.voucherNumber || '').trim());
+        console.log(`🔍 Checking ${voucherNumbers.length} voucher numbers against database...`);
+        
+        const existingVouchers = await TallyVoucher.find({
+            voucherNumber: { $in: voucherNumbers },
+            companyId: companyId
+        }).select('voucherNumber date voucherType party amount createdAt');
+
+        // Create a map of existing vouchers for quick lookup
+        const existingVoucherMap = new Map();
+        existingVouchers.forEach(existing => {
+            const key = `${existing.voucherNumber.toLowerCase()}`;
+            existingVoucherMap.set(key, existing);
+        });
+
+        console.log(`� Found ${existingVouchers.length} existing vouchers in database:`);
+        existingVouchers.forEach(existing => {
+            console.log(`   - ${existing.voucherNumber} (Date: ${existing.date?.toDateString()}, Amount: ${existing.amount})`);
+        });
+
+        // STRICT MODE: If any vouchers already exist, provide clear feedback
+        if (existingVouchers.length > 0) {
+            const existingNumbers = existingVouchers.map(v => v.voucherNumber).join(', ');
+            console.log(`🛑 DUPLICATE DETECTION: ${existingVouchers.length} vouchers already exist in database`);
+            
+            // Still process non-duplicates, but give clear feedback about what was rejected
+            uploadStats.dbDuplicates = existingVouchers.length;
+        }
+
+        // Step 3: Process only new vouchers
+        const bulkOps = [];
+        const newVouchers = [];
+        
+        for (const voucher of uniqueVouchers) {
             try {
+                const voucherNumber = String(voucher.voucherNumber || '').trim();
+                const uniqueKey = `${voucherNumber.toLowerCase()}`;
+                
+                // Check if voucher already exists in database
+                if (existingVoucherMap.has(uniqueKey)) {
+                    const existing = existingVoucherMap.get(uniqueKey);
+                    uploadStats.dbDuplicates++;
+                    uploadStats.duplicateDetails.push(`Voucher already exists in database: ${voucherNumber} (Existing: Date: ${existing.date?.toDateString()}, Type: ${existing.voucherType}, Amount: ${existing.amount})`);
+                    console.log(`🚫 Skipping duplicate voucher: ${voucherNumber} (already exists in database)`);
+                    continue;
+                }
+
                 // Parse and validate date
                 const voucherDate = new Date(voucher.date);
                 if (isNaN(voucherDate.getTime())) {
                     uploadStats.errors++;
-                    uploadStats.errorDetails.push(`Invalid date for voucher: ${voucher.voucherNumber}`);
+                    uploadStats.errorDetails.push(`Invalid date for voucher: ${voucherNumber} - ${voucher.date}`);
                     continue;
                 }
 
-                // Prepare voucher document
+                // Validate required fields
+                if (!voucher.voucherType || String(voucher.voucherType).trim() === '') {
+                    uploadStats.errors++;
+                    uploadStats.errorDetails.push(`Missing voucher type for voucher: ${voucherNumber}`);
+                    continue;
+                }
+
+                if (voucher.amount === undefined || voucher.amount === null || isNaN(parseFloat(voucher.amount))) {
+                    uploadStats.errors++;
+                    uploadStats.errorDetails.push(`Invalid or missing amount for voucher: ${voucherNumber} - ${voucher.amount}`);
+                    continue;
+                }
+
+                // Prepare voucher document with enhanced validation
                 const voucherDoc = {
                     date: voucherDate,
-                    voucherNumber: String(voucher.voucherNumber || '').trim(),
+                    voucherNumber: voucherNumber,
                     voucherType: String(voucher.voucherType || '').trim(),
                     voucherTypeName: String(voucher.voucherTypeName || '').trim(),
                     party: String(voucher.party || '').trim(),
@@ -2313,59 +2427,132 @@ exports.uploadVoucherExcel = async (req, res) => {
                     // Store upload metadata
                     uploadSource: 'excel',
                     uploadFileName: fileName,
-                    uploadDate: new Date()
+                    uploadDate: new Date(),
+                    uploadBatch: new Date().getTime() // Unique batch identifier
                 };
 
-                // Create unique filter to prevent duplicates
+                // Strict filter using voucher number as primary key
                 const filter = {
                     voucherNumber: voucherDoc.voucherNumber,
-                    voucherType: voucherDoc.voucherType,
-                    date: voucherDoc.date,
                     companyId: companyId
                 };
 
-                // Add to bulk operations
+                // Add to bulk operations - insert only (no upsert to prevent accidental updates)
                 bulkOps.push({
-                    updateOne: {
-                        filter: filter,
-                        update: { $set: voucherDoc },
-                        upsert: true
+                    insertOne: {
+                        document: voucherDoc
                     }
                 });
+                
+                newVouchers.push(voucherDoc);
 
             } catch (voucherError) {
                 uploadStats.errors++;
-                uploadStats.errorDetails.push(`Error processing voucher ${voucher.voucherNumber}: ${voucherError.message}`);
-                console.error(`❌ Error processing voucher ${voucher.voucherNumber}:`, voucherError.message);
+                uploadStats.errorDetails.push(`Error processing voucher ${voucher.voucherNumber || 'unknown'}: ${voucherError.message}`);
+                console.error(`❌ Error processing voucher ${voucher.voucherNumber || 'unknown'}:`, voucherError.message);
             }
         }
 
-        // Execute bulk operations
+        // Step 4: Execute bulk operations with strict duplicate prevention
+        let actualInsertedCount = 0;
         if (bulkOps.length > 0) {
-            console.log(`💾 Executing bulk write operations for ${bulkOps.length} vouchers...`);
+            console.log(`💾 Executing bulk insert operations for ${bulkOps.length} new vouchers...`);
             
-            const bulkResult = await TallyVoucher.bulkWrite(bulkOps, { ordered: false });
-            
-            uploadStats.uploaded = bulkResult.upsertedCount + bulkResult.modifiedCount;
-            uploadStats.duplicates = bulkOps.length - uploadStats.uploaded - uploadStats.errors;
-            
-            console.log(`✅ Voucher upload completed:`);
-            console.log(`   - Total processed: ${uploadStats.total}`);
-            console.log(`   - Successfully uploaded: ${uploadStats.uploaded}`);
-            console.log(`   - Duplicates skipped: ${uploadStats.duplicates}`);
-            console.log(`   - Errors: ${uploadStats.errors}`);
+            try {
+                // Use insertMany instead of bulkWrite for stricter control
+                const documentsToInsert = bulkOps.map(op => op.insertOne.document);
+                
+                // Double-check for any remaining duplicates before inserting
+                console.log(`🔒 Final duplicate check before insertion...`);
+                const finalCheck = await TallyVoucher.find({
+                    voucherNumber: { $in: documentsToInsert.map(doc => doc.voucherNumber) },
+                    companyId: companyId
+                }).select('voucherNumber');
+                
+                if (finalCheck.length > 0) {
+                    console.log(`⚠️  Found ${finalCheck.length} last-minute duplicates, filtering them out...`);
+                    const lastMinuteDuplicates = new Set(finalCheck.map(v => v.voucherNumber.toLowerCase()));
+                    
+                    const finalDocuments = documentsToInsert.filter(doc => {
+                        const isNotDuplicate = !lastMinuteDuplicates.has(doc.voucherNumber.toLowerCase());
+                        if (!isNotDuplicate) {
+                            uploadStats.dbDuplicates++;
+                            uploadStats.duplicateDetails.push(`Last-minute duplicate detected: ${doc.voucherNumber}`);
+                        }
+                        return isNotDuplicate;
+                    });
+                    
+                    if (finalDocuments.length > 0) {
+                        const result = await TallyVoucher.insertMany(finalDocuments, { 
+                            ordered: false,
+                            writeConcern: { w: 'majority', wtimeout: 30000 }
+                        });
+                        actualInsertedCount = result.length;
+                    }
+                } else {
+                    // No last-minute duplicates, proceed with insertion
+                    const result = await TallyVoucher.insertMany(documentsToInsert, { 
+                        ordered: false,
+                        writeConcern: { w: 'majority', wtimeout: 30000 }
+                    });
+                    actualInsertedCount = result.length;
+                }
+                
+                uploadStats.uploaded = actualInsertedCount;
+                console.log(`✅ Successfully inserted ${actualInsertedCount} vouchers`);
+                
+            } catch (bulkError) {
+                console.error('❌ Bulk insert error:', bulkError);
+                
+                // Handle duplicate key errors specifically
+                if (bulkError.code === 11000 || (bulkError.writeErrors && bulkError.writeErrors.some(e => e.code === 11000))) {
+                    console.log('🚫 Duplicate key errors detected during insertion');
+                    const duplicateErrors = bulkError.writeErrors ? bulkError.writeErrors.filter(e => e.code === 11000) : [];
+                    
+                    uploadStats.dbDuplicates += duplicateErrors.length;
+                    uploadStats.uploaded = (bulkError.result && bulkError.result.insertedCount) || 0;
+                    
+                    duplicateErrors.forEach(error => {
+                        const voucherNum = error.op?.voucherNumber || 'unknown';
+                        uploadStats.duplicateDetails.push(`Database rejected duplicate: ${voucherNum}`);
+                    });
+                } else {
+                    uploadStats.errors += bulkOps.length;
+                    uploadStats.errorDetails.push(`Bulk insert operation failed: ${bulkError.message}`);
+                }
+            }
         }
 
-        // Clean up any temporary files (if uploaded)
-        // Note: Since we're receiving JSON data, no file cleanup needed
+        // Calculate final statistics
+        uploadStats.duplicates = uploadStats.dbDuplicates + uploadStats.fileDuplicates;
+        
+        console.log(`✅ Voucher upload completed:`);
+        console.log(`   - Total processed: ${uploadStats.total}`);
+        console.log(`   - Successfully uploaded: ${uploadStats.uploaded}`);
+        console.log(`   - File duplicates: ${uploadStats.fileDuplicates}`);
+        console.log(`   - Database duplicates: ${uploadStats.dbDuplicates}`);
+        console.log(`   - Total duplicates rejected: ${uploadStats.duplicates}`);
+        console.log(`   - Errors: ${uploadStats.errors}`);
 
-        // Return success response
+        // Return enhanced response with detailed statistics
         res.status(201).json({
             status: 201,
             message: "Voucher upload completed successfully",
             data: {
-                uploadStats,
-                summary: `${uploadStats.uploaded} vouchers uploaded, ${uploadStats.duplicates} duplicates skipped, ${uploadStats.errors} errors`
+                uploadStats: {
+                    ...uploadStats,
+                    // Limit error details to prevent large responses
+                    errorDetails: uploadStats.errorDetails.slice(0, 10),
+                    duplicateDetails: uploadStats.duplicateDetails.slice(0, 10),
+                    hasMoreErrors: uploadStats.errorDetails.length > 10,
+                    hasMoreDuplicates: uploadStats.duplicateDetails.length > 10
+                },
+                summary: `${uploadStats.uploaded} vouchers uploaded, ${uploadStats.duplicates} duplicates rejected (${uploadStats.fileDuplicates} in file, ${uploadStats.dbDuplicates} in database), ${uploadStats.errors} errors`,
+                recommendations: uploadStats.duplicates > 0 || uploadStats.errors > 0 ? [
+                    ...(uploadStats.fileDuplicates > 0 ? ["Review Excel file for duplicate voucher numbers"] : []),
+                    ...(uploadStats.dbDuplicates > 0 ? ["Some vouchers already exist in database with same voucher numbers"] : []),
+                    ...(uploadStats.errors > 0 ? ["Check error details for validation issues"] : [])
+                ] : []
             }
         });
 
@@ -2374,6 +2561,67 @@ exports.uploadVoucherExcel = async (req, res) => {
         res.status(500).json({
             status: 500,
             message: "Failed to upload vouchers",
+            error: error.message
+        });
+    }
+};
+
+// Verify voucher numbers before upload (optional endpoint for pre-checking)
+exports.verifyVoucherNumbers = async (req, res) => {
+    try {
+        const companyId = mongoose.Types.ObjectId(req.userid);
+        const { voucherNumbers } = req.body;
+        
+        if (!voucherNumbers || !Array.isArray(voucherNumbers)) {
+            return res.status(400).json({
+                status: 400,
+                message: "Voucher numbers array is required"
+            });
+        }
+        
+        console.log(`🔍 Verifying ${voucherNumbers.length} voucher numbers...`);
+        
+        const existingVouchers = await TallyVoucher.find({
+            voucherNumber: { $in: voucherNumbers.map(v => String(v).trim()) },
+            companyId: companyId
+        }).select('voucherNumber date voucherType amount');
+        
+        const existingNumbers = existingVouchers.map(v => v.voucherNumber.toLowerCase());
+        const results = voucherNumbers.map(voucherNum => {
+            const exists = existingNumbers.includes(String(voucherNum).toLowerCase());
+            const existingVoucher = existingVouchers.find(v => 
+                v.voucherNumber.toLowerCase() === String(voucherNum).toLowerCase()
+            );
+            
+            return {
+                voucherNumber: voucherNum,
+                exists,
+                existing: exists ? {
+                    date: existingVoucher.date,
+                    voucherType: existingVoucher.voucherType,
+                    amount: existingVoucher.amount
+                } : null
+            };
+        });
+        
+        const duplicateCount = results.filter(r => r.exists).length;
+        
+        res.status(200).json({
+            status: 200,
+            message: `Verification completed: ${duplicateCount} duplicates found`,
+            data: {
+                total: voucherNumbers.length,
+                duplicates: duplicateCount,
+                unique: voucherNumbers.length - duplicateCount,
+                results
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Verification error:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to verify voucher numbers",
             error: error.message
         });
     }

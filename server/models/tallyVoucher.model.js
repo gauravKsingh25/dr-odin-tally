@@ -139,6 +139,20 @@ const tallyVoucherSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    uploadSource: {
+        type: String,
+        trim: true
+    },
+    uploadFileName: {
+        type: String,
+        trim: true
+    },
+    uploadDate: {
+        type: Date
+    },
+    uploadBatch: {
+        type: Number
+    },
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
@@ -158,8 +172,8 @@ const tallyVoucherSchema = mongoose.Schema({
     timestamps: true
 });
 
-// Index for better performance
-tallyVoucherSchema.index({ voucherNumber: 1, companyId: 1 });
+// Index for better performance and duplicate prevention
+tallyVoucherSchema.index({ voucherNumber: 1, companyId: 1 }, { unique: true }); // Primary key constraint
 tallyVoucherSchema.index({ date: -1 });
 tallyVoucherSchema.index({ voucherType: 1 });
 tallyVoucherSchema.index({ party: 1 });
@@ -167,6 +181,7 @@ tallyVoucherSchema.index({ lastUpdated: -1 });
 tallyVoucherSchema.index({ guid: 1 });
 tallyVoucherSchema.index({ amount: -1 });
 tallyVoucherSchema.index({ "gstDetails.totalTaxAmount": -1 });
+tallyVoucherSchema.index({ uploadBatch: 1 }); // For batch tracking
 
 //Compile Model from tally voucher schema
 const TallyVoucher = mongoose.model("tallyVoucher", tallyVoucherSchema);

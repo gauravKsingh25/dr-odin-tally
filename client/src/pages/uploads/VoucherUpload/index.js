@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Table, Form, Col, Button, Row, Alert, ProgressBar, Modal, Badge } from 'react-bootstrap';
 import './style.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,20 +26,7 @@ function VoucherUploadPage() {
     const store = useSelector((state) => state);
     const uploadState = store?.voucherUpload;
 
-    useEffect(() => {
-        if (uploadState?.status === 201) {
-            ToastHandle("success", "Vouchers uploaded successfully! 👍");
-            setUploadProgress(100);
-            setTimeout(() => {
-                resetForm();
-            }, 2000);
-        } else if (uploadState?.status === 400) {
-            ToastHandle("error", uploadState?.message || "Upload failed");
-            setIsProcessing(false);
-        }
-    }, [uploadState]);
-
-    const resetForm = () => {
+    const resetForm = useCallback(() => {
         setSelectedFile(null);
         setParsedData([]);
         setPreviewData([]);
@@ -48,7 +35,51 @@ function VoucherUploadPage() {
         setShowPreviewModal(false);
         setValidationResults({ valid: [], duplicates: [], invalid: [] });
         dispatch(resetVoucherUpload());
-    };
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (uploadState?.status === 201) {
+            const stats = uploadState?.data?.uploadStats;
+            if (stats) {
+                const successMsg = `Upload completed! ${stats.uploaded} vouchers uploaded successfully`;
+                const detailsMsg = stats.duplicates > 0 || stats.errors > 0 
+                    ? ` (${stats.duplicates} duplicates rejected, ${stats.errors} errors)`
+                    : '';
+                
+                ToastHandle("success", successMsg + detailsMsg);
+                
+                // Show detailed results if there were issues
+                if (stats.duplicates > 0 || stats.errors > 0) {
+                    console.log('Upload Details:', {
+                        total: stats.total,
+                        uploaded: stats.uploaded,
+                        fileDuplicates: stats.fileDuplicates || 0,
+                        dbDuplicates: stats.dbDuplicates || 0,
+                        errors: stats.errors,
+                        errorDetails: stats.errorDetails,
+                        duplicateDetails: stats.duplicateDetails
+                    });
+                }
+            } else {
+                ToastHandle("success", "Vouchers uploaded successfully! 👍");
+            }
+            
+            setUploadProgress(100);
+            setTimeout(() => {
+                resetForm();
+            }, 3000); // Longer delay to show success message
+        } else if (uploadState?.status === 400) {
+            const errorMsg = uploadState?.message || "Upload failed";
+            ToastHandle("error", errorMsg);
+            
+            // Show detailed error information if available
+            if (uploadState?.data?.uploadStats?.errorDetails) {
+                console.error('Upload Errors:', uploadState.data.uploadStats.errorDetails);
+            }
+            
+            setIsProcessing(false);
+        }
+    }, [uploadState, resetForm]);
 
     const handleFileSelection = (e) => {
         const file = e.target.files[0];
@@ -96,7 +127,7 @@ function VoucherUploadPage() {
         reader.readAsArrayBuffer(file);
     };
 
-    const processVoucherData = (data) => {
+    const processVoucherData = async (data) => {
         try {
             setUploadProgress(70);
             
@@ -105,8 +136,11 @@ function VoucherUploadPage() {
             const duplicateVouchers = [];
             const invalidVouchers = [];
             
-            // Required fields for voucher
+            // Required fields for voucher (making voucherNumber primary key)
             const requiredFields = ['date', 'voucherNumber', 'voucherType', 'amount'];
+            
+            // Track voucher numbers to detect duplicates within the file
+            const voucherNumberTracker = new Map();
             
             data.forEach((row, index) => {
                 // Convert row keys to lowercase for case-insensitive matching
@@ -118,19 +152,41 @@ function VoucherUploadPage() {
                 // Map common field variations
                 const voucher = {
                     date: lowerRow.date || lowerRow.voucherdate || lowerRow['voucher date'] || '',
-                    voucherNumber: lowerRow.vouchernumber || lowerRow['voucher number'] || lowerRow.vchno || lowerRow.number || '',
-                    voucherType: lowerRow.vouchertype || lowerRow['voucher type'] || lowerRow.type || '',
-                    voucherTypeName: lowerRow.vouchertypename || lowerRow['voucher type name'] || '',
-                    party: lowerRow.party || lowerRow.partyname || lowerRow['party name'] || lowerRow.customer || '',
-                    partyledgername: lowerRow.partyledgername || lowerRow['party ledger name'] || '',
+                    voucherNumber: String(lowerRow.vouchernumber || lowerRow['voucher number'] || lowerRow.vchno || lowerRow.number || '').trim(),
+                    voucherType: String(lowerRow.vouchertype || lowerRow['voucher type'] || lowerRow.type || '').trim(),
+                    voucherTypeName: String(lowerRow.vouchertypename || lowerRow['voucher type name'] || '').trim(),
+                    party: String(lowerRow.party || lowerRow.partyname || lowerRow['party name'] || lowerRow.customer || '').trim(),
+                    partyledgername: String(lowerRow.partyledgername || lowerRow['party ledger name'] || '').trim(),
                     amount: parseFloat(lowerRow.amount || lowerRow.total || lowerRow.value || '0') || 0,
-                    narration: lowerRow.narration || lowerRow.description || lowerRow.remarks || '',
-                    reference: lowerRow.reference || lowerRow.ref || lowerRow.refno || '',
+                    narration: String(lowerRow.narration || lowerRow.description || lowerRow.remarks || '').trim(),
+                    reference: String(lowerRow.reference || lowerRow.ref || lowerRow.refno || '').trim(),
                     isDeemedPositive: lowerRow.isdeemedpositive === 'true' || lowerRow.isdeemedpositive === '1',
                     rowIndex: index + 1
                 };
 
-                // Parse date
+                // Enhanced voucher number validation (primary key)
+                if (!voucher.voucherNumber || voucher.voucherNumber === '') {
+                    invalidVouchers.push({
+                        ...voucher,
+                        error: 'Voucher number is required (primary key)'
+                    });
+                    return;
+                }
+
+                // Check for duplicate voucher numbers within the Excel file (primary key check)
+                const voucherKey = voucher.voucherNumber.toLowerCase();
+                if (voucherNumberTracker.has(voucherKey)) {
+                    const firstOccurrence = voucherNumberTracker.get(voucherKey);
+                    duplicateVouchers.push({
+                        ...voucher,
+                        error: `Duplicate voucher number in file: ${voucher.voucherNumber} (first seen at row ${firstOccurrence})`,
+                        duplicateType: 'file'
+                    });
+                    return;
+                }
+                voucherNumberTracker.set(voucherKey, index + 1);
+
+                // Parse date with enhanced validation
                 if (voucher.date) {
                     try {
                         // Handle Excel serial date numbers
@@ -139,7 +195,7 @@ function VoucherUploadPage() {
                             const parsedDate = new Date(excelEpoch.getTime() + (voucher.date * 24 * 60 * 60 * 1000));
                             voucher.date = parsedDate;
                         } else {
-                            const parsedDate = moment(voucher.date, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'DD-MM-YYYY']);
+                            const parsedDate = moment(voucher.date, ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'DD-MM-YYYY', 'YYYY/MM/DD']);
                             if (parsedDate.isValid()) {
                                 voucher.date = parsedDate.toDate();
                             } else {
@@ -149,47 +205,114 @@ function VoucherUploadPage() {
                     } catch (dateError) {
                         invalidVouchers.push({
                             ...voucher,
-                            error: `Invalid date format: ${voucher.date}`
+                            error: `Invalid date format: ${voucher.date}. Use DD/MM/YYYY, MM/DD/YYYY, or YYYY-MM-DD`
                         });
                         return;
                     }
                 }
 
                 // Validate required fields
-                const missingFields = requiredFields.filter(field => !voucher[field] || 
-                    (typeof voucher[field] === 'string' && voucher[field].trim() === ''));
+                const missingFields = requiredFields.filter(field => {
+                    const value = voucher[field];
+                    return value === undefined || value === null || 
+                           (typeof value === 'string' && value.trim() === '') ||
+                           (field === 'amount' && (isNaN(value) || value === 0));
+                });
                 
                 if (missingFields.length > 0) {
                     invalidVouchers.push({
                         ...voucher,
-                        error: `Missing required fields: ${missingFields.join(', ')}`
+                        error: `Missing or invalid required fields: ${missingFields.join(', ')}`
                     });
                     return;
                 }
 
-                // Check for duplicates within the Excel data
-                const isDuplicate = processedVouchers.some(existing => 
-                    existing.voucherNumber === voucher.voucherNumber &&
-                    existing.voucherType === voucher.voucherType &&
-                    moment(existing.date).format('YYYY-MM-DD') === moment(voucher.date).format('YYYY-MM-DD')
-                );
-
-                if (isDuplicate) {
-                    duplicateVouchers.push({
+                // Additional validation
+                if (voucher.amount <= 0) {
+                    invalidVouchers.push({
                         ...voucher,
-                        error: 'Duplicate voucher within uploaded data'
+                        error: 'Amount must be greater than zero'
                     });
                     return;
+                }
+
+                // Enhanced voucher type validation
+                const validVoucherTypes = ['sales', 'purchase', 'receipt', 'payment', 'journal', 'contra', 'debit note', 'credit note'];
+                if (!validVoucherTypes.some(type => voucher.voucherType.toLowerCase().includes(type.toLowerCase()))) {
+                    // Still allow it but add a warning
+                    voucher.warning = `Unusual voucher type: ${voucher.voucherType}. Common types are: Sales, Purchase, Receipt, Payment, Journal, Contra`;
                 }
 
                 processedVouchers.push(voucher);
                 validVouchers.push(voucher);
             });
 
+            setUploadProgress(85);
+
+            // Step 2: Check for database duplicates using the verification API
+            if (validVouchers.length > 0) {
+                try {
+                    console.log(`🔍 Checking ${validVouchers.length} vouchers against database...`);
+                    
+                    const voucherNumbers = validVouchers.map(v => v.voucherNumber);
+                    const response = await fetch('/api/tally/verify/vouchers', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken') || sessionStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({ voucherNumbers })
+                    });
+
+                    if (response.ok) {
+                        const verificationData = await response.json();
+                        const duplicateResults = verificationData.data.results.filter(r => r.exists);
+                        
+                        console.log(`📊 Database check: Found ${duplicateResults.length} existing vouchers`);
+
+                        // Move database duplicates from valid to duplicate list
+                        const finalValidVouchers = [];
+                        const dbDuplicateMap = new Map();
+                        
+                        duplicateResults.forEach(result => {
+                            dbDuplicateMap.set(result.voucherNumber.toLowerCase(), result.existing);
+                        });
+
+                        validVouchers.forEach(voucher => {
+                            const voucherKey = voucher.voucherNumber.toLowerCase();
+                            if (dbDuplicateMap.has(voucherKey)) {
+                                const existing = dbDuplicateMap.get(voucherKey);
+                                duplicateVouchers.push({
+                                    ...voucher,
+                                    error: `Voucher already exists in database (Date: ${new Date(existing.date).toLocaleDateString()}, Type: ${existing.voucherType}, Amount: ₹${existing.amount})`,
+                                    duplicateType: 'database',
+                                    existingVoucher: existing
+                                });
+                            } else {
+                                finalValidVouchers.push(voucher);
+                            }
+                        });
+
+                        // Update the valid vouchers list
+                        validVouchers.length = 0;
+                        validVouchers.push(...finalValidVouchers);
+
+                        console.log(`✅ Final validation: ${finalValidVouchers.length} valid, ${duplicateVouchers.length} duplicates, ${invalidVouchers.length} invalid`);
+                        
+                    } else {
+                        console.warn('⚠️ Failed to check database duplicates, proceeding without database validation');
+                        ToastHandle('warning', 'Could not verify against existing vouchers. Upload will check for duplicates during processing.');
+                    }
+                } catch (verificationError) {
+                    console.error('❌ Database verification error:', verificationError);
+                    ToastHandle('warning', 'Could not verify against existing vouchers. Upload will check for duplicates during processing.');
+                }
+            }
+            
             setUploadProgress(90);
             
             setParsedData(processedVouchers);
-            setPreviewData(validVouchers.slice(0, 10)); // Show first 10 for preview
+            setPreviewData(validVouchers.slice(0, 10)); // Show first 10 valid vouchers for preview
             setValidationResults({
                 valid: validVouchers,
                 duplicates: duplicateVouchers,
@@ -201,10 +324,12 @@ function VoucherUploadPage() {
             if (validVouchers.length > 0) {
                 setShowPreviewModal(true);
             } else {
-                ToastHandle('error', 'No valid vouchers found in the Excel file');
+                const totalIssues = duplicateVouchers.length + invalidVouchers.length;
+                ToastHandle('error', `No valid vouchers found. Found ${totalIssues} issues: ${duplicateVouchers.length} duplicates, ${invalidVouchers.length} invalid records.`);
             }
             
         } catch (error) {
+            console.error('Data processing error:', error);
             ToastHandle('error', 'Error processing voucher data: ' + error.message);
             setIsProcessing(false);
         }
@@ -229,11 +354,42 @@ function VoucherUploadPage() {
     const getStatusBadge = (type) => {
         switch (type) {
             case 'valid':
-                return <Badge bg="success">{validationResults.valid.length} Valid</Badge>;
+                return (
+                    <Badge bg="success">
+                        <i className="mdi mdi-check-circle me-1"></i>
+                        {validationResults.valid.length} Valid
+                    </Badge>
+                );
             case 'duplicates':
-                return <Badge bg="warning">{validationResults.duplicates.length} Duplicates</Badge>;
+                const dbDuplicates = validationResults.duplicates.filter(d => d.duplicateType === 'database').length;
+                const fileDuplicates = validationResults.duplicates.filter(d => d.duplicateType === 'file').length;
+                return (
+                    <div className="d-flex flex-wrap gap-1">
+                        <Badge bg="warning">
+                            <i className="mdi mdi-content-duplicate me-1"></i>
+                            {validationResults.duplicates.length} Total Duplicates
+                        </Badge>
+                        {dbDuplicates > 0 && (
+                            <Badge bg="danger" className="text-white">
+                                <i className="mdi mdi-database me-1"></i>
+                                {dbDuplicates} DB
+                            </Badge>
+                        )}
+                        {fileDuplicates > 0 && (
+                            <Badge bg="warning" className="text-dark">
+                                <i className="mdi mdi-file me-1"></i>
+                                {fileDuplicates} File
+                            </Badge>
+                        )}
+                    </div>
+                );
             case 'invalid':
-                return <Badge bg="danger">{validationResults.invalid.length} Invalid</Badge>;
+                return (
+                    <Badge bg="danger">
+                        <i className="mdi mdi-alert-circle me-1"></i>
+                        {validationResults.invalid.length} Invalid
+                    </Badge>
+                );
             default:
                 return null;
         }
@@ -367,12 +523,14 @@ function VoucherUploadPage() {
                                             </Table>
 
                                             <Alert variant="warning">
-                                                <strong>Note:</strong>
+                                                <strong>Duplicate Detection & Primary Key:</strong>
                                                 <ul className="mb-0 mt-2">
-                                                    <li>Duplicate vouchers (same number, type, and date) will be rejected</li>
-                                                    <li>Only valid vouchers will be uploaded to database</li>
-                                                    <li>Excel file will be deleted after successful upload</li>
-                                                    <li>Column names are case-insensitive</li>
+                                                    <li><strong>Voucher Number</strong> is the primary key - must be unique per company</li>
+                                                    <li>Duplicate voucher numbers within the Excel file will be rejected</li>
+                                                    <li>Vouchers that already exist in database (same voucher number) will be rejected</li>
+                                                    <li>Only new, unique vouchers will be uploaded to prevent database clogging</li>
+                                                    <li>Detailed duplicate detection report will be provided</li>
+                                                    <li>Column names are case-insensitive for flexibility</li>
                                                 </ul>
                                             </Alert>
                                         </div>
@@ -443,46 +601,155 @@ function VoucherUploadPage() {
                         </Table>
                     </div>
 
+                    {validationResults.duplicates.length > 0 && (
+                        <>
+                            <h6 className="mt-3 text-warning">
+                                <i className="mdi mdi-content-duplicate me-2"></i>
+                                Duplicate Records (Will be Rejected)
+                            </h6>
+                            <div className="table-responsive" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                <Table striped bordered size="sm">
+                                    <thead className="table-warning">
+                                        <tr>
+                                            <th>Row</th>
+                                            <th>Voucher No.</th>
+                                            <th>Type</th>
+                                            <th>Issue Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {validationResults.duplicates.slice(0, 15).map((item, index) => (
+                                            <tr key={index} className={item.duplicateType === 'database' ? 'table-danger' : 'table-warning'}>
+                                                <td>{item.rowIndex}</td>
+                                                <td className="text-truncate" style={{maxWidth: '100px'}}>
+                                                    <strong>{item.voucherNumber || 'N/A'}</strong>
+                                                </td>
+                                                <td>
+                                                    {item.duplicateType === 'database' ? (
+                                                        <Badge bg="danger" className="text-white">
+                                                            <i className="mdi mdi-database me-1"></i>
+                                                            DB Duplicate
+                                                        </Badge>
+                                                    ) : (
+                                                        <Badge bg="warning" className="text-dark">
+                                                            <i className="mdi mdi-file me-1"></i>
+                                                            File Duplicate
+                                                        </Badge>
+                                                    )}
+                                                </td>
+                                                <td className="text-truncate" style={{maxWidth: '250px'}}>
+                                                    <small>{item.error}</small>
+                                                    {item.existingVoucher && (
+                                                        <div className="mt-1">
+                                                            <small className="text-muted">
+                                                                <i className="mdi mdi-information-outline me-1"></i>
+                                                                Existing: {new Date(item.existingVoucher.date).toLocaleDateString()}, 
+                                                                ₹{item.existingVoucher.amount}
+                                                            </small>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                                {validationResults.duplicates.length > 15 && (
+                                    <div className="text-center py-2">
+                                        <small className="text-muted">
+                                            <i className="mdi mdi-dots-horizontal me-1"></i>
+                                            ...and {validationResults.duplicates.length - 15} more duplicates
+                                        </small>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            <div className="mt-2">
+                                <Row>
+                                    <Col md={6}>
+                                        <small className="text-danger">
+                                            <i className="mdi mdi-database me-1"></i>
+                                            <strong>Database Duplicates:</strong> {validationResults.duplicates.filter(d => d.duplicateType === 'database').length}
+                                            <br />
+                                            <span className="text-muted">Vouchers already exist in the system</span>
+                                        </small>
+                                    </Col>
+                                    <Col md={6}>
+                                        <small className="text-warning">
+                                            <i className="mdi mdi-file me-1"></i>
+                                            <strong>File Duplicates:</strong> {validationResults.duplicates.filter(d => d.duplicateType === 'file').length}
+                                            <br />
+                                            <span className="text-muted">Duplicate voucher numbers within Excel</span>
+                                        </small>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </>
+                    )}
+
                     {validationResults.invalid.length > 0 && (
                         <>
-                            <h6 className="mt-3 text-danger">Invalid Records:</h6>
+                            <h6 className="mt-3 text-danger">Invalid Records (Will be Rejected):</h6>
                             <div className="table-responsive" style={{ maxHeight: '200px', overflowY: 'auto' }}>
                                 <Table striped bordered size="sm">
                                     <thead className="table-danger">
                                         <tr>
                                             <th>Row</th>
+                                            <th>Voucher No.</th>
                                             <th>Error</th>
-                                            <th>Data</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {validationResults.invalid.slice(0, 10).map((item, index) => (
                                             <tr key={index}>
                                                 <td>{item.rowIndex}</td>
-                                                <td>{item.error}</td>
-                                                <td className="text-truncate">
-                                                    {JSON.stringify(item, null, 0).substring(0, 100)}...
+                                                <td className="text-truncate" style={{maxWidth: '120px'}}>
+                                                    {item.voucherNumber || 'N/A'}
+                                                </td>
+                                                <td className="text-truncate" style={{maxWidth: '200px'}}>
+                                                    {item.error}
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </Table>
+                                {validationResults.invalid.length > 10 && (
+                                    <small className="text-muted">
+                                        ...and {validationResults.invalid.length - 10} more invalid records
+                                    </small>
+                                )}
                             </div>
                         </>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowPreviewModal(false)}>
-                        Cancel
-                    </Button>
-                    <Button 
-                        variant="success" 
-                        onClick={handleUploadConfirm}
-                        disabled={validationResults.valid.length === 0}
-                    >
-                        <i className="mdi mdi-upload"></i> 
-                        Upload {validationResults.valid.length} Valid Vouchers
-                    </Button>
+                    <div className="w-100 d-flex justify-content-between align-items-center">
+                        <div className="text-muted">
+                            {validationResults.duplicates.length > 0 || validationResults.invalid.length > 0 ? (
+                                <small>
+                                    <i className="mdi mdi-information-outline me-1"></i>
+                                    {validationResults.duplicates.length} duplicates and {validationResults.invalid.length} invalid records will be rejected
+                                </small>
+                            ) : (
+                                <small>
+                                    <i className="mdi mdi-check-circle-outline me-1"></i>
+                                    All vouchers are valid and ready for upload
+                                </small>
+                            )}
+                        </div>
+                        <div>
+                            <Button variant="secondary" onClick={() => setShowPreviewModal(false)} className="me-2">
+                                Cancel
+                            </Button>
+                            <Button 
+                                variant="success" 
+                                onClick={handleUploadConfirm}
+                                disabled={validationResults.valid.length === 0}
+                            >
+                                <i className="mdi mdi-upload"></i> 
+                                Upload {validationResults.valid.length} Valid Voucher{validationResults.valid.length !== 1 ? 's' : ''}
+                            </Button>
+                        </div>
+                    </div>
                 </Modal.Footer>
             </Modal>
         </>

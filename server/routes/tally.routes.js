@@ -147,4 +147,5 @@ module.exports = function (app) {
 
     // Voucher Excel Upload
     safeRoute('post', "/api/tally/upload/vouchers", verifyToken, upload.single('file'), tallyController.uploadVoucherExcel);
+    safeRoute('post', "/api/tally/verify/vouchers", verifyToken, tallyController.verifyVoucherNumbers);
 };
