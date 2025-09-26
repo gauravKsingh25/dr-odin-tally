@@ -1,4 +1,5 @@
 express = require('express')
+const path = require('path');
 const app = express();
 const cors = require("cors");
 require('dotenv').config();
@@ -19,6 +20,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json({ limit: "50mb" }))
 app.use("/uploads", express.static("uploads"));
 
+// Serve React build files (static assets)
+app.use(express.static(path.join(__dirname, '../client/build')));
+
 
 // routes
 require('./routes/auth.routes')(app);
@@ -35,6 +39,16 @@ require("./routes/totalSale.routes")(app);
 require("./routes/productReport.routes")(app);
 require("./routes/revenue.routes")(app);
 require("./routes/saleExecutive.routes")(app);
+
+// Serve React app for any non-API routes (must be after all API routes)
+app.get('*', (req, res) => {
+    // Only serve React app for non-API routes
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+        res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    } else {
+        res.status(404).json({ message: 'API endpoint not found' });
+    }
+});
 
 
 // Tally cron job instance (manual sync only)
