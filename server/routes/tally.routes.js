@@ -45,26 +45,34 @@ module.exports = function (app) {
     
     // Manual sync trigger and status
     app.get("/api/tally/sync/status", verifyToken, (req, res) => {
+        const status = tallyCronJob.getSyncStatus();
         res.status(200).json({
             status: 200,
             message: "Sync status retrieved",
             data: {
-                isRunning: tallyCronJob.isRunning,
-                lastSync: "Check server logs for details",
-                nextScheduledSync: "Automatic sync disabled - manual sync only"
+                isRunning: status.isRunning,
+                fullSyncRunning: status.fullSyncRunning,
+                lastSyncResult: status.lastSyncResult,
+                syncHistory: status.syncHistory,
+                cronActive: status.cronActive,
+                nextScheduledSync: status.nextScheduledSync
             }
         });
     });
     
     // Backward-compatible alias without /api prefix
     app.get("/tally/sync/status", verifyToken, (req, res) => {
+        const status = tallyCronJob.getSyncStatus();
         res.status(200).json({
             status: 200,
             message: "Sync status retrieved",
             data: {
-                isRunning: tallyCronJob.isRunning,
-                lastSync: "Check server logs for details",
-                nextScheduledSync: "Automatic sync disabled - manual sync only"
+                isRunning: status.isRunning,
+                fullSyncRunning: status.fullSyncRunning,
+                lastSyncResult: status.lastSyncResult,
+                syncHistory: status.syncHistory,
+                cronActive: status.cronActive,
+                nextScheduledSync: status.nextScheduledSync
             }
         });
     });
@@ -74,27 +82,108 @@ module.exports = function (app) {
             if (tallyCronJob.isRunning) {
                 return res.status(400).json({
                     status: 400,
-                    message: "Sync is already running. Please wait for it to complete."
+                    message: "Partial sync is already running. Please wait for it to complete."
                 });
             }
             
-            // Trigger manual sync without waiting
+            // Trigger manual partial sync without waiting
             tallyCronJob.manualSync().catch(error => {
-                console.error('Manual sync error:', error);
+                console.error('Manual partial sync error:', error);
             });
             
             res.status(200).json({
                 status: 200,
-                message: "Manual sync triggered. Check /api/tally/sync/status for progress.",
+                message: "Manual partial sync triggered. Check /api/tally/sync/status for progress.",
                 data: {
                     triggered: true,
+                    syncType: 'PARTIAL',
                     timestamp: new Date().toISOString()
                 }
             });
         } catch (error) {
             res.status(500).json({
                 status: 500,
-                message: "Failed to trigger manual sync",
+                message: "Failed to trigger manual partial sync",
+                error: error.message
+            });
+        }
+    });
+
+    // New Full Sync Routes
+    app.post("/api/tally/sync/full", verifyToken, async (req, res) => {
+        try {
+            if (tallyCronJob.fullSyncRunning) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Full sync is already running. Please wait for it to complete."
+                });
+            }
+            
+            // Trigger manual full sync without waiting
+            tallyCronJob.manualFullSync().catch(error => {
+                console.error('Manual full sync error:', error);
+            });
+            
+            res.status(200).json({
+                status: 200,
+                message: "Manual FULL sync triggered (excluding vouchers). Check /api/tally/sync/status for progress.",
+                data: {
+                    triggered: true,
+                    syncType: 'FULL',
+                    excludesVouchers: true,
+                    timestamp: new Date().toISOString()
+                }
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: "Failed to trigger manual full sync",
+                error: error.message
+            });
+        }
+    });
+
+    // Get detailed sync history
+    app.get("/api/tally/sync/history", verifyToken, (req, res) => {
+        const status = tallyCronJob.getSyncStatus();
+        res.status(200).json({
+            status: 200,
+            message: "Sync history retrieved",
+            data: {
+                syncHistory: status.syncHistory,
+                totalSyncs: status.syncHistory.length
+            }
+        });
+    });
+
+    // Control cron scheduler
+    app.post("/api/tally/scheduler/stop", verifyToken, (req, res) => {
+        try {
+            tallyCronJob.stop();
+            res.status(200).json({
+                status: 200,
+                message: "Tally sync scheduler stopped successfully"
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: "Failed to stop scheduler",
+                error: error.message
+            });
+        }
+    });
+
+    app.post("/api/tally/scheduler/start", verifyToken, (req, res) => {
+        try {
+            tallyCronJob.start();
+            res.status(200).json({
+                status: 200,
+                message: "Tally sync scheduler started successfully. Full sync will run daily at 12:00 AM"
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: "Failed to start scheduler",
                 error: error.message
             });
         }
@@ -126,6 +215,7 @@ module.exports = function (app) {
     safeRoute('get', "/api/tally/test-ledger-processing", verifyToken, tallyController.testLedgerProcessing);
     safeRoute('post', "/api/tally/sync", verifyToken, tallyController.syncTallyData);
     safeRoute('get', "/api/tally/dashboard", verifyToken, tallyController.getTallyDashboard);
+    safeRoute('get', "/api/tally/dashboard/sync", verifyToken, tallyController.getTallySyncDashboard);
     safeRoute('get', "/api/tally/ledgers", verifyToken, tallyController.getTallyLedgers);
     safeRoute('get', "/api/tally/ledgers/by-employee", verifyToken, tallyController.getLedgersByEmployee);
     safeRoute('get', "/api/tally/vouchers", verifyToken, tallyController.getTallyVouchers);
@@ -137,7 +227,51 @@ module.exports = function (app) {
     safeRoute('get', "/api/tally/dashboard/comprehensive", verifyToken, tallyController.getComprehensiveDashboard);
     
     // Backward-compatible aliases without /api prefix
-    safeRoute('get', "/tally/dashboard/comprehensive", verifyToken, tallyController.getComprehensiveDashboard);
+    safeRoute('post', "/tally/sync/full", verifyToken, async (req, res) => {
+        try {
+            if (tallyCronJob.fullSyncRunning) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Full sync is already running. Please wait for it to complete."
+                });
+            }
+            
+            tallyCronJob.manualFullSync().catch(error => {
+                console.error('Manual full sync error:', error);
+            });
+            
+            res.status(200).json({
+                status: 200,
+                message: "Manual FULL sync triggered (excluding vouchers). Check /tally/sync/status for progress.",
+                data: {
+                    triggered: true,
+                    syncType: 'FULL',
+                    excludesVouchers: true,
+                    timestamp: new Date().toISOString()
+                }
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: 500,
+                message: "Failed to trigger manual full sync",
+                error: error.message
+            });
+        }
+    });
+
+    safeRoute('get', "/tally/sync/history", verifyToken, (req, res) => {
+        const status = tallyCronJob.getSyncStatus();
+        res.status(200).json({
+            status: 200,
+            message: "Sync history retrieved",
+            data: {
+                syncHistory: status.syncHistory,
+                totalSyncs: status.syncHistory.length
+            }
+        });
+    });
+
+    safeRoute('get', "/tally/dashboard/sync", verifyToken, tallyController.getTallySyncDashboard);
 
     // Voucher fetch start + status (both api and non-api paths)
     safeRoute('post', "/api/tally/fetch-vouchers", verifyToken, tallyController.fetchTallyVouchers);

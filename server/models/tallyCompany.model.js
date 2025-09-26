@@ -140,6 +140,22 @@ const tallyCompanySchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    totalCostCenters: {
+        type: Number,
+        default: 0
+    },
+    totalCurrencies: {
+        type: Number,
+        default: 0
+    },
+    lastFullSyncedAt: {
+        type: Date
+    },
+    fullSyncStatus: {
+        type: String,
+        enum: ['SUCCESS', 'PARTIAL', 'FAILED'],
+        default: 'SUCCESS'
+    },
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"

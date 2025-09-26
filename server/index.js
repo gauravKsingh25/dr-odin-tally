@@ -51,7 +51,7 @@ app.get('*', (req, res) => {
 });
 
 
-// Tally cron job instance (manual sync only)
+// Tally cron job instance (FULL SYNC enabled - runs daily at 12:00 AM)
 const TallyCronJob = require('./scripts/tally-cron');
 const tallyCronJob = new TallyCronJob();
 
@@ -59,11 +59,12 @@ let port = process.env.PORT || 7010;
 
 app.listen(port, () => {
     console.log(`🚀 Server listening on port ${port}`);
-    console.log('🔄 Tally integration available (manual sync only)');
+    console.log('🔄 Tally integration with FULL SYNC enabled');
     
-    // Automatic Tally sync disabled - use manual endpoints
-    // tallyCronJob.start(); // Commented out to disable automatic scheduling
-    console.log('💡 Tally sync will only run via manual API endpoints');
+    // Start automatic Tally full sync scheduler
+    tallyCronJob.start(); // Enables daily full sync at 12:00 AM
+    console.log('⏰ Full sync scheduler activated - runs daily at 12:00 AM');
+    console.log('💡 Excluding vouchers from full sync (manual sync required for vouchers)');
 });
 
 // function getLongestWorld(str) {

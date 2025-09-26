@@ -17,6 +17,121 @@ const { default: mongoose } = require("mongoose");
 const date = new Date();
 const tallyService = new TallyService();
 
+// Get Tally sync system dashboard
+exports.getTallySyncDashboard = async (req, res) => {
+    try {
+        console.log('📊 Fetching Tally sync dashboard data...');
+
+        // Get counts from all Tally collections
+        const [
+            companyCount,
+            groupCount,
+            costCenterCount,
+            currencyCount,
+            ledgerCount,
+            stockItemCount,
+            voucherCount,
+            lastCompany,
+            lastGroup,
+            lastCostCenter,
+            lastCurrency,
+            lastLedger,
+            lastStockItem,
+            lastVoucher
+        ] = await Promise.all([
+            TallyCompany.countDocuments(),
+            TallyGroup.countDocuments(),
+            TallyCostCenter.countDocuments(),
+            TallyCurrency.countDocuments(),
+            TallyLedger.countDocuments(),
+            TallyStockItem.countDocuments(),
+            TallyVoucher.countDocuments(),
+            TallyCompany.findOne({}).sort({ lastSyncedAt: -1 }).select('name lastSyncedAt lastFullSyncedAt'),
+            TallyGroup.findOne({}).sort({ lastUpdated: -1 }).select('name lastUpdated'),
+            TallyCostCenter.findOne({}).sort({ lastUpdated: -1 }).select('name lastUpdated'),
+            TallyCurrency.findOne({}).sort({ lastUpdated: -1 }).select('name lastUpdated'),
+            TallyLedger.findOne({}).sort({ lastUpdated: -1 }).select('name lastUpdated'),
+            TallyStockItem.findOne({}).sort({ lastUpdated: -1 }).select('name lastUpdated'),
+            TallyVoucher.findOne({}).sort({ lastUpdated: -1 }).select('voucherNumber date lastUpdated')
+        ]);
+
+        // Calculate sync health
+        const now = new Date();
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        
+        let syncHealth = 'Unknown';
+        let lastFullSync = null;
+        let lastPartialSync = null;
+        
+        if (lastCompany) {
+            lastPartialSync = lastCompany.lastSyncedAt;
+            lastFullSync = lastCompany.lastFullSyncedAt;
+            
+            if (lastFullSync && lastFullSync > oneDayAgo) {
+                syncHealth = 'Excellent';
+            } else if (lastPartialSync && lastPartialSync > oneDayAgo) {
+                syncHealth = 'Good';
+            } else if (lastPartialSync && lastPartialSync > new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)) {
+                syncHealth = 'Needs Attention';
+            } else {
+                syncHealth = 'Poor';
+            }
+        }
+
+        const dashboard = {
+            syncStatus: {
+                health: syncHealth,
+                lastFullSync,
+                lastPartialSync,
+                nextScheduledSync: 'Daily at 12:00 AM'
+            },
+            dataCounts: {
+                companies: companyCount,
+                groups: groupCount,
+                costCenters: costCenterCount,
+                currencies: currencyCount,
+                ledgers: ledgerCount,
+                stockItems: stockItemCount,
+                vouchers: voucherCount,
+                total: companyCount + groupCount + costCenterCount + currencyCount + ledgerCount + stockItemCount + voucherCount
+            },
+            lastUpdated: {
+                company: lastCompany ? { name: lastCompany.name, time: lastCompany.lastSyncedAt } : null,
+                group: lastGroup ? { name: lastGroup.name, time: lastGroup.lastUpdated } : null,
+                costCenter: lastCostCenter ? { name: lastCostCenter.name, time: lastCostCenter.lastUpdated } : null,
+                currency: lastCurrency ? { name: lastCurrency.name, time: lastCurrency.lastUpdated } : null,
+                ledger: lastLedger ? { name: lastLedger.name, time: lastLedger.lastUpdated } : null,
+                stockItem: lastStockItem ? { name: lastStockItem.name, time: lastStockItem.lastUpdated } : null,
+                voucher: lastVoucher ? { 
+                    number: lastVoucher.voucherNumber, 
+                    date: lastVoucher.date, 
+                    time: lastVoucher.lastUpdated 
+                } : null
+            },
+            systemInfo: {
+                timezone: 'Asia/Kolkata',
+                serverTime: now,
+                fullSyncSchedule: 'Daily at 12:00 AM',
+                voucherSyncMode: 'Manual (excluded from full sync)'
+            }
+        };
+
+        res.status(200).json({
+            status: 200,
+            message: 'Tally sync dashboard data retrieved successfully',
+            data: dashboard
+        });
+
+    } catch (error) {
+        console.error('❌ Error fetching Tally sync dashboard:', error);
+        res.status(500).json({
+            status: 500,
+            message: 'Failed to fetch Tally sync dashboard',
+            error: error.message
+        });
+    }
+};
+
 // Helper function to parse Tally dates (YYYYMMDD format)
 function parseTallyDate(dateStr) {
     if (!dateStr) return null;
