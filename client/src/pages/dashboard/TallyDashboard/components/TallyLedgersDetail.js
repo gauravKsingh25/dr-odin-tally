@@ -4,10 +4,8 @@ import { Row, Col, Card, Button, Table, Badge, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { APICore } from '../../../../helpers/api/apiCore';
 import MainLoader from '../../../../components/MainLoader';
-import ThemeToggle from '../../../../components/ThemeToggle';
 import axios from 'axios';
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
+import config from '../../../../config';
 import '../TallyDashboard.css';
 
 const TallyLedgersDetail = () => {
@@ -45,7 +43,7 @@ const TallyLedgersDetail = () => {
                 ...(balance && { balance })
             });
             
-            const response = await axios.get(``${window.location.origin}${config.API_URL}`tally/ledgers?${params}`, {
+            const response = await axios.get(`${window.location.origin}${config.API_URL}tally/ledgers?${params}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -81,12 +79,6 @@ const TallyLedgersDetail = () => {
             setLoading(false);
         }
     }, [navigate, itemsPerPage]);
-
-    // Handle pagination change
-    const handlePageChange = (event, page) => {
-        setCurrentPage(page);
-        fetchLedgersData(page, searchTerm, groupFilter, balanceFilter);
-    };
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
@@ -161,7 +153,7 @@ const TallyLedgersDetail = () => {
                 ...(balanceFilter && { balance: balanceFilter })
             });
             
-            const response = await axios.get(``${window.location.origin}${config.API_URL}`tally/ledgers?${params}`, {
+            const response = await axios.get(`${window.location.origin}${config.API_URL}tally/ledgers?${params}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 responseType: 'blob'
             });
