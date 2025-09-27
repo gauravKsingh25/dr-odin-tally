@@ -45,7 +45,7 @@ const TallyLedgersDetail = () => {
                 ...(balance && { balance })
             });
             
-            const response = await axios.get(`http://localhost:7010/api/tally/ledgers?${params}`, {
+            const response = await axios.get(``${window.location.origin}${config.API_URL}`tally/ledgers?${params}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -161,7 +161,7 @@ const TallyLedgersDetail = () => {
                 ...(balanceFilter && { balance: balanceFilter })
             });
             
-            const response = await axios.get(`http://localhost:7010/api/tally/ledgers?${params}`, {
+            const response = await axios.get(``${window.location.origin}${config.API_URL}`tally/ledgers?${params}`, {
                 headers: { Authorization: `Bearer ${token}` },
                 responseType: 'blob'
             });

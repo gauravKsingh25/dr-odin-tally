@@ -112,7 +112,8 @@ exports.getTallySyncDashboard = async (req, res) => {
                 timezone: 'Asia/Kolkata',
                 serverTime: now,
                 fullSyncSchedule: 'Daily at 12:00 AM',
-                voucherSyncMode: 'Manual (excluded from full sync)'
+                voucherSyncMode: 'Manual Only (excluded from full sync)',
+                note: 'Vouchers are preserved during full sync and must be synced manually'
             }
         };
 
@@ -1433,21 +1434,24 @@ exports.getTallyLedgers = async (req, res) => {
         const group = req.query.group || '';
         const balance = req.query.balance || '';
 
+        // Build dynamic query - don't hardcode Sundry Debtors filter
         const query = { 
             companyId, 
-            year: currentYear,
-            // Filter only Sundry Debtors
-            parent: { $regex: 'Sundry Debtors', $options: 'i' }
+            year: currentYear
         };
         
-        // Search filter
+        // Search filter - search across name, parent, and other relevant fields
         if (search) {
-            query.name = { $regex: search, $options: 'i' };
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { parent: { $regex: search, $options: 'i' } },
+                { aliasName: { $regex: search, $options: 'i' } }
+            ];
         }
         
-        // Group filter (keeping for compatibility, but will be overridden by Sundry Debtors filter)
+        // Group/Parent filter - allow filtering by any parent group
         if (group) {
-            query.parent = { $regex: 'Sundry Debtors', $options: 'i' };
+            query.parent = { $regex: group, $options: 'i' };
         }
         
         // Balance filter
@@ -1467,12 +1471,17 @@ exports.getTallyLedgers = async (req, res) => {
             }
         }
 
+        console.log('🔍 Ledgers query:', JSON.stringify(query, null, 2));
+
         const ledgers = await TallyLedger.find(query)
             .sort({ name: 1 })
             .skip((page - 1) * limit)
-            .limit(limit);
+            .limit(limit)
+            .select('name parent aliasName openingBalance closingBalance lastUpdated guid masterId gstin addressList contactPerson creditLimit');
 
         const total = await TallyLedger.countDocuments(query);
+
+        console.log(`✅ Found ${total} ledgers, returning page ${page} (${ledgers.length} items)`);
 
         res.status(200).json({
             status: 200,
@@ -1485,10 +1494,12 @@ exports.getTallyLedgers = async (req, res) => {
                     total,
                     limit
                 }
-            }
+            },
+            message: `Successfully fetched ${ledgers.length} ledgers (${total} total)`
         });
 
     } catch (error) {
+        console.error('❌ Error fetching ledgers:', error);
         res.status(500).json({
             status: 500,
             message: "Failed to fetch ledgers",
@@ -2006,15 +2017,15 @@ exports.syncComprehensiveData = async (req, res) => {
         console.log(`📊 Company ID: ${companyId}`);
         console.log(`🕒 Started at: ${new Date().toISOString()}`);
 
-        // ===== CLEAR EXISTING DATA FIRST =====
-        console.log('🗑️ Clearing existing comprehensive sync data...');
+        // ===== CLEAR EXISTING DATA FIRST (EXCLUDING VOUCHERS) =====
+        console.log('🗑️ Clearing existing comprehensive sync data (excluding vouchers)...');
         try {
             const clearResults = await Promise.all([
                 TallyCompany.deleteMany({ companyId }),
                 TallyLedger.deleteMany({ companyId }),
                 TallyGroup.deleteMany({ companyId }),
                 TallyStockItem.deleteMany({ companyId }),
-                TallyVoucher.deleteMany({ companyId }),
+                // TallyVoucher.deleteMany({ companyId }), // EXCLUDED: Vouchers are not cleared during full sync
                 TallyCostCenter.deleteMany({ companyId }),
                 TallyCurrency.deleteMany({ companyId })
             ]);
@@ -2022,9 +2033,9 @@ exports.syncComprehensiveData = async (req, res) => {
             const totalCleared = clearResults.reduce((sum, result) => sum + result.deletedCount, 0);
             results.clearedCount = totalCleared;
             
-            console.log('✅ Existing comprehensive data cleared successfully');
-            console.log(`🗑️ Cleared: ${clearResults[0].deletedCount} companies, ${clearResults[1].deletedCount} ledgers, ${clearResults[2].deletedCount} groups, ${clearResults[3].deletedCount} stock items, ${clearResults[4].deletedCount} vouchers, ${clearResults[5].deletedCount} cost centers, ${clearResults[6].deletedCount} currencies`);
-            console.log(`📊 Total records cleared: ${totalCleared}`);
+            console.log('✅ Existing comprehensive data cleared successfully (vouchers preserved)');
+            console.log(`🗑️ Cleared: ${clearResults[0].deletedCount} companies, ${clearResults[1].deletedCount} ledgers, ${clearResults[2].deletedCount} groups, ${clearResults[3].deletedCount} stock items, ${clearResults[4].deletedCount} cost centers, ${clearResults[5].deletedCount} currencies`);
+            console.log(`📊 Total records cleared: ${totalCleared} (vouchers preserved for manual sync)`);
         } catch (clearError) {
             console.error('⚠️ Warning: Failed to clear existing data:', clearError.message);
             results.errors.push(`Data clearing error: ${clearError.message}`);
@@ -2140,28 +2151,10 @@ exports.syncComprehensiveData = async (req, res) => {
             results.errors.push(`Stock Items sync error: ${error.message}`);
         }
 
-        // 7. Sync Vouchers (Enhanced)
-        try {
-            const vouchersData = await tallyService.fetchVouchers();
-            const normalizedVouchers = tallyService.normalizeVouchers(vouchersData);
-            
-            for (const voucher of normalizedVouchers) {
-                await TallyVoucher.findOneAndUpdate(
-                    { 
-                        voucherNumber: voucher.voucherNumber, 
-                        date: voucher.date,
-                        voucherType: voucher.voucherType,
-                        companyId 
-                    },
-                    { ...voucher, companyId, year: new Date().getFullYear() },
-                    { upsert: true, new: true }
-                );
-                results.vouchers++;
-            }
-            console.log(`Synced ${results.vouchers} vouchers`);
-        } catch (error) {
-            results.errors.push(`Vouchers sync error: ${error.message}`);
-        }
+        // 7. Vouchers - EXCLUDED from full sync as per user requirement
+        console.log('ℹ️  Vouchers sync SKIPPED in comprehensive sync - manual sync required');
+        console.log('📝 Note: Vouchers must be synced manually using the voucher sync endpoints');
+        results.vouchers = 0; // Explicitly set to 0 to show vouchers are not synced
 
         const syncDuration = Date.now() - syncStartTime;
         console.log(`⏱️ Comprehensive sync completed in ${(syncDuration / 1000).toFixed(2)}s`);
@@ -2169,15 +2162,16 @@ exports.syncComprehensiveData = async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            message: "Comprehensive Tally data sync completed successfully",
+            message: "Comprehensive Tally data sync completed successfully (vouchers excluded)",
             data: {
                 syncResults: results,
                 syncedAt: new Date(),
                 syncDuration: `${(syncDuration / 1000).toFixed(2)}s`,
                 totalCleared: results.clearedCount,
                 totalSynced: results.companies + results.ledgers + results.groups + 
-                           results.stockItems + results.vouchers + results.costCenters + results.currencies,
-                summary: `Cleared ${results.clearedCount} existing records, synced ${results.companies + results.ledgers + results.groups + results.stockItems + results.vouchers + results.costCenters + results.currencies} new records`
+                           results.stockItems + results.costCenters + results.currencies, // Removed vouchers from count
+                summary: `Cleared ${results.clearedCount} existing records, synced ${results.companies + results.ledgers + results.groups + results.stockItems + results.costCenters + results.currencies} new records (vouchers excluded)`,
+                voucherNote: "Vouchers are excluded from full sync to preserve manual sync data. Use voucher sync endpoints for voucher management."
             }
         });
 
