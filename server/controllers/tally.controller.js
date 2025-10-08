@@ -1433,12 +1433,26 @@ exports.getTallyLedgers = async (req, res) => {
         const search = req.query.search || '';
         const group = req.query.group || '';
         const balance = req.query.balance || '';
+        const fromDate = req.query.fromDate;
+        const toDate = req.query.toDate;
 
         // Build dynamic query - don't hardcode Sundry Debtors filter
         const query = { 
             companyId, 
             year: currentYear
         };
+
+        // Date range filter
+        if (fromDate && toDate) {
+            query.lastUpdated = {
+                $gte: new Date(fromDate),
+                $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999))
+            };
+        } else if (fromDate) {
+            query.lastUpdated = { $gte: new Date(fromDate) };
+        } else if (toDate) {
+            query.lastUpdated = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
+        }
         
         // Search filter - search across name, parent, and other relevant fields
         if (search) {
@@ -1699,8 +1713,22 @@ exports.getTallyStockItems = async (req, res) => {
         const search = req.query.search || '';
         const category = req.query.category || '';
         const stock = req.query.stock || '';
+        const fromDate = req.query.fromDate;
+        const toDate = req.query.toDate;
 
         const query = { companyId, year: currentYear };
+
+        // Date range filter
+        if (fromDate && toDate) {
+            query.lastUpdated = {
+                $gte: new Date(fromDate),
+                $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999))
+            };
+        } else if (fromDate) {
+            query.lastUpdated = { $gte: new Date(fromDate) };
+        } else if (toDate) {
+            query.lastUpdated = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
+        }
         
         // Search filter - search across multiple fields
         if (search) {
@@ -1953,36 +1981,308 @@ exports.testTallyConnection = async (req, res) => {
     }
 };
 
-// Test ledger data processing
-exports.testLedgerProcessing = async (req, res) => {
+// Sync only ledgers with enhanced error handling and validation
+exports.syncLedgersOnly = async (req, res) => {
     try {
-        console.log('🧪 Testing ledger data processing...');
+        const companyId = req.userid;
+        const syncStartTime = Date.now();
         
-        // Fetch a small sample of ledger data
-        const ledgerData = await tallyService.fetchLedgers();
-        const normalizedLedgers = tallyService.normalizeLedgers(ledgerData);
+        console.log('🔄 Starting ledgers-only sync...');
+        console.log(`📊 Company ID: ${companyId}`);
         
-        // Test first 5 ledgers
-        const testLedgers = normalizedLedgers.slice(0, 5);
+        const results = {
+            ledgers: 0,
+            errors: [],
+            clearedCount: 0,
+            validationResults: {}
+        };
         
-        const testResults = testLedgers.map(ledger => ({
-            name: ledger.name,
-            openingBalance: ledger.openingBalance,
-            closingBalance: ledger.closingBalance,
-            rawOpeningBalance: ledger.rawData?.OPENINGBALANCE,
-            rawClosingBalance: ledger.rawData?.CLOSINGBALANCE,
-            hasValidBalances: ledger.openingBalance !== 0 || ledger.closingBalance !== 0
-        }));
+        // Clear existing ledgers first
+        console.log('🗑️ Clearing existing ledger data...');
+        try {
+            const clearResult = await TallyLedger.deleteMany({ companyId });
+            results.clearedCount = clearResult.deletedCount;
+            console.log(`✅ Cleared ${clearResult.deletedCount} existing ledgers`);
+        } catch (clearError) {
+            console.error('⚠️ Warning: Failed to clear existing ledgers:', clearError.message);
+            results.errors.push(`Data clearing error: ${clearError.message}`);
+        }
         
-        console.log('🧪 Test Results:', testResults);
+        // Fetch and sync ledgers
+        console.log('📊 Fetching ledgers data from Tally...');
+        const ledgersData = await tallyService.fetchLedgers();
+        
+        if (!ledgersData) {
+            throw new Error('No ledger data received from Tally');
+        }
+        
+        const normalizedLedgers = tallyService.normalizeLedgers(ledgersData);
+        console.log(`📊 Processing ${normalizedLedgers.length} normalized ledgers...`);
+        
+        if (normalizedLedgers.length === 0) {
+            results.errors.push('No ledgers found in Tally data');
+        } else {
+            // Validation checks
+            const validation = {
+                totalLedgers: normalizedLedgers.length,
+                ledgersWithNames: normalizedLedgers.filter(l => l.name && l.name.trim()).length,
+                ledgersWithGuids: normalizedLedgers.filter(l => l.guid && l.guid.trim()).length,
+                ledgersWithParents: normalizedLedgers.filter(l => l.parent && l.parent.trim()).length,
+                ledgersWithOpeningBalance: normalizedLedgers.filter(l => l.openingBalance !== 0).length,
+                ledgersWithClosingBalance: normalizedLedgers.filter(l => l.closingBalance !== 0).length,
+                uniqueParents: [...new Set(normalizedLedgers.map(l => l.parent).filter(Boolean))].length,
+                balanceRange: {
+                    minOpening: Math.min(...normalizedLedgers.map(l => l.openingBalance)),
+                    maxOpening: Math.max(...normalizedLedgers.map(l => l.openingBalance)),
+                    minClosing: Math.min(...normalizedLedgers.map(l => l.closingBalance)),
+                    maxClosing: Math.max(...normalizedLedgers.map(l => l.closingBalance))
+                }
+            };
+            
+            results.validationResults = validation;
+            console.log('📊 Validation Results:', validation);
+            
+            let processedLedgers = 0;
+            let skippedLedgers = 0;
+            
+            // Process each ledger with enhanced mapping
+            for (const ledger of normalizedLedgers) {
+                try {
+                    if (!ledger.name || ledger.name.trim() === '') {
+                        console.warn('⚠️ Skipping ledger with empty name');
+                        skippedLedgers++;
+                        continue;
+                    }
+                    
+                    // Create comprehensive ledger document
+                    const ledgerDoc = {
+                        // Basic information
+                        name: ledger.name.trim(),
+                        aliasName: ledger.aliasName || '',
+                        reservedName: ledger.reservedName || '',
+                        parent: ledger.parent || '',
+                        
+                        // Financial information
+                        openingBalance: Number(ledger.openingBalance) || 0,
+                        closingBalance: Number(ledger.closingBalance) || 0,
+                        
+                        // Language information
+                        languageName: ledger.languageName || '',
+                        languageId: ledger.languageId || null,
+                        
+                        // Identification
+                        guid: ledger.guid || '',
+                        masterId: ledger.masterId || '',
+                        alterid: ledger.alterId || '',
+                        
+                        // Flags
+                        isGroup: Boolean(ledger.isGroup),
+                        
+                        // Contact information
+                        ledgerPhone: ledger.contact?.phone || '',
+                        ledgerFax: ledger.contact?.fax || '',
+                        email: ledger.contact?.email || '',
+                        website: ledger.contact?.website || '',
+                        
+                        // Tax information
+                        incometaxnumber: ledger.taxInfo?.incomeTaxNumber || '',
+                        salestaxnumber: ledger.taxInfo?.vatTinNumber || '',
+                        gstregistrationtype: ledger.gstRegistration?.registrationType || '',
+                        gstin: ledger.gstRegistration?.gstin || ledger.gstDetails?.gstin || '',
+                        gstdutyhead: ledger.gstDetails?.placeOfSupply || '',
+                        
+                        // Address information
+                        addressList: Array.isArray(ledger.addressList) ? ledger.addressList : 
+                                   (ledger.addressList ? [ledger.addressList] : []),
+                        
+                        // Bank details
+                        bankDetails: {
+                            accountNumber: ledger.bankDetails?.accountNumber || '',
+                            ifscCode: ledger.bankDetails?.ifscCode || '',
+                            bankName: ledger.bankDetails?.bankName || '',
+                            branchName: ledger.bankDetails?.branchName || '',
+                            accountHolderName: ledger.bankDetails?.accountHolderName || ''
+                        },
+                        
+                        // Contact person
+                        contactPerson: ledger.contact?.ledgerContact || '',
+                        
+                        // Credit information
+                        creditPeriod: Number(ledger.billingInfo?.billCreditPeriod) || 0,
+                        creditLimit: Number(ledger.billingInfo?.creditLimit) || 0,
+                        interestRate: Number(ledger.interestCollection?.[0]?.rate) || 0,
+                        
+                        // Additional data
+                        priceLevel: '',
+                        billWiseDetails: Array.isArray(ledger.billAllocations) ? 
+                            ledger.billAllocations.map(allocation => ({
+                                billName: allocation.name || '',
+                                billDate: null,
+                                billAmount: Number(allocation.amount) || 0,
+                                billCredit: allocation.billType === 'Credit'
+                            })) : [],
+                        
+                        categoryData: {
+                            gstDetails: ledger.gstDetails,
+                            taxInfo: ledger.taxInfo,
+                            flags: ledger.flags
+                        },
+                        
+                        costCentreAllocations: Array.isArray(ledger.costCentreAllocations) ? 
+                            ledger.costCentreAllocations.map(allocation => ({
+                                costCentre: allocation.name || '',
+                                percentage: 0,
+                                amount: Number(allocation.amount) || 0
+                            })) : [],
+                        
+                        // System fields
+                        lastUpdated: new Date(),
+                        companyId: mongoose.Types.ObjectId(companyId),
+                        monthId: null,
+                        year: new Date().getFullYear(),
+                        
+                        // Raw data for debugging
+                        rawData: ledger.rawData || {}
+                    };
+                    
+                    // Use GUID for unique identification if available
+                    const query = ledger.guid && ledger.guid.trim() !== '' 
+                        ? { guid: ledger.guid.trim(), companyId }
+                        : { name: ledger.name.trim(), companyId };
+                    
+                    await TallyLedger.findOneAndUpdate(
+                        query,
+                        { $set: ledgerDoc },
+                        { upsert: true, new: true }
+                    );
+                    
+                    processedLedgers++;
+                    
+                    if (processedLedgers % 50 === 0) {
+                        console.log(`📊 Processed ${processedLedgers}/${normalizedLedgers.length} ledgers...`);
+                    }
+                    
+                } catch (ledgerError) {
+                    console.error(`❌ Error processing ledger "${ledger.name}":`, ledgerError.message);
+                    results.errors.push(`Ledger "${ledger.name}" error: ${ledgerError.message}`);
+                    skippedLedgers++;
+                }
+            }
+            
+            results.ledgers = processedLedgers;
+            console.log(`✅ Synced ${processedLedgers} ledgers (${skippedLedgers} skipped)`);
+        }
+        
+        const syncDuration = Date.now() - syncStartTime;
+        console.log(`⏱️ Ledgers sync completed in ${(syncDuration / 1000).toFixed(2)}s`);
         
         res.status(200).json({
             status: 200,
-            message: "Ledger processing test completed",
+            message: "Ledgers sync completed successfully",
             data: {
-                totalLedgers: normalizedLedgers.length,
+                syncResults: results,
+                syncedAt: new Date(),
+                syncDuration: `${(syncDuration / 1000).toFixed(2)}s`,
+                summary: `Cleared ${results.clearedCount} existing ledgers, synced ${results.ledgers} new ledgers`,
+                validationSummary: results.validationResults ? {
+                    dataQuality: `${results.validationResults.ledgersWithNames}/${results.validationResults.totalLedgers} ledgers have names`,
+                    balanceData: `${results.validationResults.ledgersWithOpeningBalance + results.validationResults.ledgersWithClosingBalance} ledgers have balance data`,
+                    hierarchyData: `${results.validationResults.ledgersWithParents} ledgers have parent groups`
+                } : null
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Ledgers sync error:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to sync ledgers",
+            error: error.message,
+            stack: error.stack
+        });
+    }
+};
+
+// Test ledger data processing with enhanced debugging
+exports.testLedgerProcessing = async (req, res) => {
+    try {
+        console.log('🧪 Testing ledger data processing with enhanced debugging...');
+        
+        // Fetch a small sample of ledger data
+        const ledgerData = await tallyService.fetchLedgers();
+        console.log('🔍 Raw ledger data structure:', JSON.stringify(ledgerData, null, 2).substring(0, 1000) + '...');
+        
+        const normalizedLedgers = tallyService.normalizeLedgers(ledgerData);
+        console.log(`📊 Normalized ${normalizedLedgers.length} ledgers`);
+        
+        // Test first 10 ledgers with comprehensive analysis
+        const testLedgers = normalizedLedgers.slice(0, 10);
+        
+        const testResults = testLedgers.map((ledger, index) => ({
+            index: index + 1,
+            name: ledger.name,
+            parent: ledger.parent,
+            openingBalance: ledger.openingBalance,
+            closingBalance: ledger.closingBalance,
+            openingBalanceType: typeof ledger.openingBalance,
+            closingBalanceType: typeof ledger.closingBalance,
+            rawOpeningBalance: ledger.rawData?.OPENINGBALANCE,
+            rawClosingBalance: ledger.rawData?.CLOSINGBALANCE,
+            hasValidBalances: ledger.openingBalance !== 0 || ledger.closingBalance !== 0,
+            guid: ledger.guid,
+            masterId: ledger.masterId,
+            gstDetails: ledger.gstDetails ? 'Present' : 'Missing',
+            contactDetails: ledger.contact ? 'Present' : 'Missing',
+            bankDetails: ledger.bankDetails ? 'Present' : 'Missing',
+            addressCount: Array.isArray(ledger.addressList) ? ledger.addressList.length : 0,
+            rawDataKeys: Object.keys(ledger.rawData || {}).slice(0, 10)
+        }));
+        
+        // Analyze balance patterns
+        const balanceAnalysis = {
+            totalLedgers: normalizedLedgers.length,
+            ledgersWithOpeningBalance: normalizedLedgers.filter(l => l.openingBalance !== 0).length,
+            ledgersWithClosingBalance: normalizedLedgers.filter(l => l.closingBalance !== 0).length,
+            ledgersWithBothBalances: normalizedLedgers.filter(l => l.openingBalance !== 0 && l.closingBalance !== 0).length,
+            ledgersWithNoBalances: normalizedLedgers.filter(l => l.openingBalance === 0 && l.closingBalance === 0).length,
+            positiveOpeningBalances: normalizedLedgers.filter(l => l.openingBalance > 0).length,
+            negativeOpeningBalances: normalizedLedgers.filter(l => l.openingBalance < 0).length,
+            positiveClosingBalances: normalizedLedgers.filter(l => l.closingBalance > 0).length,
+            negativeClosingBalances: normalizedLedgers.filter(l => l.closingBalance < 0).length
+        };
+        
+        // Sample raw balance data
+        const rawBalanceSamples = testLedgers.map(ledger => ({
+            name: ledger.name,
+            rawOpeningBalance: ledger.rawData?.OPENINGBALANCE,
+            rawClosingBalance: ledger.rawData?.CLOSINGBALANCE,
+            processedOpeningBalance: ledger.openingBalance,
+            processedClosingBalance: ledger.closingBalance
+        }));
+        
+        console.log('🧪 Test Results:', testResults);
+        console.log('📊 Balance Analysis:', balanceAnalysis);
+        console.log('🔍 Raw Balance Samples:', rawBalanceSamples);
+        
+        res.status(200).json({
+            status: 200,
+            message: "Enhanced ledger processing test completed",
+            data: {
+                balanceAnalysis,
                 testResults,
-                sampleRawData: testLedgers[0]?.rawData || {}
+                rawBalanceSamples,
+                sampleCompleteRawData: testLedgers[0]?.rawData || {},
+                recommendations: [
+                    balanceAnalysis.ledgersWithNoBalances > balanceAnalysis.totalLedgers * 0.8 ? 
+                        "⚠️ High percentage of ledgers with zero balances - check Tally data extraction" : 
+                        "✅ Balance data appears reasonable",
+                    normalizedLedgers.filter(l => !l.guid).length > 0 ? 
+                        "⚠️ Some ledgers missing GUID - may cause duplicate issues" : 
+                        "✅ All ledgers have GUID",
+                    normalizedLedgers.filter(l => !l.parent).length > normalizedLedgers.length * 0.5 ? 
+                        "⚠️ Many ledgers missing parent groups" : 
+                        "✅ Parent group data looks good"
+                ]
             }
         });
     } catch (error) {
@@ -1990,7 +2290,8 @@ exports.testLedgerProcessing = async (req, res) => {
         res.status(500).json({
             status: 500,
             message: "Failed to test ledger processing",
-            error: error.message
+            error: error.message,
+            stack: error.stack
         });
     }
 };
@@ -2115,22 +2416,184 @@ exports.syncComprehensiveData = async (req, res) => {
             results.errors.push(`Cost Centers sync error: ${error.message}`);
         }
 
-        // 5. Sync Ledgers (Enhanced)
+        // 5. Sync Ledgers (Enhanced with comprehensive field mapping)
         try {
+            console.log('📊 Fetching ledgers data from Tally...');
             const ledgersData = await tallyService.fetchLedgers();
-            const normalizedLedgers = tallyService.normalizeLedgers(ledgersData);
             
-            for (const ledger of normalizedLedgers) {
-                await TallyLedger.findOneAndUpdate(
-                    { name: ledger.name, companyId },
-                    { ...ledger, companyId, year: new Date().getFullYear() },
-                    { upsert: true, new: true }
-                );
-                results.ledgers++;
+            if (!ledgersData) {
+                throw new Error('No ledger data received from Tally');
             }
-            console.log(`Synced ${results.ledgers} ledgers`);
+            
+            const normalizedLedgers = tallyService.normalizeLedgers(ledgersData);
+            console.log(`📊 Processing ${normalizedLedgers.length} normalized ledgers...`);
+            
+            if (normalizedLedgers.length === 0) {
+                results.errors.push('No ledgers found in Tally data');
+            } else {
+                // Debug: Log sample ledger data to check balance processing
+                if (normalizedLedgers.length > 0) {
+                    const sampleLedger = normalizedLedgers[0];
+                    console.log('🔍 Sample ledger data after normalization:');
+                    console.log(`   Name: ${sampleLedger.name}`);
+                    console.log(`   Parent: ${sampleLedger.parent}`);
+                    console.log(`   Opening Balance: ${sampleLedger.openingBalance} (type: ${typeof sampleLedger.openingBalance})`);
+                    console.log(`   Closing Balance: ${sampleLedger.closingBalance} (type: ${typeof sampleLedger.closingBalance})`);
+                    console.log(`   GUID: ${sampleLedger.guid}`);
+                    console.log(`   Has GST Details: ${!!sampleLedger.gstDetails}`);
+                    console.log(`   Has Contact Info: ${!!sampleLedger.contact}`);
+                    console.log(`   Has Bank Details: ${!!sampleLedger.bankDetails}`);
+                }
+                
+                let processedLedgers = 0;
+                let skippedLedgers = 0;
+                
+                for (const ledger of normalizedLedgers) {
+                    try {
+                        // Validate ledger data
+                        if (!ledger.name || ledger.name.trim() === '') {
+                            console.warn('⚠️ Skipping ledger with empty name');
+                            skippedLedgers++;
+                            continue;
+                        }
+                        
+                        // Enhanced field mapping to ensure all data is properly stored
+                        const ledgerToStore = {
+                            // Basic information
+                            name: ledger.name,
+                            aliasName: ledger.aliasName || '',
+                            reservedName: ledger.reservedName || '',
+                            parent: ledger.parent || '',
+                            
+                            // Financial information (ensure numbers)
+                            openingBalance: Number(ledger.openingBalance) || 0,
+                            closingBalance: Number(ledger.closingBalance) || 0,
+                            
+                            // Language information
+                            languageName: ledger.languageName || '',
+                            languageId: ledger.languageId || null,
+                            
+                            // Identification
+                            guid: ledger.guid || '',
+                            masterId: ledger.masterId || '',
+                            alterid: ledger.alterId || '',
+                            description: ledger.description || '',
+                            
+                            // Flags and properties
+                            isGroup: Boolean(ledger.isGroup),
+                            
+                            // Contact information (flatten from contact object)
+                            email: ledger.contact?.email || '',
+                            ledgerPhone: ledger.contact?.phone || '',
+                            ledgerFax: ledger.contact?.fax || '',
+                            website: ledger.contact?.website || '',
+                            
+                            // Address information
+                            addressList: Array.isArray(ledger.addressList) ? ledger.addressList : (ledger.addressList ? [ledger.addressList] : []),
+                            
+                            // GST information (flatten from gstRegistration object)
+                            gstregistrationtype: ledger.gstRegistration?.registrationType || '',
+                            gstin: ledger.gstRegistration?.gstin || ledger.gstDetails?.gstin || '',
+                            
+                            // Tax information (flatten from taxInfo object)
+                            incometaxnumber: ledger.taxInfo?.incomeTaxNumber || '',
+                            salestaxnumber: ledger.taxInfo?.vatTinNumber || '',
+                            
+                            // Bank details (flatten from bankDetails object)
+                            bankDetails: {
+                                accountNumber: ledger.bankDetails?.accountNumber || '',
+                                ifscCode: ledger.bankDetails?.ifscCode || '',
+                                bankName: ledger.bankDetails?.bankName || '',
+                                branchName: ledger.bankDetails?.branchName || '',
+                                accountHolderName: ledger.bankDetails?.accountHolderName || ''
+                            },
+                            
+                            // Billing information (flatten from billingInfo object)
+                            creditLimit: Number(ledger.billingInfo?.creditLimit) || 0,
+                            creditPeriod: ledger.billingInfo?.billCreditPeriod || '',
+                            
+                            // Contact person
+                            contactPerson: ledger.contact?.ledgerContact || '',
+                            
+                            // Additional lists and details
+                            billWiseDetails: Array.isArray(ledger.billAllocations) ? ledger.billAllocations.map(allocation => ({
+                                billName: allocation.name || '',
+                                billDate: null, // Not available in current normalization
+                                billAmount: Number(allocation.amount) || 0,
+                                billCredit: allocation.billType === 'Credit'
+                            })) : [],
+                            
+                            costCentreAllocations: Array.isArray(ledger.costCentreAllocations) ? ledger.costCentreAllocations.map(allocation => ({
+                                costCentre: allocation.name || '',
+                                percentage: 0, // Not available in current normalization
+                                amount: Number(allocation.amount) || 0
+                            })) : [],
+                            
+                            // System fields
+                            companyId: companyId,
+                            year: new Date().getFullYear(),
+                            lastUpdated: new Date(),
+                            
+                            // Store raw data for debugging and future use
+                            rawData: ledger.rawData || {}
+                        };
+                        
+                        // Use GUID for unique identification if available, otherwise use name
+                        const query = ledger.guid && ledger.guid.trim() !== '' 
+                            ? { guid: ledger.guid.trim(), companyId }
+                            : { name: ledger.name, companyId };
+                        
+                        await TallyLedger.findOneAndUpdate(
+                            query,
+                            { $set: ledgerToStore },
+                            { upsert: true, new: true }
+                        );
+                        
+                        processedLedgers++;
+                        
+                        // Log progress for large datasets
+                        if (processedLedgers % 100 === 0) {
+                            console.log(`📊 Processed ${processedLedgers}/${normalizedLedgers.length} ledgers...`);
+                        }
+                        
+                    } catch (ledgerError) {
+                        console.error(`❌ Error processing ledger "${ledger.name}":`, ledgerError.message);
+                        results.errors.push(`Ledger "${ledger.name}" error: ${ledgerError.message}`);
+                        skippedLedgers++;
+                    }
+                }
+                
+                results.ledgers = processedLedgers;
+                console.log(`✅ Synced ${processedLedgers} ledgers (${skippedLedgers} skipped)`);
+                
+                // Log balance statistics for verification
+                const balanceStats = await TallyLedger.aggregate([
+                    { $match: { companyId: mongoose.Types.ObjectId(companyId) } },
+                    {
+                        $group: {
+                            _id: null,
+                            totalLedgers: { $sum: 1 },
+                            nonZeroOpeningBalance: { $sum: { $cond: [{ $ne: ['$openingBalance', 0] }, 1, 0] }},
+                            nonZeroClosingBalance: { $sum: { $cond: [{ $ne: ['$closingBalance', 0] }, 1, 0] }},
+                            avgOpeningBalance: { $avg: '$openingBalance' },
+                            avgClosingBalance: { $avg: '$closingBalance' }
+                        }
+                    }
+                ]);
+                
+                if (balanceStats.length > 0) {
+                    const stats = balanceStats[0];
+                    console.log(`📊 Ledger Balance Statistics:`);
+                    console.log(`   Total Ledgers: ${stats.totalLedgers}`);
+                    console.log(`   Ledgers with non-zero opening balance: ${stats.nonZeroOpeningBalance}`);
+                    console.log(`   Ledgers with non-zero closing balance: ${stats.nonZeroClosingBalance}`);
+                    console.log(`   Average opening balance: ${stats.avgOpeningBalance.toFixed(2)}`);
+                    console.log(`   Average closing balance: ${stats.avgClosingBalance.toFixed(2)}`);
+                }
+            }
         } catch (error) {
             results.errors.push(`Ledgers sync error: ${error.message}`);
+            console.error('❌ Ledgers sync error:', error);
         }
 
         // 6. Sync Stock Items (Enhanced)

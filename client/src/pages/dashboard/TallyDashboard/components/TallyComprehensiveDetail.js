@@ -159,42 +159,72 @@ const TallyComprehensiveDetail = () => {
         <>
             <Row>
                 <Col xs={12}>
-                    <div className="page-title-box d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                            <div>
-                                <h4 className="page-title mb-0">Tally Comprehensive Analytics</h4>
-                                <ol className="breadcrumb m-0">
-                                    <li className="breadcrumb-item">
-                                        <Button 
-                                            variant="link" 
-                                            className="p-0 text-decoration-none"
-                                            onClick={() => navigate('/tally-dashboard')}
-                                        >
-                                            Dashboard
-                                        </Button>
-                                    </li>
-                                    <li className="breadcrumb-item active">Comprehensive View</li>
-                                </ol>
+                    <div className="page-title-box">
+                        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+                            <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2 gap-md-3">
+                                <div>
+                                    <h4 className="page-title mb-2">
+                                        <i className="mdi mdi-chart-timeline-variant me-2"></i>
+                                        <span className="d-none d-lg-inline">Tally Comprehensive Analytics</span>
+                                        <span className="d-inline d-lg-none">Analytics Dashboard</span>
+                                    </h4>
+                                    <nav aria-label="breadcrumb">
+                                        <ol className="breadcrumb m-0">
+                                            <li className="breadcrumb-item">
+                                                <Button 
+                                                    variant="link" 
+                                                    size="sm"
+                                                    className="p-0 text-decoration-none"
+                                                    onClick={() => navigate('/tally-dashboard')}
+                                                >
+                                                    <i className="mdi mdi-view-dashboard me-1"></i>
+                                                    Dashboard
+                                                </Button>
+                                            </li>
+                                            <li className="breadcrumb-item active">Comprehensive View</li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                                <ThemeToggle size="sm" className="theme-toggle-dashboard" />
                             </div>
-                            <ThemeToggle size="sm" className="theme-toggle-dashboard ms-3" />
+                            <div className="d-flex flex-wrap gap-2">
+                                <Button 
+                                    variant="secondary" 
+                                    size="sm"
+                                    className="d-flex align-items-center"
+                                    onClick={() => navigate('/tally-dashboard')}
+                                >
+                                    <i className="mdi mdi-arrow-left me-1"></i> 
+                                    <span className="d-none d-sm-inline">Back</span>
+                                </Button>
+                                <Button 
+                                    variant="primary" 
+                                    size="sm"
+                                    onClick={fetchComprehensiveData} 
+                                    disabled={loading}
+                                    className="d-flex align-items-center"
+                                >
+                                    <i className="mdi mdi-refresh me-1"></i> 
+                                    <span className="d-none d-md-inline">Full Sync (All except vouchers)</span>
+                                    <span className="d-inline d-md-none">Full Sync</span>
+                                </Button>
+                                <Button 
+                                    variant="warning" 
+                                    size="sm"
+                                    onClick={() => navigate('/tally-vouchers-detail')}
+                                    className="d-flex align-items-center"
+                                >
+                                    <i className="mdi mdi-file-document me-1"></i> 
+                                    <span className="d-none d-md-inline">Fetch Vouchers (Batch Only)</span>
+                                    <span className="d-inline d-md-none">Vouchers</span>
+                                </Button>
+                            </div>
                         </div>
-                        <div>
-                            <Button 
-                                variant="secondary" 
-                                className="me-2"
-                                onClick={() => navigate('/tally-dashboard')}
-                            >
-                                <i className="mdi mdi-arrow-left"></i> Back
-                            </Button>
-                            <Button variant="primary" onClick={fetchComprehensiveData} disabled={loading}>
-                                <i className="mdi mdi-refresh"></i> Full Sync (All except vouchers)
-                            </Button>
-                            <Button variant="warning" className="ms-2" onClick={() => navigate('/tally-vouchers-detail')}>
-                                <i className="mdi mdi-file-document"></i> Fetch Vouchers (Batch Only)
-                            </Button>
-                            <span className="ms-2 text-muted" style={{fontSize: '0.95em'}}>
-                                Use <b>Full Sync</b> for all Tally data except vouchers. Use <b>Fetch Vouchers</b> for batch voucher sync only.
-                            </span>
+                        <div className="mt-2 d-none d-lg-block">
+                            <small className="text-muted">
+                                <i className="mdi mdi-information-outline me-1"></i>
+                                Use <strong>Full Sync</strong> for all Tally data except vouchers. Use <strong>Fetch Vouchers</strong> for batch voucher sync only.
+                            </small>
                         </div>
                     </div>
                 </Col>
@@ -226,104 +256,117 @@ const TallyComprehensiveDetail = () => {
                                 >
                                     {/* Overview Tab */}
                                     <Tab eventKey="overview" title="📊 Overview">
-                                        <Row>
-                                            {/* Summary Cards */}
-                                            <Col md={2}>
-                                                <Card className="widget-flat bg-primary text-white">
-                                                    <Card.Body className="text-center">
-                                                        <i className="mdi mdi-office-building widget-icon"></i>
-                                                        <h3 className="mt-2">{comprehensiveData.summary?.companies || 0}</h3>
-                                                        <p className="mb-0">Companies</p>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                            <Col md={2}>
-                                                <Card className="widget-flat bg-success text-white">
-                                                    <Card.Body className="text-center">
-                                                        <i className="mdi mdi-account-multiple widget-icon"></i>
-                                                        <h3 className="mt-2">{comprehensiveData.summary?.ledgers || 0}</h3>
-                                                        <p className="mb-0">Sundry Debtors</p>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                            <Col md={2}>
-                                                <Card className="widget-flat bg-info text-white">
-                                                    <Card.Body className="text-center">
-                                                        <i className="mdi mdi-sitemap widget-icon"></i>
-                                                        <h3 className="mt-2">{comprehensiveData.summary?.groups || 0}</h3>
-                                                        <p className="mb-0">Groups</p>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                            <Col md={2}>
-                                                <Card className="widget-flat bg-warning text-white">
-                                                    <Card.Body className="text-center">
-                                                        <i className="mdi mdi-package-variant widget-icon"></i>
-                                                        <h3 className="mt-2">{comprehensiveData.summary?.stockItems || 0}</h3>
-                                                        <p className="mb-0">Stock Items</p>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                            <Col md={2}>
-                                                <Card className="widget-flat bg-danger text-white">
-                                                    <Card.Body className="text-center">
-                                                        <i className="mdi mdi-file-document widget-icon"></i>
-                                                        <h3 className="mt-2">{comprehensiveData.summary?.vouchers || 0}</h3>
-                                                        <p className="mb-0">Vouchers</p>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                            <Col md={2}>
-                                                <Card className="widget-flat bg-secondary text-white">
-                                                    <Card.Body className="text-center">
-                                                        <i className="mdi mdi-currency-usd widget-icon"></i>
-                                                        <h3 className="mt-2">{comprehensiveData.summary?.currencies || 0}</h3>
-                                                        <p className="mb-0">Currencies</p>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                        </Row>
-
-                                        {/* Financial Summary */}
-                                        <Row className="mt-4">
-                                            <Col md={4}>
-                                                <Card className="text-center">
-                                                    <Card.Body>
-                                                        <h5 className="text-muted">Total Opening Balance</h5>
-                                                        <h2 className="text-success">
-                                                            {formatCurrency(comprehensiveData.financialSummary?.totalOpeningBalance || 0)}
-                                                        </h2>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                            <Col md={4}>
-                                                <Card className="text-center">
-                                                    <Card.Body>
-                                                        <h5 className="text-muted">Total Closing Balance</h5>
-                                                        <h2 className="text-primary">
-                                                            {formatCurrency(comprehensiveData.financialSummary?.totalClosingBalance || 0)}
-                                                        </h2>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                            <Col md={4}>
-                                                <Card className="text-center">
-                                                    <Card.Body>
-                                                        <h5 className="text-muted">Net Change</h5>
-                                                        <h2 className={
-                                                            ((comprehensiveData.financialSummary?.totalClosingBalance || 0) - 
-                                                             (comprehensiveData.financialSummary?.totalOpeningBalance || 0)) >= 0 
-                                                            ? 'text-success' : 'text-danger'
-                                                        }>
-                                                            {formatCurrency(
-                                                                (comprehensiveData.financialSummary?.totalClosingBalance || 0) - 
-                                                                (comprehensiveData.financialSummary?.totalOpeningBalance || 0)
-                                                            )}
-                                                        </h2>
-                                                    </Card.Body>
-                                                </Card>
-                                            </Col>
-                                        </Row>
+                        <Row className="g-3">
+                            {/* Summary Cards */}
+                            <Col xs={12} sm={6} md={4} lg={2}>
+                                <Card className="widget-flat bg-primary text-white h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <i className="mdi mdi-office-building widget-icon mb-2"></i>
+                                        <h3 className="mt-2 mb-2">{comprehensiveData.summary?.companies || 0}</h3>
+                                        <p className="mb-0 small">Companies</p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col xs={12} sm={6} md={4} lg={2}>
+                                <Card className="widget-flat bg-success text-white h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <i className="mdi mdi-account-multiple widget-icon mb-2"></i>
+                                        <h3 className="mt-2 mb-2">{comprehensiveData.summary?.ledgers || 0}</h3>
+                                        <p className="mb-0 small">Sundry Debtors</p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col xs={12} sm={6} md={4} lg={2}>
+                                <Card className="widget-flat bg-info text-white h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <i className="mdi mdi-sitemap widget-icon mb-2"></i>
+                                        <h3 className="mt-2 mb-2">{comprehensiveData.summary?.groups || 0}</h3>
+                                        <p className="mb-0 small">Groups</p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col xs={12} sm={6} md={4} lg={2}>
+                                <Card className="widget-flat bg-warning text-white h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <i className="mdi mdi-package-variant widget-icon mb-2"></i>
+                                        <h3 className="mt-2 mb-2">{comprehensiveData.summary?.stockItems || 0}</h3>
+                                        <p className="mb-0 small">Stock Items</p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col xs={12} sm={6} md={4} lg={2}>
+                                <Card className="widget-flat bg-danger text-white h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <i className="mdi mdi-file-document widget-icon mb-2"></i>
+                                        <h3 className="mt-2 mb-2">{comprehensiveData.summary?.vouchers || 0}</h3>
+                                        <p className="mb-0 small">Vouchers</p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col xs={12} sm={6} md={4} lg={2}>
+                                <Card className="widget-flat bg-secondary text-white h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <i className="mdi mdi-currency-usd widget-icon mb-2"></i>
+                                        <h3 className="mt-2 mb-2">{comprehensiveData.summary?.currencies || 0}</h3>
+                                        <p className="mb-0 small">Currencies</p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                        
+                        {/* Financial Summary */}
+                        <Row className="mt-4 g-3">
+                            <Col xs={12} md={6} lg={4}>
+                                <Card className="financial-card h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <div className="financial-icon bg-success mb-3">
+                                            <i className="mdi mdi-bank"></i>
+                                        </div>
+                                        <h6 className="text-muted mb-2">Total Opening Balance</h6>
+                                        <h3 className="text-success mb-0">
+                                            {formatCurrency(comprehensiveData.financialSummary?.totalOpeningBalance || 0)}
+                                        </h3>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col xs={12} md={6} lg={4}>
+                                <Card className="financial-card h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <div className="financial-icon bg-primary mb-3">
+                                            <i className="mdi mdi-cash-multiple"></i>
+                                        </div>
+                                        <h6 className="text-muted mb-2">Total Closing Balance</h6>
+                                        <h3 className="text-primary mb-0">
+                                            {formatCurrency(comprehensiveData.financialSummary?.totalClosingBalance || 0)}
+                                        </h3>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col xs={12} md={12} lg={4}>
+                                <Card className="financial-card h-100">
+                                    <Card.Body className="text-center d-flex flex-column">
+                                        <div className={`financial-icon mb-3 ${
+                                            ((comprehensiveData.financialSummary?.totalClosingBalance || 0) - 
+                                             (comprehensiveData.financialSummary?.totalOpeningBalance || 0)) >= 0 
+                                            ? 'bg-success' : 'bg-danger'
+                                        }`}>
+                                            <i className="mdi mdi-chart-line"></i>
+                                        </div>
+                                        <h6 className="text-muted mb-2">Net Change</h6>
+                                        <h3 className={`mb-0 ${
+                                            ((comprehensiveData.financialSummary?.totalClosingBalance || 0) - 
+                                             (comprehensiveData.financialSummary?.totalOpeningBalance || 0)) >= 0 
+                                            ? 'text-success' : 'text-danger'
+                                        }`}>
+                                            {formatCurrency(
+                                                (comprehensiveData.financialSummary?.totalClosingBalance || 0) - 
+                                                (comprehensiveData.financialSummary?.totalOpeningBalance || 0)
+                                            )}
+                                        </h3>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
                                     </Tab>
 
                                     {/* Charts Tab */}

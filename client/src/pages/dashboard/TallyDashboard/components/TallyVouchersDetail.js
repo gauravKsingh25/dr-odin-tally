@@ -19,11 +19,14 @@ const TallyVouchersDetail = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [voucherTypeFilter, setVoucherTypeFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+    const [quickDateRange, setQuickDateRange] = useState('');
     const [itemsPerPage] = useState(20);
     const navigate = useNavigate();
 
     // Fetch vouchers data with pagination and filters
-    const fetchVouchersData = useCallback(async (page = 1, search = '', voucherType = '', date = '') => {
+    const fetchVouchersData = useCallback(async (page = 1, search = '', voucherType = '', date = '', fromDateParam = '', toDateParam = '') => {
         setLoading(true);
         setError(null);
         try {
@@ -41,7 +44,9 @@ const TallyVouchersDetail = () => {
                 limit: itemsPerPage.toString(),
                 ...(search && { search }),
                 ...(voucherType && { voucherType }),
-                ...(date && { date })
+                ...(date && { date }),
+                ...(fromDateParam && { fromDate: fromDateParam }),
+                ...(toDateParam && { toDate: toDateParam })
             });
             
             const response = await axios.get(`/tally/vouchers?${params}`, {
@@ -79,14 +84,14 @@ const TallyVouchersDetail = () => {
     // Handle pagination change
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
-        fetchVouchersData(page, searchTerm, voucherTypeFilter, dateFilter);
+        fetchVouchersData(page, searchTerm, voucherTypeFilter, dateFilter, fromDate, toDate);
     };
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
             const prev = currentPage - 1;
             setCurrentPage(prev);
-            fetchVouchersData(prev, searchTerm, voucherTypeFilter, dateFilter);
+            fetchVouchersData(prev, searchTerm, voucherTypeFilter, dateFilter, fromDate, toDate);
         }
     };
 
@@ -94,14 +99,14 @@ const TallyVouchersDetail = () => {
         if (currentPage < totalPages) {
             const next = currentPage + 1;
             setCurrentPage(next);
-            fetchVouchersData(next, searchTerm, voucherTypeFilter, dateFilter);
+            fetchVouchersData(next, searchTerm, voucherTypeFilter, dateFilter, fromDate, toDate);
         }
     };
 
     // Handle search
     const handleSearch = () => {
         setCurrentPage(1);
-        fetchVouchersData(1, searchTerm, voucherTypeFilter, dateFilter);
+        fetchVouchersData(1, searchTerm, voucherTypeFilter, dateFilter, fromDate, toDate);
     };
 
     // Handle filter reset
@@ -109,8 +114,80 @@ const TallyVouchersDetail = () => {
         setSearchTerm('');
         setVoucherTypeFilter('');
         setDateFilter('');
+        setFromDate('');
+        setToDate('');
+        setQuickDateRange('');
         setCurrentPage(1);
-        fetchVouchersData(1, '', '', '');
+        fetchVouchersData(1, '', '', '', '', '');
+    };
+
+    // Handle quick date range selection
+    const handleQuickDateRange = (range) => {
+        setQuickDateRange(range);
+        const today = new Date();
+        let startDate = new Date();
+        let endDate = new Date();
+
+        switch (range) {
+            case 'today':
+                startDate = endDate = today;
+                break;
+            case 'yesterday':
+                startDate = endDate = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+                break;
+            case 'thisWeek':
+                startDate = new Date(today.setDate(today.getDate() - today.getDay()));
+                endDate = new Date();
+                break;
+            case 'lastWeek':
+                startDate = new Date(today.setDate(today.getDate() - today.getDay() - 7));
+                endDate = new Date(today.setDate(today.getDate() - today.getDay() - 1));
+                break;
+            case 'thisMonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date();
+                break;
+            case 'lastMonth':
+                startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                break;
+            case 'thisQuarter':
+                const quarter = Math.floor(today.getMonth() / 3);
+                startDate = new Date(today.getFullYear(), quarter * 3, 1);
+                endDate = new Date();
+                break;
+            case 'thisYear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date();
+                break;
+            case 'last30days':
+                startDate = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                endDate = new Date();
+                break;
+            case 'last90days':
+                startDate = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+                endDate = new Date();
+                break;
+            default:
+                return;
+        }
+
+        const formatDate = (date) => date.toISOString().split('T')[0];
+        setFromDate(formatDate(startDate));
+        setToDate(formatDate(endDate));
+        
+        // Auto-apply the filter
+        setCurrentPage(1);
+        fetchVouchersData(1, searchTerm, voucherTypeFilter, dateFilter, formatDate(startDate), formatDate(endDate));
+    };
+
+    // Handle date range reset
+    const handleDateRangeReset = () => {
+        setFromDate('');
+        setToDate('');
+        setQuickDateRange('');
+        setCurrentPage(1);
+        fetchVouchersData(1, searchTerm, voucherTypeFilter, dateFilter, '', '');
     };
 
     useEffect(() => {
@@ -279,6 +356,67 @@ const TallyVouchersDetail = () => {
                                 <Col md={2} className="text-end">
                                     <Button variant="success" disabled={loading}>
                                         <i className="mdi mdi-download"></i> Export
+                                    </Button>
+                                </Col>
+                            </Row>
+                            
+                            {/* Date Range Filter Row */}
+                            <Row className="align-items-end mt-3">
+                                <Col md={2}>
+                                    <Form.Group>
+                                        <Form.Label>From Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            value={fromDate}
+                                            onChange={(e) => setFromDate(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={2}>
+                                    <Form.Group>
+                                        <Form.Label>To Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            value={toDate}
+                                            onChange={(e) => setToDate(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={2}>
+                                    <Form.Group>
+                                        <Form.Label>Quick Date Ranges</Form.Label>
+                                        <Form.Select
+                                            value={quickDateRange}
+                                            onChange={(e) => handleQuickDateRange(e.target.value)}
+                                        >
+                                            <option value="">Select Range</option>
+                                            <option value="today">Today</option>
+                                            <option value="yesterday">Yesterday</option>
+                                            <option value="thisWeek">This Week</option>
+                                            <option value="lastWeek">Last Week</option>
+                                            <option value="thisMonth">This Month</option>
+                                            <option value="lastMonth">Last Month</option>
+                                            <option value="thisQuarter">This Quarter</option>
+                                            <option value="thisYear">This Year</option>
+                                            <option value="last30days">Last 30 Days</option>
+                                            <option value="last90days">Last 90 Days</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Button 
+                                        variant="outline-info" 
+                                        onClick={handleDateRangeReset}
+                                        className="me-2"
+                                    >
+                                        <i className="mdi mdi-calendar-remove"></i> Clear Dates
+                                    </Button>
+                                    <Button 
+                                        variant="info" 
+                                        onClick={handleSearch}
+                                        disabled={loading}
+                                    >
+                                        <i className="mdi mdi-calendar-check"></i> Apply Date Filter
                                     </Button>
                                 </Col>
                             </Row>

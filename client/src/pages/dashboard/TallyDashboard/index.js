@@ -439,33 +439,80 @@ const TallyDashboard = () => {
         <>
             <Row>
                 <Col xs={12}>
-                    <div className="page-title-box d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                            <h4 className="page-title mb-0 me-3">Tally Dashboard</h4>
-                            <ThemeToggle size="sm" className="theme-toggle-dashboard" />
-                        </div>
-                        <div className="d-flex align-items-center gap-2">
-                            <Button variant="info" className="me-2" onClick={testConnection} disabled={loading}>
-                                <i className="mdi mdi-connection"></i> Test Connection
-                            </Button>
-                            <Button variant="primary" className="me-2" onClick={fetchComprehensiveDashboard} disabled={loading}>
-                                <i className="mdi mdi-refresh"></i> Refresh
-                            </Button>
-                            <Button variant="warning" className="me-2" onClick={triggerSync} disabled={loading || isSyncing}>
-                                <i className={`mdi ${isSyncing ? 'mdi-sync mdi-spin' : 'mdi-sync'}`}></i> 
-                                {isSyncing ? 'Basic Sync...' : 'Basic Sync'}
-                            </Button>
-                            <Button variant="success" className="me-2" onClick={triggerComprehensiveSync} disabled={loading}>
-                                <i className="mdi mdi-database-sync"></i> Full Sync
-                            </Button>
-                            <Button
-                                variant={isVoucherFetching ? 'secondary' : 'outline-info'}
-                                className="ms-2"
-                                onClick={fetchVouchersFromTally}
-                                disabled={loading || isSyncing || isVoucherFetching}
-                            >
-                                <i className={`mdi ${isVoucherFetching ? 'mdi-sync mdi-spin' : 'mdi-cloud-download'}`}></i> {isVoucherFetching ? 'Fetching Vouchers...' : 'Start Voucher Fetch'}
-                            </Button>
+                    <div className="page-title-box">
+                        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+                            <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 gap-sm-3">
+                                <h4 className="page-title mb-0">
+                                    <i className="mdi mdi-view-dashboard me-2"></i>
+                                    Tally Dashboard
+                                </h4>
+                                <ThemeToggle size="sm" className="theme-toggle-dashboard" />
+                            </div>
+                            <div className="d-flex flex-wrap align-items-center gap-2">
+                                <Button 
+                                    variant="info" 
+                                    size="sm"
+                                    onClick={testConnection} 
+                                    disabled={loading}
+                                    className="d-flex align-items-center"
+                                >
+                                    <i className="mdi mdi-connection me-1"></i> 
+                                    <span className="d-none d-sm-inline">Test Connection</span>
+                                    <span className="d-inline d-sm-none">Test</span>
+                                </Button>
+                                <Button 
+                                    variant="primary" 
+                                    size="sm"
+                                    onClick={fetchComprehensiveDashboard} 
+                                    disabled={loading}
+                                    className="d-flex align-items-center"
+                                >
+                                    <i className="mdi mdi-refresh me-1"></i> 
+                                    <span className="d-none d-md-inline">Refresh</span>
+                                    <span className="d-inline d-md-none">
+                                        <i className="mdi mdi-refresh"></i>
+                                    </span>
+                                </Button>
+                                <Button 
+                                    variant="warning" 
+                                    size="sm"
+                                    onClick={triggerSync} 
+                                    disabled={loading || isSyncing}
+                                    className="d-flex align-items-center"
+                                >
+                                    <i className={`mdi ${isSyncing ? 'mdi-sync mdi-spin' : 'mdi-sync'} me-1`}></i> 
+                                    <span className="d-none d-md-inline">
+                                        {isSyncing ? 'Basic Sync...' : 'Basic Sync'}
+                                    </span>
+                                    <span className="d-inline d-md-none">Sync</span>
+                                </Button>
+                                <Button 
+                                    variant="success" 
+                                    size="sm"
+                                    onClick={triggerComprehensiveSync} 
+                                    disabled={loading}
+                                    className="d-flex align-items-center"
+                                >
+                                    <i className="mdi mdi-database-sync me-1"></i> 
+                                    <span className="d-none d-lg-inline">Full Sync</span>
+                                    <span className="d-inline d-lg-none">Full</span>
+                                </Button>
+                                <Button
+                                    variant={isVoucherFetching ? 'secondary' : 'outline-info'}
+                                    size="sm"
+                                    onClick={fetchVouchersFromTally}
+                                    disabled={loading || isSyncing || isVoucherFetching}
+                                    className="d-flex align-items-center"
+                                >
+                                    <i className={`mdi ${isVoucherFetching ? 'mdi-sync mdi-spin' : 'mdi-cloud-download'} me-1`}></i> 
+                                    <span className="d-none d-xl-inline">
+                                        {isVoucherFetching ? 'Fetching Vouchers...' : 'Start Voucher Fetch'}
+                                    </span>
+                                    <span className="d-inline d-xl-none">
+                                        {isVoucherFetching ? 'Fetching...' : 'Vouchers'}
+                                    </span>
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </Col>
@@ -711,290 +758,349 @@ const TallyDashboard = () => {
                     </Row>
 
                     {/* Enhanced Summary Cards */}
-                    <Row className="fade-in">
-                        <Col sm={6} xl={2}>
-                            <Card className="widget-flat success-indicator">
-                                <Card.Body className="fade-in">
-                                    <div className="float-end">
-                                        <i className="mdi mdi-office-building widget-icon bg-primary"></i>
+                    <Row className="fade-in g-3">
+                        <Col xs={12} sm={6} lg={4} xl={2}>
+                            <Card className="widget-flat success-indicator h-100">
+                                <Card.Body className="fade-in d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Companies</h6>
+                                            <h3 className="mb-0">{dashboardData.summary?.companies || 0}</h3>
+                                        </div>
+                                        <div className="widget-icon bg-primary">
+                                            <i className="mdi mdi-office-building"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Companies</h5>
-                                    <h3 className="mt-3 mb-3">{dashboardData.summary?.companies || 0}</h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-success me-2">
-                                            <i className="mdi mdi-arrow-up-bold"></i>
-                                        </span>
-                                        <span className="text-nowrap">Active entities</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-success me-2">
+                                                <i className="mdi mdi-arrow-up-bold"></i>
+                                            </span>
+                                            <span className="text-muted small">Active entities</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-comprehensive-detail')}
                                             title="View company details"
                                         >
                                             <i className="mdi mdi-eye text-primary"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
 
-                        <Col sm={6} xl={2}>
-                            <Card className="widget-flat success-indicator">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-account-multiple widget-icon bg-success"></i>
+                        <Col xs={12} sm={6} lg={4} xl={2}>
+                            <Card className="widget-flat success-indicator h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Sundry Debtors</h6>
+                                            <h3 className="mb-0">{dashboardData.summary?.ledgers || 0}</h3>
+                                        </div>
+                                        <div className="widget-icon bg-success">
+                                            <i className="mdi mdi-account-multiple"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Sundry Debtors</h5>
-                                    <h3 className="mt-3 mb-3">{dashboardData.summary?.ledgers || 0}</h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-success me-2">
-                                            <i className="mdi mdi-arrow-up-bold"></i>
-                                        </span>
-                                        <span className="text-nowrap">Account heads</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-success me-2">
+                                                <i className="mdi mdi-arrow-up-bold"></i>
+                                            </span>
+                                            <span className="text-muted small">Account heads</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-ledgers-detail')}
                                             title="Manage Sundry Debtors"
                                         >
                                             <i className="mdi mdi-eye text-success"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
 
-                        <Col sm={6} xl={2}>
-                            <Card className="widget-flat success-indicator">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-sitemap widget-icon bg-info"></i>
+                        <Col xs={12} sm={6} lg={4} xl={2}>
+                            <Card className="widget-flat success-indicator h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Groups</h6>
+                                            <h3 className="mb-0">{dashboardData.summary?.groups || 0}</h3>
+                                        </div>
+                                        <div className="widget-icon bg-info">
+                                            <i className="mdi mdi-sitemap"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Groups</h5>
-                                    <h3 className="mt-3 mb-3">{dashboardData.summary?.groups || 0}</h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-info me-2">
-                                            <i className="mdi mdi-arrow-up-bold"></i>
-                                        </span>
-                                        <span className="text-nowrap">Account groups</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-info me-2">
+                                                <i className="mdi mdi-arrow-up-bold"></i>
+                                            </span>
+                                            <span className="text-muted small">Account groups</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-comprehensive-detail')}
                                             title="View group analytics"
                                         >
                                             <i className="mdi mdi-chart-bar text-info"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
 
-                        <Col sm={6} xl={2}>
-                            <Card className="widget-flat success-indicator">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-package-variant widget-icon bg-warning"></i>
+                        <Col xs={12} sm={6} lg={4} xl={2}>
+                            <Card className="widget-flat success-indicator h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Stock Items</h6>
+                                            <h3 className="mb-0">{dashboardData.summary?.stockItems || 0}</h3>
+                                        </div>
+                                        <div className="widget-icon bg-warning">
+                                            <i className="mdi mdi-package-variant"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Stock Items</h5>
-                                    <h3 className="mt-3 mb-3">{dashboardData.summary?.stockItems || 0}</h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-warning me-2">
-                                            <i className="mdi mdi-arrow-up-bold"></i>
-                                        </span>
-                                        <span className="text-nowrap">Inventory items</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-warning me-2">
+                                                <i className="mdi mdi-arrow-up-bold"></i>
+                                            </span>
+                                            <span className="text-muted small">Inventory items</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-stock-items-detail')}
                                             title="Manage inventory"
                                         >
                                             <i className="mdi mdi-eye text-warning"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
 
-                        <Col sm={6} xl={2}>
-                            <Card className="widget-flat success-indicator">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-file-document widget-icon bg-danger"></i>
+                        <Col xs={12} sm={6} lg={4} xl={2}>
+                            <Card className="widget-flat success-indicator h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Vouchers</h6>
+                                            <h3 className="mb-0">{dashboardData.summary?.vouchers || 0}</h3>
+                                        </div>
+                                        <div className="widget-icon bg-danger">
+                                            <i className="mdi mdi-file-document"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Vouchers</h5>
-                                    <h3 className="mt-3 mb-3">{dashboardData.summary?.vouchers || 0}</h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-danger me-2">
-                                            <i className="mdi mdi-arrow-up-bold"></i>
-                                        </span>
-                                        <span className="text-nowrap">Transactions</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-danger me-2">
+                                                <i className="mdi mdi-arrow-up-bold"></i>
+                                            </span>
+                                            <span className="text-muted small">Transactions</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-vouchers-detail')}
                                             title="View all vouchers"
                                         >
                                             <i className="mdi mdi-eye text-danger"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
 
-                        <Col sm={6} xl={2}>
-                            <Card className="widget-flat success-indicator">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-currency-usd widget-icon bg-secondary"></i>
+                        <Col xs={12} sm={6} lg={4} xl={2}>
+                            <Card className="widget-flat success-indicator h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Currencies</h6>
+                                            <h3 className="mb-0">{dashboardData.summary?.currencies || 0}</h3>
+                                        </div>
+                                        <div className="widget-icon bg-secondary">
+                                            <i className="mdi mdi-currency-usd"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Currencies</h5>
-                                    <h3 className="mt-3 mb-3">{dashboardData.summary?.currencies || 0}</h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-secondary me-2">
-                                            <i className="mdi mdi-arrow-up-bold"></i>
-                                        </span>
-                                        <span className="text-nowrap">Currency types</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-secondary me-2">
+                                                <i className="mdi mdi-arrow-up-bold"></i>
+                                            </span>
+                                            <span className="text-muted small">Currency types</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-comprehensive-detail')}
                                             title="View currency details"
                                         >
                                             <i className="mdi mdi-chart-timeline-variant text-secondary"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
                     </Row>
 
                     {/* Financial Summary Row */}
-                    <Row>
-                        <Col xl={4}>
-                            <Card className="widget-flat">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-bank widget-icon bg-success"></i>
+                    <Row className="g-3">
+                        <Col xs={12} md={6} xl={4}>
+                            <Card className="widget-flat financial-card h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Total Opening Balance</h6>
+                                            <h3 className="mb-0 text-success">
+                                                ₹{dashboardData.financialSummary?.totalOpeningBalance?.toLocaleString() || '0'}
+                                            </h3>
+                                        </div>
+                                        <div className="widget-icon bg-success">
+                                            <i className="mdi mdi-bank"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Total Opening Balance</h5>
-                                    <h3 className="mt-3 mb-3">
-                                        ₹{dashboardData.financialSummary?.totalOpeningBalance?.toLocaleString() || '0'}
-                                    </h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-success me-2">
-                                            <i className="mdi mdi-trending-up"></i>
-                                        </span>
-                                        <span className="text-nowrap">Sum of all opening balances</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-success me-2">
+                                                <i className="mdi mdi-trending-up"></i>
+                                            </span>
+                                            <span className="text-muted small">Sum of opening balances</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-ledgers-detail')}
                                             title="View Sundry Debtors opening balances"
                                         >
                                             <i className="mdi mdi-eye text-success"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
 
-                        <Col xl={4}>
-                            <Card className="widget-flat">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-cash-multiple widget-icon bg-primary"></i>
+                        <Col xs={12} md={6} xl={4}>
+                            <Card className="widget-flat financial-card h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Total Closing Balance</h6>
+                                            <h3 className="mb-0 text-primary">
+                                                ₹{dashboardData.financialSummary?.totalClosingBalance?.toLocaleString() || '0'}
+                                            </h3>
+                                        </div>
+                                        <div className="widget-icon bg-primary">
+                                            <i className="mdi mdi-cash-multiple"></i>
+                                        </div>
                                     </div>
-                                    <h5 className="text-muted fw-normal mt-0">Total Closing Balance</h5>
-                                    <h3 className="mt-3 mb-3">
-                                        ₹{dashboardData.financialSummary?.totalClosingBalance?.toLocaleString() || '0'}
-                                    </h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className="text-primary me-2">
-                                            <i className="mdi mdi-trending-up"></i>
-                                        </span>
-                                        <span className="text-nowrap">Sum of all closing balances</span>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-primary me-2">
+                                                <i className="mdi mdi-trending-up"></i>
+                                            </span>
+                                            <span className="text-muted small">Sum of closing balances</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-ledgers-detail')}
                                             title="View Sundry Debtors closing balances"
                                         >
                                             <i className="mdi mdi-eye text-primary"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
 
-                        <Col xl={4}>
-                            <Card className="widget-flat">
-                                <Card.Body>
-                                    <div className="float-end">
-                                        <i className="mdi mdi-chart-line widget-icon bg-info"></i>
-                                    </div>
-                                    <h5 className="text-muted fw-normal mt-0">Net Change</h5>
-                                    <h3 className="mt-3 mb-3">
-                                        ₹{((dashboardData.financialSummary?.totalClosingBalance || 0) - 
-                                           (dashboardData.financialSummary?.totalOpeningBalance || 0)).toLocaleString()}
-                                    </h3>
-                                    <p className="mb-0 text-muted">
-                                        <span className={`me-2 ${
-                                            ((dashboardData.financialSummary?.totalClosingBalance || 0) - 
-                                             (dashboardData.financialSummary?.totalOpeningBalance || 0)) >= 0 
-                                            ? 'text-success' : 'text-danger'
-                                        }`}>
-                                            <i className={`mdi ${
+                        <Col xs={12} md={12} xl={4}>
+                            <Card className="widget-flat financial-card h-100">
+                                <Card.Body className="d-flex flex-column">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="text-muted fw-normal mb-2">Net Change</h6>
+                                            <h3 className={`mb-0 ${
                                                 ((dashboardData.financialSummary?.totalClosingBalance || 0) - 
                                                  (dashboardData.financialSummary?.totalOpeningBalance || 0)) >= 0 
-                                                ? 'mdi-trending-up' : 'mdi-trending-down'
-                                            }`}></i>
-                                        </span>
-                                        <span className="text-nowrap">Difference from opening</span>
+                                                ? 'text-success' : 'text-danger'
+                                            }`}>
+                                                ₹{((dashboardData.financialSummary?.totalClosingBalance || 0) - 
+                                                   (dashboardData.financialSummary?.totalOpeningBalance || 0)).toLocaleString()}
+                                            </h3>
+                                        </div>
+                                        <div className="widget-icon bg-info">
+                                            <i className="mdi mdi-chart-line"></i>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                        <div className="d-flex align-items-center">
+                                            <span className={`me-2 ${
+                                                ((dashboardData.financialSummary?.totalClosingBalance || 0) - 
+                                                 (dashboardData.financialSummary?.totalOpeningBalance || 0)) >= 0 
+                                                ? 'text-success' : 'text-danger'
+                                            }`}>
+                                                <i className={`mdi ${
+                                                    ((dashboardData.financialSummary?.totalClosingBalance || 0) - 
+                                                     (dashboardData.financialSummary?.totalOpeningBalance || 0)) >= 0 
+                                                    ? 'mdi-trending-up' : 'mdi-trending-down'
+                                                }`}></i>
+                                            </span>
+                                            <span className="text-muted small">Difference from opening</span>
+                                        </div>
                                         <Button 
                                             variant="link" 
                                             size="sm" 
-                                            className="p-0 ms-2 text-decoration-none"
+                                            className="p-1 text-decoration-none"
                                             onClick={() => navigate('/tally-comprehensive-detail')}
                                             title="View comprehensive financial analysis"
                                         >
                                             <i className="mdi mdi-chart-timeline-variant text-info"></i>
                                         </Button>
-                                    </p>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
                     </Row>
 
                     {/* Enhanced Charts Row */}
-                    <Row className="fade-in">
-                        <Col lg={6}>
-                            <Card className="chart-container">
+                    <Row className="fade-in g-3">
+                        <Col xs={12} lg={6}>
+                            <Card className="chart-container h-100">
                                 <Card.Body>
-                                    <Row>
-                                        <Col lg={8}>
-                                            <h4 className="header-title">Voucher Types Distribution</h4>
-                                        </Col>
-                                        <Col lg={4} className="text-end">
-                                            <Button 
-                                                variant="outline-primary" 
-                                                size="sm"
-                                                className="see-more-btn"
-                                                onClick={() => navigate('/tally-vouchers-detail')}
-                                                title="View detailed vouchers list"
-                                            >
-                                                <i className="mdi mdi-arrow-right"></i> See More
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3">
+                                        <h4 className="header-title mb-2 mb-sm-0">
+                                            <i className="mdi mdi-chart-pie me-2"></i>
+                                            Voucher Types Distribution
+                                        </h4>
+                                        <Button 
+                                            variant="outline-primary" 
+                                            size="sm"
+                                            className="see-more-btn d-flex align-items-center"
+                                            onClick={() => navigate('/tally-vouchers-detail')}
+                                            title="View detailed vouchers list"
+                                        >
+                                            <i className="mdi mdi-arrow-right me-1"></i> 
+                                            <span className="d-none d-sm-inline">See More</span>
+                                            <span className="d-inline d-sm-none">Details</span>
+                                        </Button>
+                                    </div>
                                     {dashboardData.voucherSummary && dashboardData.voucherSummary.length > 0 ? (
                                         <Chart
                                             options={{
@@ -1047,25 +1153,26 @@ const TallyDashboard = () => {
                             </Card>
                         </Col>
 
-                        <Col lg={6}>
-                            <Card className="chart-container">
+                        <Col xs={12} lg={6}>
+                            <Card className="chart-container h-100">
                                 <Card.Body>
-                                    <Row>
-                                        <Col lg={8}>
-                                            <h4 className="header-title">Group Summary by Nature</h4>
-                                        </Col>
-                                        <Col lg={4} className="text-end">
-                                            <Button 
-                                                variant="outline-primary" 
-                                                size="sm"
-                                                className="see-more-btn"
-                                                onClick={() => navigate('/tally-comprehensive-detail')}
-                                                title="View comprehensive analytics"
-                                            >
-                                                <i className="mdi mdi-chart-bar"></i> Analyze
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3">
+                                        <h4 className="header-title mb-2 mb-sm-0">
+                                            <i className="mdi mdi-sitemap me-2"></i>
+                                            Group Summary by Nature
+                                        </h4>
+                                        <Button 
+                                            variant="outline-primary" 
+                                            size="sm"
+                                            className="see-more-btn d-flex align-items-center"
+                                            onClick={() => navigate('/tally-comprehensive-detail')}
+                                            title="View comprehensive analytics"
+                                        >
+                                            <i className="mdi mdi-chart-bar me-1"></i> 
+                                            <span className="d-none d-sm-inline">Analyze</span>
+                                            <span className="d-inline d-sm-none">Charts</span>
+                                        </Button>
+                                    </div>
                                     {dashboardData.groupSummary && dashboardData.groupSummary.length > 0 ? (
                                         <Chart
                                             options={{
@@ -1137,25 +1244,27 @@ const TallyDashboard = () => {
                     </Row>
 
                     {/* Stock Summary Chart */}
-                    <Row>
-                        <Col lg={12}>
+                    <Row className="g-3">
+                        <Col xs={12}>
                             <Card className="chart-container">
                                 <Card.Body>
-                                    <Row>
-                                        <Col lg={8}>
-                                            <h4 className="header-title">Stock Summary by Category</h4>
-                                        </Col>
-                                        <Col lg={4} className="text-end">
-                                            <Button 
-                                                variant="outline-primary" 
-                                                size="sm"
-                                                onClick={() => navigate('/tally-stock-items-detail')}
-                                                title="View detailed stock items list"
-                                            >
-                                                <i className="mdi mdi-package-variant"></i> View Stock Details
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3">
+                                        <h4 className="header-title mb-2 mb-sm-0">
+                                            <i className="mdi mdi-package-variant me-2"></i>
+                                            Stock Summary by Category
+                                        </h4>
+                                        <Button 
+                                            variant="outline-primary" 
+                                            size="sm"
+                                            className="d-flex align-items-center"
+                                            onClick={() => navigate('/tally-stock-items-detail')}
+                                            title="View detailed stock items list"
+                                        >
+                                            <i className="mdi mdi-package-variant me-1"></i> 
+                                            <span className="d-none d-md-inline">View Stock Details</span>
+                                            <span className="d-inline d-md-none">Stock Details</span>
+                                        </Button>
+                                    </div>
                                     {dashboardData.stockSummary && dashboardData.stockSummary.length > 0 ? (
                                         <Chart
                                             options={{
@@ -1263,182 +1372,188 @@ const TallyDashboard = () => {
                     {/* Advanced Analytics Section */}
                     {dashboardData.summary && (
                         <Row className="fade-in">
-                            <Col lg={12}>
+                            <Col xs={12}>
                                 <Card className="comprehensive-analytics-card">
                                     <Card.Body>
-                                        <Row className="mb-4">
-                                            <Col lg={8}>
-                                                <h4 className="header-title mb-0">
+                                        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-4 gap-3">
+                                            <div className="flex-grow-1">
+                                                <h4 className="header-title mb-2">
                                                     <i className="mdi mdi-chart-timeline-variant me-2"></i>
                                                     Comprehensive Analytics Overview
                                                 </h4>
-                                                <p className="text-muted mb-0">Detailed insights from your Tally data with interactive visualizations</p>
-                                            </Col>
-                                            <Col lg={4} className="text-end">
-                                                <Button 
-                                                    variant="primary" 
-                                                    size="sm"
-                                                    onClick={() => navigate('/tally-comprehensive-detail')}
-                                                    title="View comprehensive analytics dashboard"
-                                                >
-                                                    <i className="mdi mdi-chart-timeline-variant"></i> Full Analytics
-                                                </Button>
-                                            </Col>
-                                        </Row>
+                                                <p className="text-muted mb-0 d-none d-md-block">
+                                                    Detailed insights from your Tally data with interactive visualizations
+                                                </p>
+                                                <p className="text-muted mb-0 d-block d-md-none">
+                                                    Detailed Tally data insights
+                                                </p>
+                                            </div>
+                                            <Button 
+                                                variant="primary" 
+                                                size="sm"
+                                                className="d-flex align-items-center"
+                                                onClick={() => navigate('/tally-comprehensive-detail')}
+                                                title="View comprehensive analytics dashboard"
+                                            >
+                                                <i className="mdi mdi-chart-timeline-variant me-1"></i> 
+                                                <span className="d-none d-sm-inline">Full Analytics</span>
+                                                <span className="d-inline d-sm-none">Analytics</span>
+                                            </Button>
+                                        </div>
                                         
-                                        {/* Mini Analytics Cards */}
-                                        <Row className="mb-4">
-                                            <Col md={3}>
-                                                <div className="mini-stat">
-                                                    <div className="mini-stat-icon bg-primary">
-                                                        <i className="mdi mdi-database"></i>
-                                                    </div>
-                                                    <div className="mini-stat-info">
-                                                        <h6 className="mb-1">Total Records</h6>
-                                                        <h4 className="mb-0">
-                                                            {(
-                                                                (dashboardData.summary?.companies || 0) +
-                                                                (dashboardData.summary?.ledgers || 0) +
-                                                                (dashboardData.summary?.vouchers || 0) +
-                                                                (dashboardData.summary?.stockItems || 0) +
-                                                                (dashboardData.summary?.groups || 0) +
-                                                                (dashboardData.summary?.costCenters || 0) +
-                                                                (dashboardData.summary?.currencies || 0)
-                                                            ).toLocaleString()}
-                                                        </h4>
-                                                    </div>
+                        {/* Mini Analytics Cards */}
+                        <Row className="mb-4 g-3">
+                            <Col xs={12} sm={6} lg={3}>
+                                <div className="mini-stat h-100">
+                                    <div className="mini-stat-icon bg-primary">
+                                        <i className="mdi mdi-database"></i>
+                                    </div>
+                                    <div className="mini-stat-info">
+                                        <h6 className="mb-1">Total Records</h6>
+                                        <h4 className="mb-0">
+                                            {(
+                                                (dashboardData.summary?.companies || 0) +
+                                                (dashboardData.summary?.ledgers || 0) +
+                                                (dashboardData.summary?.vouchers || 0) +
+                                                (dashboardData.summary?.stockItems || 0) +
+                                                (dashboardData.summary?.groups || 0) +
+                                                (dashboardData.summary?.costCenters || 0) +
+                                                (dashboardData.summary?.currencies || 0)
+                                            ).toLocaleString()}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col xs={12} sm={6} lg={3}>
+                                <div className="mini-stat h-100">
+                                    <div className="mini-stat-icon bg-success">
+                                        <i className="mdi mdi-trending-up"></i>
+                                    </div>
+                                    <div className="mini-stat-info">
+                                        <h6 className="mb-1">Data Coverage</h6>
+                                        <h4 className="mb-0">
+                                            {dashboardData.summary?.ledgers > 0 && dashboardData.summary?.vouchers > 0 ? '95%' : 
+                                             dashboardData.summary?.ledgers > 0 || dashboardData.summary?.vouchers > 0 ? '70%' : '25%'}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col xs={12} sm={6} lg={3}>
+                                <div className="mini-stat h-100">
+                                    <div className="mini-stat-icon bg-warning">
+                                        <i className="mdi mdi-clock-outline"></i>
+                                    </div>
+                                    <div className="mini-stat-info">
+                                        <h6 className="mb-1">Last Sync</h6>
+                                        <h4 className="mb-0" style={{ fontSize: '1.2rem' }}>
+                                            {dashboardData.summary?.lastSync ? 
+                                                new Date(dashboardData.summary.lastSync).toLocaleDateString() : 
+                                                'Never'
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col xs={12} sm={6} lg={3}>
+                                <div className="mini-stat h-100">
+                                    <div className="mini-stat-icon bg-info">
+                                        <i className="mdi mdi-chart-pie"></i>
+                                    </div>
+                                    <div className="mini-stat-info">
+                                        <h6 className="mb-1">Data Health</h6>
+                                        <h4 className="mb-0" style={{ fontSize: '1.1rem' }}>
+                                            {dashboardData.summary?.vouchers > 0 && dashboardData.summary?.ledgers > 0 ? 
+                                                'Excellent' : dashboardData.summary?.ledgers > 0 ? 'Good' : 'Needs Sync'}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                        
+                        {/* Financial Balance Trends */}
+                        {dashboardData.financialSummary && (
+                            <Row className="mb-4 g-3">
+                                <Col xs={12} lg={6}>
+                                    <div className="financial-insight-card h-100">
+                                        <h5 className="mb-3">
+                                            <i className="mdi mdi-chart-line text-primary me-2"></i>
+                                            Financial Balance Analysis
+                                        </h5>
+                                        <div className="balance-metrics">
+                                            <div className="metric-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 border-bottom">
+                                                <span className="metric-label mb-1 mb-sm-0">Opening Balance</span>
+                                                <span className="metric-value text-info fw-bold">
+                                                    ₹{dashboardData.financialSummary.totalOpeningBalance?.toLocaleString() || '0'}
+                                                </span>
+                                            </div>
+                                            <div className="metric-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2 border-bottom">
+                                                <span className="metric-label mb-1 mb-sm-0">Closing Balance</span>
+                                                <span className="metric-value text-primary fw-bold">
+                                                    ₹{dashboardData.financialSummary.totalClosingBalance?.toLocaleString() || '0'}
+                                                </span>
+                                            </div>
+                                            <div className="metric-item d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center py-2">
+                                                <span className="metric-label mb-1 mb-sm-0">Net Movement</span>
+                                                <span className={`metric-value fw-bold ${
+                                                    ((dashboardData.financialSummary.totalClosingBalance || 0) - 
+                                                     (dashboardData.financialSummary.totalOpeningBalance || 0)) >= 0 
+                                                    ? 'text-success' : 'text-danger'
+                                                }`}>
+                                                    ₹{((dashboardData.financialSummary.totalClosingBalance || 0) - 
+                                                       (dashboardData.financialSummary.totalOpeningBalance || 0)).toLocaleString()}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col xs={12} lg={6}>
+                                    <div className="data-distribution-card h-100">
+                                        <h5 className="mb-3">
+                                            <i className="mdi mdi-database-outline text-success me-2"></i>
+                                            Data Distribution
+                                        </h5>
+                                        <div className="distribution-items">
+                                            <div className="distribution-item mb-3">
+                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                    <span className="small">Ledgers</span>
+                                                    <span className="small fw-bold">{dashboardData.summary?.ledgers || 0}</span>
                                                 </div>
-                                            </Col>
-                                            <Col md={3}>
-                                                <div className="mini-stat">
-                                                    <div className="mini-stat-icon bg-success">
-                                                        <i className="mdi mdi-trending-up"></i>
-                                                    </div>
-                                                    <div className="mini-stat-info">
-                                                        <h6 className="mb-1">Data Coverage</h6>
-                                                        <h4 className="mb-0">
-                                                            {dashboardData.summary?.ledgers > 0 && dashboardData.summary?.vouchers > 0 ? '95%' : 
-                                                             dashboardData.summary?.ledgers > 0 || dashboardData.summary?.vouchers > 0 ? '70%' : '25%'}
-                                                        </h4>
-                                                    </div>
+                                                <ProgressBar 
+                                                    now={Math.min(100, (dashboardData.summary?.ledgers || 0) / 10)} 
+                                                    variant="primary" 
+                                                    className="mb-0" 
+                                                    style={{height: '6px'}}
+                                                />
+                                            </div>
+                                            <div className="distribution-item mb-3">
+                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                    <span className="small">Vouchers</span>
+                                                    <span className="small fw-bold">{dashboardData.summary?.vouchers || 0}</span>
                                                 </div>
-                                            </Col>
-                                            <Col md={3}>
-                                                <div className="mini-stat">
-                                                    <div className="mini-stat-icon bg-warning">
-                                                        <i className="mdi mdi-clock-outline"></i>
-                                                    </div>
-                                                    <div className="mini-stat-info">
-                                                        <h6 className="mb-1">Last Sync</h6>
-                                                        <h4 className="mb-0 small">
-                                                            {dashboardData.summary?.lastSync ? 
-                                                                new Date(dashboardData.summary.lastSync).toLocaleDateString() : 
-                                                                'Never'
-                                                            }
-                                                        </h4>
-                                                    </div>
+                                                <ProgressBar 
+                                                    now={Math.min(100, (dashboardData.summary?.vouchers || 0) / 50)} 
+                                                    variant="success" 
+                                                    className="mb-0" 
+                                                    style={{height: '6px'}}
+                                                />
+                                            </div>
+                                            <div className="distribution-item">
+                                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                                    <span className="small">Stock Items</span>
+                                                    <span className="small fw-bold">{dashboardData.summary?.stockItems || 0}</span>
                                                 </div>
-                                            </Col>
-                                            <Col md={3}>
-                                                <div className="mini-stat">
-                                                    <div className="mini-stat-icon bg-info">
-                                                        <i className="mdi mdi-chart-pie"></i>
-                                                    </div>
-                                                    <div className="mini-stat-info">
-                                                        <h6 className="mb-1">Data Health</h6>
-                                                        <h4 className="mb-0">
-                                                            {dashboardData.summary?.vouchers > 0 && dashboardData.summary?.ledgers > 0 ? 
-                                                                'Excellent' : dashboardData.summary?.ledgers > 0 ? 'Good' : 'Needs Sync'}
-                                                        </h4>
-                                                    </div>
-                                                </div>
-                                            </Col>
-                                        </Row>
-
-                                        {/* Financial Balance Trends */}
-                                        {dashboardData.financialSummary && (
-                                            <Row className="mb-4">
-                                                <Col lg={6}>
-                                                    <div className="financial-insight-card">
-                                                        <h5 className="mb-3">
-                                                            <i className="mdi mdi-chart-line text-primary me-2"></i>
-                                                            Financial Balance Analysis
-                                                        </h5>
-                                                        <div className="balance-metrics">
-                                                            <div className="metric-item">
-                                                                <span className="metric-label">Opening Balance</span>
-                                                                <span className="metric-value text-info">
-                                                                    ₹{dashboardData.financialSummary.totalOpeningBalance?.toLocaleString() || '0'}
-                                                                </span>
-                                                            </div>
-                                                            <div className="metric-item">
-                                                                <span className="metric-label">Closing Balance</span>
-                                                                <span className="metric-value text-primary">
-                                                                    ₹{dashboardData.financialSummary.totalClosingBalance?.toLocaleString() || '0'}
-                                                                </span>
-                                                            </div>
-                                                            <div className="metric-item">
-                                                                <span className="metric-label">Net Movement</span>
-                                                                <span className={`metric-value ${
-                                                                    ((dashboardData.financialSummary.totalClosingBalance || 0) - 
-                                                                     (dashboardData.financialSummary.totalOpeningBalance || 0)) >= 0 
-                                                                    ? 'text-success' : 'text-danger'
-                                                                }`}>
-                                                                    ₹{((dashboardData.financialSummary.totalClosingBalance || 0) - 
-                                                                       (dashboardData.financialSummary.totalOpeningBalance || 0)).toLocaleString()}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-                                                <Col lg={6}>
-                                                    <div className="data-distribution-card">
-                                                        <h5 className="mb-3">
-                                                            <i className="mdi mdi-database-outline text-success me-2"></i>
-                                                            Data Distribution
-                                                        </h5>
-                                                        <div className="distribution-items">
-                                                            <div className="distribution-item">
-                                                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                                                    <span className="small">Ledgers</span>
-                                                                    <span className="small fw-bold">{dashboardData.summary?.ledgers || 0}</span>
-                                                                </div>
-                                                                <ProgressBar 
-                                                                    now={Math.min(100, (dashboardData.summary?.ledgers || 0) / 10)} 
-                                                                    variant="primary" 
-                                                                    className="mb-2" 
-                                                                    style={{height: '4px'}}
-                                                                />
-                                                            </div>
-                                                            <div className="distribution-item">
-                                                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                                                    <span className="small">Vouchers</span>
-                                                                    <span className="small fw-bold">{dashboardData.summary?.vouchers || 0}</span>
-                                                                </div>
-                                                                <ProgressBar 
-                                                                    now={Math.min(100, (dashboardData.summary?.vouchers || 0) / 50)} 
-                                                                    variant="success" 
-                                                                    className="mb-2" 
-                                                                    style={{height: '4px'}}
-                                                                />
-                                                            </div>
-                                                            <div className="distribution-item">
-                                                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                                                    <span className="small">Stock Items</span>
-                                                                    <span className="small fw-bold">{dashboardData.summary?.stockItems || 0}</span>
-                                                                </div>
-                                                                <ProgressBar 
-                                                                    now={Math.min(100, (dashboardData.summary?.stockItems || 0) / 20)} 
-                                                                    variant="warning" 
-                                                                    className="mb-2" 
-                                                                    style={{height: '4px'}}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        )}
+                                                <ProgressBar 
+                                                    now={Math.min(100, (dashboardData.summary?.stockItems || 0) / 20)} 
+                                                    variant="warning" 
+                                                    className="mb-0" 
+                                                    style={{height: '6px'}}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        )}
                                     </Card.Body>
                                 </Card>
                             </Col>

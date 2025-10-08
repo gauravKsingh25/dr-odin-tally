@@ -224,6 +224,7 @@ module.exports = function (app) {
 
     // Enhanced Comprehensive Tally routes
     safeRoute('post', "/api/tally/sync/comprehensive", verifyToken, tallyController.syncComprehensiveData);
+    safeRoute('post', "/api/tally/sync/ledgers-only", verifyToken, tallyController.syncLedgersOnly);
     safeRoute('get', "/api/tally/dashboard/comprehensive", verifyToken, tallyController.getComprehensiveDashboard);
     
     // Backward-compatible aliases without /api prefix

@@ -19,11 +19,14 @@ const TallyStockItemsDetail = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
     const [stockFilter, setStockFilter] = useState('');
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+    const [quickDateRange, setQuickDateRange] = useState('');
     const [itemsPerPage] = useState(20);
     const navigate = useNavigate();
 
     // Fetch stock items data with pagination and filters
-    const fetchStockItemsData = useCallback(async (page = 1, search = '', category = '', stock = '') => {
+    const fetchStockItemsData = useCallback(async (page = 1, search = '', category = '', stock = '', fromDateParam = '', toDateParam = '') => {
         setLoading(true);
         setError(null);
         try {
@@ -41,7 +44,9 @@ const TallyStockItemsDetail = () => {
                 limit: itemsPerPage.toString(),
                 ...(search && { search }),
                 ...(category && { category }),
-                ...(stock && { stock })
+                ...(stock && { stock }),
+                ...(fromDateParam && { fromDate: fromDateParam }),
+                ...(toDateParam && { toDate: toDateParam })
             });
             
             const response = await axios.get(`/tally/stockitems?${params}`, {
@@ -93,7 +98,7 @@ const TallyStockItemsDetail = () => {
         if (currentPage > 1) {
             const prev = currentPage - 1;
             setCurrentPage(prev);
-            fetchStockItemsData(prev, searchTerm, categoryFilter, stockFilter);
+            fetchStockItemsData(prev, searchTerm, categoryFilter, stockFilter, fromDate, toDate);
         }
     };
 
@@ -101,14 +106,14 @@ const TallyStockItemsDetail = () => {
         if (currentPage < totalPages) {
             const next = currentPage + 1;
             setCurrentPage(next);
-            fetchStockItemsData(next, searchTerm, categoryFilter, stockFilter);
+            fetchStockItemsData(next, searchTerm, categoryFilter, stockFilter, fromDate, toDate);
         }
     };
 
     // Handle pagination change
     const handlePageChange = (event, page) => {
         setCurrentPage(page);
-        fetchStockItemsData(page, searchTerm, categoryFilter, stockFilter);
+        fetchStockItemsData(page, searchTerm, categoryFilter, stockFilter, fromDate, toDate);
     };
 
     // Handle filter change and auto-search
@@ -121,13 +126,13 @@ const TallyStockItemsDetail = () => {
                 setCategoryFilter(value);
                 // Immediate search for dropdown changes
                 setCurrentPage(1);
-                fetchStockItemsData(1, searchTerm, value, stockFilter);
+                fetchStockItemsData(1, searchTerm, value, stockFilter, fromDate, toDate);
                 break;
             case 'stock':
                 setStockFilter(value);
                 // Immediate search for dropdown changes
                 setCurrentPage(1);
-                fetchStockItemsData(1, searchTerm, categoryFilter, value);
+                fetchStockItemsData(1, searchTerm, categoryFilter, value, fromDate, toDate);
                 break;
             default:
                 break;
@@ -139,8 +144,80 @@ const TallyStockItemsDetail = () => {
         setSearchTerm('');
         setCategoryFilter('');
         setStockFilter('');
+        setFromDate('');
+        setToDate('');
+        setQuickDateRange('');
         setCurrentPage(1);
-        fetchStockItemsData(1, '', '', '');
+        fetchStockItemsData(1, '', '', '', '', '');
+    };
+
+    // Handle quick date range selection
+    const handleQuickDateRange = (range) => {
+        setQuickDateRange(range);
+        const today = new Date();
+        let startDate = new Date();
+        let endDate = new Date();
+
+        switch (range) {
+            case 'today':
+                startDate = endDate = today;
+                break;
+            case 'yesterday':
+                startDate = endDate = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+                break;
+            case 'thisWeek':
+                startDate = new Date(today.setDate(today.getDate() - today.getDay()));
+                endDate = new Date();
+                break;
+            case 'lastWeek':
+                startDate = new Date(today.setDate(today.getDate() - today.getDay() - 7));
+                endDate = new Date(today.setDate(today.getDate() - today.getDay() - 1));
+                break;
+            case 'thisMonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date();
+                break;
+            case 'lastMonth':
+                startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                break;
+            case 'thisQuarter':
+                const quarter = Math.floor(today.getMonth() / 3);
+                startDate = new Date(today.getFullYear(), quarter * 3, 1);
+                endDate = new Date();
+                break;
+            case 'thisYear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date();
+                break;
+            case 'last30days':
+                startDate = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                endDate = new Date();
+                break;
+            case 'last90days':
+                startDate = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+                endDate = new Date();
+                break;
+            default:
+                return;
+        }
+
+        const formatDate = (date) => date.toISOString().split('T')[0];
+        setFromDate(formatDate(startDate));
+        setToDate(formatDate(endDate));
+        
+        // Auto-apply the filter
+        setCurrentPage(1);
+        fetchStockItemsData(1, searchTerm, categoryFilter, stockFilter, formatDate(startDate), formatDate(endDate));
+    };
+
+    // Handle date range reset
+    const handleDateRangeReset = () => {
+        setFromDate('');
+        setToDate('');
+        setQuickDateRange('');
+        setCurrentPage(1);
+        fetchStockItemsData(1, searchTerm, categoryFilter, stockFilter, '', '');
     };
 
     // Handle export
@@ -316,6 +393,67 @@ const TallyStockItemsDetail = () => {
                                         disabled={loading || stockItemsData.length === 0}
                                     >
                                         <i className="mdi mdi-download"></i> Export
+                                    </Button>
+                                </Col>
+                            </Row>
+                            
+                            {/* Date Range Filter Row */}
+                            <Row className="align-items-end mt-3">
+                                <Col md={2}>
+                                    <Form.Group>
+                                        <Form.Label>From Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            value={fromDate}
+                                            onChange={(e) => setFromDate(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={2}>
+                                    <Form.Group>
+                                        <Form.Label>To Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            value={toDate}
+                                            onChange={(e) => setToDate(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={2}>
+                                    <Form.Group>
+                                        <Form.Label>Quick Date Ranges</Form.Label>
+                                        <Form.Select
+                                            value={quickDateRange}
+                                            onChange={(e) => handleQuickDateRange(e.target.value)}
+                                        >
+                                            <option value="">Select Range</option>
+                                            <option value="today">Today</option>
+                                            <option value="yesterday">Yesterday</option>
+                                            <option value="thisWeek">This Week</option>
+                                            <option value="lastWeek">Last Week</option>
+                                            <option value="thisMonth">This Month</option>
+                                            <option value="lastMonth">Last Month</option>
+                                            <option value="thisQuarter">This Quarter</option>
+                                            <option value="thisYear">This Year</option>
+                                            <option value="last30days">Last 30 Days</option>
+                                            <option value="last90days">Last 90 Days</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Button 
+                                        variant="outline-info" 
+                                        onClick={handleDateRangeReset}
+                                        className="me-2"
+                                    >
+                                        <i className="mdi mdi-calendar-remove"></i> Clear Dates
+                                    </Button>
+                                    <Button 
+                                        variant="info" 
+                                        onClick={() => fetchStockItemsData(1, searchTerm, categoryFilter, stockFilter, fromDate, toDate)}
+                                        disabled={loading}
+                                    >
+                                        <i className="mdi mdi-calendar-check"></i> Apply Date Filter
                                     </Button>
                                 </Col>
                             </Row>

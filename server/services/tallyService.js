@@ -1001,24 +1001,38 @@ class TallyService {
     safeNumber(value) {
         if (value == null || value === undefined) return 0;
         if (typeof value === 'number' && Number.isFinite(value)) return value;
-        if (typeof value === 'object' && value._ != null) value = value._;
+        
+        // Handle Tally's nested value structures
+        if (typeof value === 'object') {
+            // Try common nested value patterns from Tally
+            if (value._ != null) value = value._;
+            else if (value.AMOUNT != null) value = value.AMOUNT;
+            else if (value.VALUE != null) value = value.VALUE;
+            else if (value['#text'] != null) value = value['#text'];
+            else if (value.content != null) value = value.content;
+        }
         
         let stringValue = String(value).trim();
         
         // Handle empty or invalid strings
-        if (stringValue === '' || stringValue === 'undefined' || stringValue === 'null') return 0;
+        if (stringValue === '' || stringValue === 'undefined' || stringValue === 'null' || stringValue === 'NaN') return 0;
 
-        // Remove thousand separators (both comma and space)
+        // Log balance processing for debugging (only for first few values)
+        if (Math.random() < 0.01) { // Log 1% of values for debugging
+            console.log(`🔍 Processing balance value: "${value}" -> stringValue: "${stringValue}"`);
+        }
+
+        // Remove thousand separators (comma, space, and Indian numbering system)
         stringValue = stringValue.replace(/[,\s]/g, '');
 
         // Handle Dr/Cr notations used by Tally. Treat Cr as negative, Dr as positive
         // Support both suffix and prefix positions (e.g., "1234.50 Cr" or "Cr 1234.50")
         let sign = 1;
-        const hasCr = /\bCR\b/i.test(stringValue);
-        const hasDr = /\bDR\b/i.test(stringValue);
+        const hasCr = /\bCR\b/i.test(stringValue) || /\bCREDIT\b/i.test(stringValue);
+        const hasDr = /\bDR\b/i.test(stringValue) || /\bDEBIT\b/i.test(stringValue);
         if (hasCr) sign = -1;
         else if (hasDr) sign = 1;
-        stringValue = stringValue.replace(/\bDR\b|\bCR\b/gi, '').trim();
+        stringValue = stringValue.replace(/\b(DR|CR|DEBIT|CREDIT)\b/gi, '').trim();
 
         // Parentheses indicate negative amounts: (1234.50)
         const hasParens = /^\(.*\)$/.test(stringValue);
@@ -1027,18 +1041,38 @@ class TallyService {
             stringValue = stringValue.slice(1, -1).trim();
         }
 
-        // Strip any remaining non-numeric characters except leading minus and decimal point
-        stringValue = stringValue.replace(/[^0-9.-]/g, '');
+        // Handle negative signs
+        if (stringValue.startsWith('-')) {
+            sign *= -1;
+            stringValue = stringValue.substring(1).trim();
+        }
+
+        // Strip any remaining non-numeric characters except decimal point
+        stringValue = stringValue.replace(/[^0-9.]/g, '');
+
+        // Handle multiple decimal points (keep only the first one)
+        const decimalIndex = stringValue.indexOf('.');
+        if (decimalIndex !== -1) {
+            stringValue = stringValue.substring(0, decimalIndex + 1) + 
+                         stringValue.substring(decimalIndex + 1).replace(/\./g, '');
+        }
 
         if (stringValue === '' || stringValue === '-' || stringValue === '.') return 0;
         
         const number = parseFloat(stringValue);
         if (!Number.isFinite(number)) {
-            console.warn(`Warning: Invalid number conversion for value "${value}", returning 0`);
+            console.warn(`Warning: Invalid number conversion for original value "${value}" -> stringValue "${stringValue}", returning 0`);
             return 0;
         }
         
-        return number * sign;
+        const result = number * sign;
+        
+        // Additional debug logging for balance processing
+        if (Math.abs(result) > 1000000 || (Math.random() < 0.001)) { // Log large values or random sample
+            console.log(`🔍 Balance conversion: "${value}" -> ${result} (sign: ${sign})`);
+        }
+        
+        return result;
     }
 
     findCollection(parsed) {
@@ -1127,8 +1161,38 @@ class TallyService {
             const aliasName = this.safeString(ledger.ALIASNAME ?? '');
             const reservedName = this.safeString(ledger.RESERVEDNAME ?? '');
             const parent = this.safeString(ledger.PARENT ?? '');
-            const openingBalance = this.safeNumber(ledger.OPENINGBALANCE);
-            const closingBalance = this.safeNumber(ledger.CLOSINGBALANCE);
+            // Enhanced balance processing - try multiple field names that Tally might use
+            let openingBalance = 0;
+            let closingBalance = 0;
+            
+            // Try different opening balance field variations
+            if (ledger.OPENINGBALANCE !== undefined) {
+                openingBalance = this.safeNumber(ledger.OPENINGBALANCE);
+            } else if (ledger['OPENING BALANCE'] !== undefined) {
+                openingBalance = this.safeNumber(ledger['OPENING BALANCE']);
+            } else if (ledger.OPENINGBAL !== undefined) {
+                openingBalance = this.safeNumber(ledger.OPENINGBAL);
+            } else if (ledger.OBVALUE !== undefined) {
+                openingBalance = this.safeNumber(ledger.OBVALUE);
+            }
+            
+            // Try different closing balance field variations
+            if (ledger.CLOSINGBALANCE !== undefined) {
+                closingBalance = this.safeNumber(ledger.CLOSINGBALANCE);
+            } else if (ledger['CLOSING BALANCE'] !== undefined) {
+                closingBalance = this.safeNumber(ledger['CLOSING BALANCE']);
+            } else if (ledger.CLOSINGBAL !== undefined) {
+                closingBalance = this.safeNumber(ledger.CLOSINGBAL);
+            } else if (ledger.CBVALUE !== undefined) {
+                closingBalance = this.safeNumber(ledger.CBVALUE);
+            } else if (ledger.BALANCE !== undefined) {
+                closingBalance = this.safeNumber(ledger.BALANCE);
+            }
+            
+            // Debug logging for balance extraction
+            if (openingBalance !== 0 || closingBalance !== 0) {
+                console.log(`🔍 Balance extracted for "${name}": Opening=${openingBalance}, Closing=${closingBalance}`);
+            }
             const guid = this.safeString(ledger.GUID ?? '');
             const masterId = this.safeString(ledger.MASTERID ?? '');
             const alterId = this.safeString(ledger.ALTERID ?? '');

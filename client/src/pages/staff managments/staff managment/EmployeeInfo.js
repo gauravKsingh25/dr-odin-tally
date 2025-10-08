@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Row, Col, Card, Table, Badge, Button, Breadcrumb } from 'react-bootstrap';
+import { Row, Col, Card, Table, Badge, Button, Breadcrumb, Form } from 'react-bootstrap';
 import './employeeInfo.css';
 import Edit from './Model/edit';
 import MainLoader from '../../../components/MainLoader';
@@ -25,6 +25,7 @@ const EmployeeInfo = () => {
     const [related, setRelated] = useState({ vouchers: [], ledgers: [], loading: false, error: '' });
     const [expandedVouchers, setExpandedVouchers] = useState({});
     const [expandedLedgers, setExpandedLedgers] = useState({});
+    const [voucherDateFilter, setVoucherDateFilter] = useState({ fromDate: '', toDate: '', quickRange: '' });
 
     useEffect(() => {
         let mounted = true;
@@ -95,6 +96,54 @@ const EmployeeInfo = () => {
         fetchRelated();
     }, [data?.employee?.empName, data?.employee?.party, data?.employee?.empId, data?.invoices]);
 
+    // Handle voucher date filtering
+    const handleVoucherQuickDateRange = (range) => {
+        const today = new Date();
+        let startDate = new Date();
+        let endDate = new Date();
+
+        switch (range) {
+            case 'thisMonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date();
+                break;
+            case 'lastMonth':
+                startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                break;
+            case 'thisQuarter':
+                const quarter = Math.floor(today.getMonth() / 3);
+                startDate = new Date(today.getFullYear(), quarter * 3, 1);
+                endDate = new Date();
+                break;
+            case 'thisYear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date();
+                break;
+            case 'last30days':
+                startDate = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                endDate = new Date();
+                break;
+            case 'last90days':
+                startDate = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+                endDate = new Date();
+                break;
+            default:
+                return;
+        }
+
+        const formatDate = (date) => date.toISOString().split('T')[0];
+        setVoucherDateFilter({
+            fromDate: formatDate(startDate),
+            toDate: formatDate(endDate),
+            quickRange: range
+        });
+    };
+
+    const handleVoucherDateReset = () => {
+        setVoucherDateFilter({ fromDate: '', toDate: '', quickRange: '' });
+    };
+
     const employee = data?.employee || {};
     const reportingManager = data?.reportingManager;
     const directReportsCount = data?.directReportsCount || 0;
@@ -105,8 +154,29 @@ const EmployeeInfo = () => {
         { label: employee?.empName || 'Employee', path: '#', active: true },
     ];
 
-    // Calculate total sales from vouchers with proper debit/credit handling
-    const salesCalculation = related.vouchers.reduce((acc, v) => {
+    // Filter vouchers based on date range
+    const filteredVouchers = related.vouchers.filter(v => {
+        if (!voucherDateFilter.fromDate && !voucherDateFilter.toDate) {
+            return true; // No date filter applied
+        }
+        
+        const voucherDate = new Date(v.date);
+        const fromDate = voucherDateFilter.fromDate ? new Date(voucherDateFilter.fromDate) : null;
+        const toDate = voucherDateFilter.toDate ? new Date(voucherDateFilter.toDate) : null;
+        
+        if (fromDate && toDate) {
+            return voucherDate >= fromDate && voucherDate <= toDate;
+        } else if (fromDate) {
+            return voucherDate >= fromDate;
+        } else if (toDate) {
+            return voucherDate <= toDate;
+        }
+        
+        return true;
+    });
+
+    // Calculate total sales from filtered vouchers with proper debit/credit handling
+    const salesCalculation = filteredVouchers.reduce((acc, v) => {
         const amount = typeof v.amount === 'number' ? v.amount : 0;
         const displayAmount = Math.abs(amount);
         
@@ -322,8 +392,62 @@ const EmployeeInfo = () => {
                                 <div className="alert alert-warning" role="alert">{related.error}</div>
                             )}
                             
+                            {/* Date Filter for Vouchers */}
+                            <Row className="mb-3">
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label className="small">From Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            size="sm"
+                                            value={voucherDateFilter.fromDate}
+                                            onChange={(e) => setVoucherDateFilter(prev => ({...prev, fromDate: e.target.value}))}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label className="small">To Date</Form.Label>
+                                        <Form.Control
+                                            type="date"
+                                            size="sm"
+                                            value={voucherDateFilter.toDate}
+                                            onChange={(e) => setVoucherDateFilter(prev => ({...prev, toDate: e.target.value}))}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label className="small">Quick Ranges</Form.Label>
+                                        <Form.Select
+                                            size="sm"
+                                            value={voucherDateFilter.quickRange}
+                                            onChange={(e) => handleVoucherQuickDateRange(e.target.value)}
+                                        >
+                                            <option value="">Select Range</option>
+                                            <option value="thisMonth">This Month</option>
+                                            <option value="lastMonth">Last Month</option>
+                                            <option value="thisQuarter">This Quarter</option>
+                                            <option value="thisYear">This Year</option>
+                                            <option value="last30days">Last 30 Days</option>
+                                            <option value="last90days">Last 90 Days</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3} className="d-flex align-items-end">
+                                    <Button 
+                                        variant="outline-secondary" 
+                                        size="sm"
+                                        onClick={handleVoucherDateReset}
+                                        className="me-2"
+                                    >
+                                        Clear
+                                    </Button>
+                                </Col>
+                            </Row>
+                            
                             {/* Transaction Summary */}
-                            {related.vouchers.length > 0 && (
+                            {filteredVouchers.length > 0 && (
                                 <Row className="mb-3">
                                     <Col md={3}>
                                         <Card className="bg-light">
@@ -352,7 +476,7 @@ const EmployeeInfo = () => {
                                     <Col md={3}>
                                         <Card className="bg-light">
                                             <Card.Body className="py-2 text-center">
-                                                <div className="text-info h5 mb-1">{related.vouchers.length}</div>
+                                                <div className="text-info h5 mb-1">{filteredVouchers.length}</div>
                                                 <div className="small text-muted">Total Transactions</div>
                                             </Card.Body>
                                         </Card>
@@ -375,7 +499,7 @@ const EmployeeInfo = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {related.vouchers.map((v) => (
+                                        {filteredVouchers.map((v) => (
                                             <>
                                                 <tr key={v._id} onClick={() => setExpandedVouchers((s) => ({ ...s, [v._id]: !s[v._id] }))} style={{ cursor: 'pointer' }}>
                                                     <td className="text-center align-middle">
@@ -523,7 +647,7 @@ const EmployeeInfo = () => {
                                                 )}
                                             </>
                                         ))}
-                                        {!related.vouchers.length && !related.loading && (
+                                        {!filteredVouchers.length && !related.loading && (
                                             <tr>
                                                 <td colSpan={6} className="text-center text-muted py-3">No related invoices</td>
                                             </tr>
