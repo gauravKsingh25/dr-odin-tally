@@ -1,4 +1,5 @@
 const tallyController = require("../controllers/tally.controller");
+const enhancedTallyController = require('../controllers/enhancedTally.controller');
 const { verifyToken } = require("../middlewares/jwt.auth");
 const multer = require("multer");
 
@@ -142,6 +143,9 @@ module.exports = function (app) {
             });
         }
     });
+
+    // Enhanced Full Sync Route (Excluding Vouchers)
+    app.post('/api/tally/sync/full-enhanced', verifyToken, enhancedTallyController.fullSyncWithoutVouchers);
 
     // Get detailed sync history
     app.get("/api/tally/sync/history", verifyToken, (req, res) => {

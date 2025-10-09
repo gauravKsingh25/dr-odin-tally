@@ -27,7 +27,7 @@ const TallyLedgersDetail = () => {
     const navigate = useNavigate();
 
     // Fetch ledgers data with pagination and filters
-    const fetchLedgersData = useCallback(async (page = 1, search = '', group = '', balance = '', fromDateParam = '', toDateParam = '') => {
+    const fetchLedgersData = useCallback(async (page = 1, search = '', group = 'Sundry Debtors', balance = '', fromDateParam = '', toDateParam = '') => {
         setLoading(true);
         setError(null);
         try {
@@ -826,154 +826,402 @@ const TallyLedgersDetail = () => {
                                                                 {isExpanded && (
                                                                     <tr>
                                                                         <td colSpan="11" className="bg-light p-0">
-                                                                            <div className="p-3">
+                                                                    <div className="p-3">
+                                                                        {/* Enhanced Basic Information Section */}
+                                                                        <Row className="mb-4">
+                                                                            <Col md={6}>
+                                                                                <h6 className="text-primary mb-3">
+                                                                                    <i className="mdi mdi-information-outline me-2"></i>
+                                                                                    Basic Information
+                                                                                </h6>
+                                                                                <Table size="sm" className="mb-0 table-striped">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Ledger Name:</td>
+                                                                                            <td>{getCleanLedgerName(ledger.name)}</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Full Name (Raw):</td>
+                                                                                            <td className="small text-muted">{ledger.name || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        {getAddressFromName(ledger.name) && (
+                                                                                            <tr>
+                                                                                                <td className="fw-semibold">Address from Name:</td>
+                                                                                                <td>{getAddressFromName(ledger.name)}</td>
+                                                                                            </tr>
+                                                                                        )}
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Alias Name:</td>
+                                                                                            <td>{ledger.aliasName || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Reserved Name:</td>
+                                                                                            <td>{ledger.reservedName || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Parent Group:</td>
+                                                                                            <td>
+                                                                                                <Badge bg="info" className="small">
+                                                                                                    {ledger.parent || 'No Parent'}
+                                                                                                </Badge>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">GUID:</td>
+                                                                                            <td className="font-monospace small text-secondary">{ledger.guid || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Master ID:</td>
+                                                                                            <td className="font-monospace small">{ledger.masterId || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        {ledger.description && (
+                                                                                            <tr>
+                                                                                                <td className="fw-semibold">Description:</td>
+                                                                                                <td>{ledger.description}</td>
+                                                                                            </tr>
+                                                                                        )}
+                                                                                    </tbody>
+                                                                                </Table>
+                                                                            </Col>
+                                                                            <Col md={6}>
+                                                                                <h6 className="text-success mb-3">
+                                                                                    <i className="mdi mdi-phone-outline me-2"></i>
+                                                                                    Contact Information
+                                                                                </h6>
+                                                                                <Table size="sm" className="mb-0 table-striped">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Contact Person:</td>
+                                                                                            <td>
+                                                                                                {ledger.contactPerson ? (
+                                                                                                    <span className="fw-medium">{ledger.contactPerson}</span>
+                                                                                                ) : (
+                                                                                                    <span className="text-muted">N/A</span>
+                                                                                                )}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Phone:</td>
+                                                                                            <td>
+                                                                                                {ledger.ledgerPhone ? (
+                                                                                                    <a href={`tel:${ledger.ledgerPhone}`} className="text-decoration-none">
+                                                                                                        <i className="mdi mdi-phone me-1"></i>
+                                                                                                        {ledger.ledgerPhone}
+                                                                                                    </a>
+                                                                                                ) : (
+                                                                                                    <span className="text-muted">N/A</span>
+                                                                                                )}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Email:</td>
+                                                                                            <td>
+                                                                                                {ledger.email ? (
+                                                                                                    <a href={`mailto:${ledger.email}`} className="text-decoration-none">
+                                                                                                        <i className="mdi mdi-email-outline me-1"></i>
+                                                                                                        {ledger.email}
+                                                                                                    </a>
+                                                                                                ) : (
+                                                                                                    <span className="text-muted">N/A</span>
+                                                                                                )}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Mobile:</td>
+                                                                                            <td>
+                                                                                                {ledger.mobile ? (
+                                                                                                    <a href={`tel:${ledger.mobile}`} className="text-decoration-none">
+                                                                                                        <i className="mdi mdi-cellphone me-1"></i>
+                                                                                                        {ledger.mobile}
+                                                                                                    </a>
+                                                                                                ) : (
+                                                                                                    <span className="text-muted">N/A</span>
+                                                                                                )}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Fax:</td>
+                                                                                            <td>{ledger.ledgerFax || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Website:</td>
+                                                                                            <td>
+                                                                                                {ledger.website ? (
+                                                                                                    <a href={ledger.website.startsWith('http') ? ledger.website : `https://${ledger.website}`} 
+                                                                                                       target="_blank" 
+                                                                                                       rel="noopener noreferrer" 
+                                                                                                       className="text-decoration-none">
+                                                                                                        <i className="mdi mdi-web me-1"></i>
+                                                                                                        {ledger.website}
+                                                                                                    </a>
+                                                                                                ) : (
+                                                                                                    <span className="text-muted">N/A</span>
+                                                                                                )}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </Table>
+                                                                            </Col>
+                                                                        </Row>
+
+                                                                        {/* Enhanced Tax & GST Information */}
+                                                                        <Row className="mb-4">
+                                                                            <Col md={12}>
+                                                                                <h6 className="text-warning mb-3">
+                                                                                    <i className="mdi mdi-file-document-outline me-2"></i>
+                                                                                    Tax & GST Information
+                                                                                </h6>
                                                                                 <Row>
                                                                                     <Col md={6}>
-                                                                                        <h6 className="text-primary mb-3">Basic Information</h6>
-                                                                                        <Table size="sm" className="mb-0">
+                                                                                        <Table size="sm" className="mb-0 table-striped">
                                                                                             <tbody>
                                                                                                 <tr>
-                                                                                                    <td><strong>Ledger Name:</strong></td>
-                                                                                                    <td>{getCleanLedgerName(ledger.name)}</td>
+                                                                                                    <td className="fw-semibold">GSTIN:</td>
+                                                                                                    <td>
+                                                                                                        {ledger.gstin ? (
+                                                                                                            <span className="font-monospace fw-bold text-primary">
+                                                                                                                {ledger.gstin}
+                                                                                                            </span>
+                                                                                                        ) : (
+                                                                                                            <span className="text-muted">N/A</span>
+                                                                                                        )}
+                                                                                                    </td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td><strong>Full Name (Raw):</strong></td>
-                                                                                                    <td className="small text-muted">{ledger.name || 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                {getAddressFromName(ledger.name) && (
-                                                                                                    <tr>
-                                                                                                        <td><strong>Address from Name:</strong></td>
-                                                                                                        <td>{getAddressFromName(ledger.name)}</td>
-                                                                                                    </tr>
-                                                                                                )}
-                                                                                                <tr>
-                                                                                                    <td><strong>Alias Name:</strong></td>
-                                                                                                    <td>{ledger.aliasName || 'N/A'}</td>
+                                                                                                    <td className="fw-semibold">Registration Type:</td>
+                                                                                                    <td>
+                                                                                                        {ledger.gstregistrationtype ? (
+                                                                                                            <Badge bg="warning" className="text-dark">
+                                                                                                                {ledger.gstregistrationtype}
+                                                                                                            </Badge>
+                                                                                                        ) : (
+                                                                                                            <span className="text-muted">N/A</span>
+                                                                                                        )}
+                                                                                                    </td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td><strong>Reserved Name:</strong></td>
-                                                                                                    <td>{ledger.reservedName || 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Parent:</strong></td>
-                                                                                                    <td>{ledger.parent || 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>GUID:</strong></td>
-                                                                                                    <td className="font-monospace small">{ledger.guid || 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Master ID:</strong></td>
-                                                                                                    <td>{ledger.masterId || 'N/A'}</td>
+                                                                                                    <td className="fw-semibold">Place of Supply:</td>
+                                                                                                    <td>{ledger.placeOfSupply || 'N/A'}</td>
                                                                                                 </tr>
                                                                                             </tbody>
                                                                                         </Table>
                                                                                     </Col>
                                                                                     <Col md={6}>
-                                                                                        <h6 className="text-primary mb-3">Contact & Tax Information</h6>
-                                                                                        <Table size="sm" className="mb-0">
+                                                                                        <Table size="sm" className="mb-0 table-striped">
                                                                                             <tbody>
                                                                                                 <tr>
-                                                                                                    <td><strong>Contact Person:</strong></td>
-                                                                                                    <td>{ledger.contactPerson || 'N/A'}</td>
+                                                                                                    <td className="fw-semibold">Income Tax Number:</td>
+                                                                                                    <td className="font-monospace small">{ledger.incometaxnumber || 'N/A'}</td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td><strong>Phone:</strong></td>
-                                                                                                    <td>{ledger.ledgerPhone || 'N/A'}</td>
+                                                                                                    <td className="fw-semibold">Sales Tax Number:</td>
+                                                                                                    <td className="font-monospace small">{ledger.salestaxnumber || 'N/A'}</td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td><strong>Email:</strong></td>
-                                                                                                    <td>{ledger.email || 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>GSTIN:</strong></td>
-                                                                                                    <td className="font-monospace">{ledger.gstin || 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Registration Type:</strong></td>
-                                                                                                    <td>{ledger.gstregistrationtype || 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Website:</strong></td>
-                                                                                                    <td>{ledger.website || 'N/A'}</td>
+                                                                                                    <td className="fw-semibold">VAT TIN Number:</td>
+                                                                                                    <td className="font-monospace small">{ledger.vattinnumber || 'N/A'}</td>
                                                                                                 </tr>
                                                                                             </tbody>
                                                                                         </Table>
                                                                                     </Col>
                                                                                 </Row>
-                                                                                
-                                                                                <Row className="mt-3">
-                                                                                    <Col md={6}>
-                                                                                        <h6 className="text-primary mb-3">Financial Information</h6>
-                                                                                        <Table size="sm" className="mb-0">
-                                                                                            <tbody>
-                                                                                                <tr>
-                                                                                                    <td><strong>Opening Balance:</strong></td>
-                                                                                                    <td>
-                                                                                                        <Badge bg={getBalanceBadge(ledger.openingBalance)} className="me-2">
-                                                                                                            {formatCurrency(ledger.openingBalance || 0)}
-                                                                                                        </Badge>
-                                                                                                    </td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Closing Balance:</strong></td>
-                                                                                                    <td>
-                                                                                                        <Badge bg={getBalanceBadge(ledger.closingBalance)} className="me-2">
-                                                                                                            {formatCurrency(ledger.closingBalance || 0)}
-                                                                                                        </Badge>
-                                                                                                    </td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Credit Limit:</strong></td>
-                                                                                                    <td>{ledger.creditLimit ? formatCurrency(ledger.creditLimit) : 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Credit Period:</strong></td>
-                                                                                                    <td>{ledger.creditPeriod ? `${ledger.creditPeriod} days` : 'N/A'}</td>
-                                                                                                </tr>
-                                                                                                <tr>
-                                                                                                    <td><strong>Interest Rate:</strong></td>
-                                                                                                    <td>{ledger.interestRate ? `${ledger.interestRate}%` : 'N/A'}</td>
-                                                                                                </tr>
-                                                                                            </tbody>
-                                                                                        </Table>
-                                                                                    </Col>
-                                                                                    <Col md={6}>
-                                                                                        <h6 className="text-primary mb-3">Address & Bank Details</h6>
-                                                                                        {ledger.addressList && ledger.addressList.length > 0 && (
-                                                                                            <div className="mb-3">
-                                                                                                <strong>Address:</strong>
-                                                                                                <div className="small text-muted">
-                                                                                                    {ledger.addressList.join(', ')}
-                                                                                                </div>
-                                                                                            </div>
+                                                                            </Col>
+                                                                        </Row>
+                                                                
+                                                                {/* Enhanced Financial Information */}
+                                                                <Row className="mb-4">
+                                                                    <Col md={6}>
+                                                                        <h6 className="text-info mb-3">
+                                                                            <i className="mdi mdi-cash-multiple me-2"></i>
+                                                                            Financial Information
+                                                                        </h6>
+                                                                        <Table size="sm" className="mb-0 table-striped">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td className="fw-semibold">Opening Balance:</td>
+                                                                                    <td>
+                                                                                        <Badge bg={getBalanceBadge(ledger.openingBalance)} className="me-2 px-3 py-2">
+                                                                                            <i className="mdi mdi-currency-inr me-1"></i>
+                                                                                            {formatCurrency(ledger.openingBalance || 0)}
+                                                                                        </Badge>
+                                                                                        {ledger.openingBalance > 0 && (
+                                                                                            <small className="text-success">Dr</small>
                                                                                         )}
-                                                                                        {ledger.bankDetails && (
-                                                                                            <Table size="sm" className="mb-0">
-                                                                                                <tbody>
-                                                                                                    <tr>
-                                                                                                        <td><strong>Bank Name:</strong></td>
-                                                                                                        <td>{ledger.bankDetails.bankName || 'N/A'}</td>
-                                                                                                    </tr>
-                                                                                                    <tr>
-                                                                                                        <td><strong>Account Number:</strong></td>
-                                                                                                        <td className="font-monospace">{ledger.bankDetails.accountNumber || 'N/A'}</td>
-                                                                                                    </tr>
-                                                                                                    <tr>
-                                                                                                        <td><strong>IFSC Code:</strong></td>
-                                                                                                        <td className="font-monospace">{ledger.bankDetails.ifscCode || 'N/A'}</td>
-                                                                                                    </tr>
-                                                                                                    <tr>
-                                                                                                        <td><strong>Branch:</strong></td>
-                                                                                                        <td>{ledger.bankDetails.branchName || 'N/A'}</td>
-                                                                                                    </tr>
-                                                                                                </tbody>
-                                                                                            </Table>
+                                                                                        {ledger.openingBalance < 0 && (
+                                                                                            <small className="text-danger">Cr</small>
                                                                                         )}
-                                                                                    </Col>
-                                                                                </Row>
-                                                                                
-                                                                                {ledger.billWiseDetails && ledger.billWiseDetails.length > 0 && (
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td className="fw-semibold">Closing Balance:</td>
+                                                                                    <td>
+                                                                                        <Badge bg={getBalanceBadge(ledger.closingBalance)} className="me-2 px-3 py-2">
+                                                                                            <i className="mdi mdi-currency-inr me-1"></i>
+                                                                                            {formatCurrency(ledger.closingBalance || 0)}
+                                                                                        </Badge>
+                                                                                        {ledger.closingBalance > 0 && (
+                                                                                            <small className="text-success">Dr</small>
+                                                                                        )}
+                                                                                        {ledger.closingBalance < 0 && (
+                                                                                            <small className="text-danger">Cr</small>
+                                                                                        )}
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td className="fw-semibold">Net Movement:</td>
+                                                                                    <td>
+                                                                                        <span className={`fw-bold ${
+                                                                                            ((ledger.closingBalance || 0) - (ledger.openingBalance || 0)) >= 0 ? 'text-success' : 'text-danger'
+                                                                                        }`}>
+                                                                                            {((ledger.closingBalance || 0) - (ledger.openingBalance || 0)) >= 0 ? '+' : ''}
+                                                                                            {formatCurrency((ledger.closingBalance || 0) - (ledger.openingBalance || 0))}
+                                                                                        </span>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td className="fw-semibold">Credit Limit:</td>
+                                                                                    <td>
+                                                                                        {ledger.creditLimit ? (
+                                                                                            <span className="text-warning fw-medium">
+                                                                                                <i className="mdi mdi-credit-card-outline me-1"></i>
+                                                                                                {formatCurrency(ledger.creditLimit)}
+                                                                                            </span>
+                                                                                        ) : (
+                                                                                            <span className="text-muted">No Limit Set</span>
+                                                                                        )}
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td className="fw-semibold">Credit Period:</td>
+                                                                                    <td>
+                                                                                        {ledger.creditPeriod ? (
+                                                                                            <Badge bg="secondary" className="small">
+                                                                                                <i className="mdi mdi-calendar-clock me-1"></i>
+                                                                                                {ledger.creditPeriod} days
+                                                                                            </Badge>
+                                                                                        ) : (
+                                                                                            <span className="text-muted">No Credit Period</span>
+                                                                                        )}
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td className="fw-semibold">Interest Rate:</td>
+                                                                                    <td>
+                                                                                        {ledger.interestRate ? (
+                                                                                            <span className="text-danger fw-medium">
+                                                                                                <i className="mdi mdi-percent me-1"></i>
+                                                                                                {ledger.interestRate}% per annum
+                                                                                            </span>
+                                                                                        ) : (
+                                                                                            <span className="text-muted">No Interest</span>
+                                                                                        )}
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td className="fw-semibold">Bill Wise:</td>
+                                                                                    <td>
+                                                                                        <Badge bg={ledger.isBillWiseOn ? 'success' : 'secondary'} className="small">
+                                                                                            <i className={`mdi ${ledger.isBillWiseOn ? 'mdi-check' : 'mdi-close'} me-1`}></i>
+                                                                                            {ledger.isBillWiseOn ? 'Enabled' : 'Disabled'}
+                                                                                        </Badge>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </Table>
+                                                                    </Col>
+                                                                    <Col md={6}>
+                                                                        <h6 className="text-danger mb-3">
+                                                                            <i className="mdi mdi-bank me-2"></i>
+                                                                            Banking & Address Details
+                                                                        </h6>
+                                                                        
+                                                                        {/* Address Information */}
+                                                                        {ledger.addressList && ledger.addressList.length > 0 && (
+                                                                            <div className="mb-3 p-2 bg-light rounded">
+                                                                                <h6 className="small fw-bold text-secondary mb-2">
+                                                                                    <i className="mdi mdi-map-marker me-1"></i>
+                                                                                    Address Information
+                                                                                </h6>
+                                                                                {ledger.addressList.map((address, index) => (
+                                                                                    <div key={index} className="small mb-1">
+                                                                                        <i className="mdi mdi-home-outline me-1 text-muted"></i>
+                                                                                        {address}
+                                                                                    </div>
+                                                                                ))}
+                                                                                {(ledger.city || ledger.state || ledger.country || ledger.pincode) && (
+                                                                                    <div className="small mt-2 text-muted">
+                                                                                        {[ledger.city, ledger.state, ledger.country, ledger.pincode].filter(x => x).join(', ')}
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                        )}
+                                                                        
+                                                                        {/* Bank Details */}
+                                                                        {ledger.bankDetails && (ledger.bankDetails.bankName || ledger.bankDetails.accountNumber) ? (
+                                                                            <div className="bank-details-section">
+                                                                                <h6 className="small fw-bold text-primary mb-2">
+                                                                                    <i className="mdi mdi-bank me-1"></i>
+                                                                                    Bank Account Details
+                                                                                </h6>
+                                                                                <Table size="sm" className="mb-0 table-striped">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Bank Name:</td>
+                                                                                            <td className="fw-medium text-primary">
+                                                                                                {ledger.bankDetails.bankName || 'N/A'}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">A/c Holder:</td>
+                                                                                            <td>{ledger.bankDetails.accountHolderName || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Account Number:</td>
+                                                                                            <td className="font-monospace text-success fw-bold">
+                                                                                                {ledger.bankDetails.accountNumber ? 
+                                                                                                    `****${ledger.bankDetails.accountNumber.slice(-4)}` : 'N/A'
+                                                                                                }
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">IFSC Code:</td>
+                                                                                            <td className="font-monospace text-info fw-bold">
+                                                                                                {ledger.bankDetails.ifscCode || 'N/A'}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td className="fw-semibold">Branch:</td>
+                                                                                            <td>{ledger.bankDetails.branchName || 'N/A'}</td>
+                                                                                        </tr>
+                                                                                        {ledger.bankDetails.swiftCode && (
+                                                                                            <tr>
+                                                                                                <td className="fw-semibold">SWIFT Code:</td>
+                                                                                                <td className="font-monospace fw-bold">
+                                                                                                    {ledger.bankDetails.swiftCode}
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        )}
+                                                                                        {ledger.bankDetails.accountType && (
+                                                                                            <tr>
+                                                                                                <td className="fw-semibold">Account Type:</td>
+                                                                                                <td>
+                                                                                                    <Badge bg="outline-primary" className="small">
+                                                                                                        {ledger.bankDetails.accountType}
+                                                                                                    </Badge>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        )}
+                                                                                    </tbody>
+                                                                                </Table>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div className="text-center text-muted py-3">
+                                                                                <i className="mdi mdi-bank-off mdi-48px d-block mb-2 opacity-50"></i>
+                                                                                <small>No bank details available</small>
+                                                                            </div>
+                                                                        )}
+                                                                    </Col>
+                                                                </Row>                                                                                {ledger.billWiseDetails && ledger.billWiseDetails.length > 0 && (
                                                                                     <Row className="mt-3">
                                                                                         <Col md={12}>
                                                                                             <h6 className="text-primary mb-3">Bill-wise Details</h6>

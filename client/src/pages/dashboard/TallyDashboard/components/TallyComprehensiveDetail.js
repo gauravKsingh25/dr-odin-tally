@@ -520,7 +520,7 @@ const TallyComprehensiveDetail = () => {
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    {comprehensiveData.recentActivities?.ledgers?.slice(0, 10).map((ledger, index) => (
+                                                                    {comprehensiveData.recentActivities?.ledgers?.map((ledger, index) => (
                                                                         <tr key={index}>
                                                                             <td className="text-truncate" style={{ maxWidth: '150px' }}>
                                                                                 {ledger.name}

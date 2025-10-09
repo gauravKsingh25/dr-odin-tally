@@ -1,0 +1,54 @@
+
+        <ENVELOPE>
+            <HEADER>
+                <VERSION>1</VERSION>
+                <TALLYREQUEST>Export</TALLYREQUEST>
+                <TYPE>Collection</TYPE>
+                <ID>Enhanced Stock Items</ID>
+            </HEADER>
+            <BODY>
+                <DESC>
+                    <STATICVARIABLES>
+                        <SVEXPORTFORMAT>XML</SVEXPORTFORMAT>
+                    </STATICVARIABLES>
+                    <TDL>
+                        <TDLMESSAGE>
+                            <COLLECTION NAME="Enhanced Stock Items" ISMODIFY="No" ISFIXED="No">
+                                <TYPE>StockItem</TYPE>
+                                <CHILDOF>$$Owner</CHILDOF>
+                                
+                                <!-- Core Fields -->
+                                <FETCH>Name, Parent, Alias, Category</FETCH>
+                                <FETCH>BaseUnits, AdditionalUnits</FETCH>
+                                <FETCH>OpeningBalance, OpeningQty, OpeningRate</FETCH>
+                                <FETCH>ClosingBalance, ClosingQty, ClosingRate</FETCH>
+                                
+                                <!-- Pricing -->
+                                <FETCH>StandardCostPrice, StandardSellingPrice</FETCH>
+                                <FETCH>LastPurchaseRate, LastSalesRate</FETCH>
+                                
+                                <!-- Stock Control -->
+                                <FETCH>ReorderLevel, MinimumOrderQty, MaximumOrderQty</FETCH>
+                                
+                                <!-- Classification -->
+                                <FETCH>StockGroup, StockCategory</FETCH>
+                                <FETCH>ItemCode, PartNo, Description</FETCH>
+                                
+                                <!-- Tax Info -->
+                                <FETCH>GSTApplicable, HSNCode, GSTTypeOfSupply</FETCH>
+                                
+                                <!-- Flags -->
+                                <FETCH>IsMaintainBatch, IsPerishableOn</FETCH>
+                                
+                                <!-- Dates -->
+                                <FETCH>LastModified, LastStockDate</FETCH>
+                                <FETCH>LastPurchaseDate, LastSalesDate</FETCH>
+                                
+                                <!-- System -->
+                                <FETCH>GUID, MasterID, AlterID</FETCH>
+                            </COLLECTION>
+                        </TDLMESSAGE>
+                    </TDL>
+                </DESC>
+            </BODY>
+        </ENVELOPE>

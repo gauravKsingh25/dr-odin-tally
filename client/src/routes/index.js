@@ -44,6 +44,8 @@ const TallyDashboard = React.lazy(() => import('../pages/dashboard/TallyDashboar
 const TallyVouchersDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyVouchersDetail'));
 const TallyLedgersDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyLedgersDetail'));
 const TallyStockItemsDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyStockItemsDetail'));
+const TallyStockItemsDetailEnhanced = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyStockItemsDetailEnhanced'));
+const EnhancedStockManagement = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/EnhancedStockManagement'));
 const TallyComprehensiveDetail = React.lazy(() => import('../pages/dashboard/TallyDashboard/components/TallyComprehensiveDetail'));
 
 // uploads 
@@ -332,7 +334,11 @@ const AllRoutes = () => {
                 },
                 {
                     path : 'tally-stock-items-detail',
-                    element:<LoadComponent component={TallyStockItemsDetail}/>
+                    element:<LoadComponent component={TallyStockItemsDetailEnhanced}/>
+                },
+                {
+                    path : 'enhanced-stock-management',
+                    element:<LoadComponent component={EnhancedStockManagement}/>
                 },
                 {
                     path : 'tally-comprehensive-detail',

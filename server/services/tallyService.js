@@ -3,7 +3,7 @@ const xml2js = require('xml2js');
 
 class TallyService {
     constructor() {
-        this.tallyUrl = process.env.TALLY_URL ;
+        this.tallyUrl = 'http://192.168.0.191:9000';
         this.parser = new xml2js.Parser({ 
             explicitArray: false, 
             mergeAttrs: true, 

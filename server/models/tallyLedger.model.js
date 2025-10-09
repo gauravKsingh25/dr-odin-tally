@@ -102,8 +102,9 @@ const tallyLedgerSchema = mongoose.Schema({
         trim: true
     },
     creditPeriod: {
-        type: Number,
-        default: 0
+        type: String, // <-- changed from Number to String
+        trim: true,
+        default: ''
     },
     creditLimit: {
         type: Number,

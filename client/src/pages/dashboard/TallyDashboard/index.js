@@ -134,6 +134,47 @@ const TallyDashboard = () => {
         };
     };
 
+    // Chart data validation utility
+    const validateChartData = (data, type = 'amount') => {
+        if (!Array.isArray(data) || data.length === 0) {
+            return [];
+        }
+        
+        return data.map(item => {
+            try {
+                let value;
+                if (type === 'amount') {
+                    value = parseFloat(item.totalAmount) || 0;
+                } else if (type === 'count') {
+                    value = parseFloat(item.count) || 0;
+                } else {
+                    value = parseFloat(item) || 0;
+                }
+                
+                // Ensure no negative values or NaN
+                return Math.max(value, 0);
+            } catch (error) {
+                console.warn('Chart data validation error:', error);
+                return 0;
+            }
+        });
+    };
+
+    // Chart labels validation utility
+    const validateChartLabels = (data) => {
+        if (!Array.isArray(data) || data.length === 0) {
+            return ['No Data'];
+        }
+        
+        return data.map((item, index) => {
+            try {
+                return item._id || item.name || `Item ${index + 1}`;
+            } catch (error) {
+                return `Item ${index + 1}`;
+            }
+        });
+    };
+
     // Fetch dashboard data
     const fetchDashboardData = useCallback(async () => {
         setLoading(true);
@@ -1103,43 +1144,152 @@ const TallyDashboard = () => {
                                     </div>
                                     {dashboardData.voucherSummary && dashboardData.voucherSummary.length > 0 ? (
                                         <Chart
+                                            key={`voucher-pie-${dashboardData.voucherSummary.length}-${Date.now()}`}
                                             options={{
                                                 chart: { 
                                                     type: 'pie', 
                                                     height: 300,
-                                                    background: 'transparent'
+                                                    background: 'transparent',
+                                                    animations: {
+                                                        enabled: true,
+                                                        easing: 'easeinout',
+                                                        speed: 800,
+                                                        animateGradually: {
+                                                            enabled: true,
+                                                            delay: 150
+                                                        },
+                                                        dynamicAnimation: {
+                                                            enabled: true,
+                                                            speed: 350
+                                                        }
+                                                    },
+                                                    redrawOnParentResize: true,
+                                                    redrawOnWindowResize: true,
+                                                    fontFamily: 'inherit'
                                                 },
                                                 theme: {
                                                     mode: layoutColor === 'dark' ? 'dark' : 'light'
                                                 },
-                                                labels: dashboardData.voucherSummary.map(item => item._id || 'Unknown'),
+                                                labels: validateChartLabels(dashboardData.voucherSummary),
                                                 colors: getChartTheme().colors,
                                                 legend: { 
                                                     position: 'bottom',
+                                                    horizontalAlign: 'center',
+                                                    floating: false,
+                                                    fontSize: '14px',
+                                                    fontFamily: 'inherit',
+                                                    fontWeight: 400,
                                                     labels: {
-                                                        colors: getChartTheme().textColor
+                                                        colors: getChartTheme().textColor,
+                                                        useSeriesColors: false
+                                                    },
+                                                    markers: {
+                                                        width: 12,
+                                                        height: 12,
+                                                        strokeWidth: 0,
+                                                        radius: 12
+                                                    },
+                                                    itemMargin: {
+                                                        horizontal: 10,
+                                                        vertical: 5
+                                                    }
+                                                },
+                                                plotOptions: {
+                                                    pie: {
+                                                        startAngle: -90,
+                                                        endAngle: 270,
+                                                        expandOnClick: false
                                                     }
                                                 },
                                                 dataLabels: {
                                                     enabled: true,
                                                     style: {
+                                                        fontSize: '12px',
+                                                        fontFamily: 'inherit',
+                                                        fontWeight: 'bold',
                                                         colors: ['#fff']
                                                     },
+                                                    background: {
+                                                        enabled: false
+                                                    },
+                                                    dropShadow: {
+                                                        enabled: false
+                                                    },
                                                     formatter: function (val, opts) {
-                                                        return dashboardData.voucherSummary[opts.seriesIndex].count
+                                                        try {
+                                                            const seriesIndex = opts.seriesIndex;
+                                                            if (seriesIndex >= 0 && seriesIndex < dashboardData.voucherSummary.length) {
+                                                                const count = dashboardData.voucherSummary[seriesIndex].count || 0;
+                                                                const percentage = parseFloat(val);
+                                                                return percentage > 5 ? count.toString() : '';
+                                                            }
+                                                            return '';
+                                                        } catch (error) {
+                                                            console.warn('DataLabel formatting error:', error);
+                                                            return '';
+                                                        }
                                                     }
                                                 },
                                                 tooltip: {
+                                                    enabled: true,
                                                     theme: layoutColor === 'dark' ? 'dark' : 'light',
+                                                    style: {
+                                                        fontSize: '14px',
+                                                        fontFamily: 'inherit'
+                                                    },
                                                     y: {
                                                         formatter: function(val, opts) {
-                                                            const summary = dashboardData.voucherSummary[opts.seriesIndex];
-                                                            return `Count: ${val}<br/>Amount: ₹${summary.totalAmount?.toLocaleString() || 0}`;
+                                                            try {
+                                                                const seriesIndex = opts.seriesIndex;
+                                                                if (seriesIndex >= 0 && seriesIndex < dashboardData.voucherSummary.length) {
+                                                                    const summary = dashboardData.voucherSummary[seriesIndex];
+                                                                    const count = summary.count || 0;
+                                                                    const amount = summary.totalAmount || 0;
+                                                                    const avgAmount = count > 0 ? (amount / count) : 0;
+                                                                    
+                                                                    return `Count: ${count}
+Amount: ₹${amount.toLocaleString('en-IN')}
+Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+                                                                }
+                                                                return `Count: ${val}`;
+                                                            } catch (error) {
+                                                                console.warn('Tooltip formatting error:', error);
+                                                                return `Count: ${val}`;
+                                                            }
                                                         }
+                                                    }
+                                                },
+                                                responsive: [{
+                                                    breakpoint: 768,
+                                                    options: {
+                                                        chart: {
+                                                            height: 250
+                                                        },
+                                                        legend: {
+                                                            position: 'bottom',
+                                                            fontSize: '12px'
+                                                        }
+                                                    }
+                                                }],
+                                                stroke: {
+                                                    show: false,
+                                                    width: 0
+                                                },
+                                                fill: {
+                                                    type: 'gradient',
+                                                    gradient: {
+                                                        shade: 'light',
+                                                        type: 'horizontal',
+                                                        shadeIntensity: 0.5,
+                                                        gradientToColors: undefined,
+                                                        inverseColors: true,
+                                                        opacityFrom: 1,
+                                                        opacityTo: 1,
+                                                        stops: [0, 50, 100]
                                                     }
                                                 }
                                             }}
-                                            series={dashboardData.voucherSummary.map(item => item.count)}
+                                            series={validateChartData(dashboardData.voucherSummary, 'count')}
                                             type="pie"
                                             height={300}
                                         />
@@ -1586,72 +1736,219 @@ const TallyDashboard = () => {
                                             </Col>
                                         </Row>
                                         <Chart
+                                            key={`voucher-donut-${dashboardData.voucherSummary.length}-${Date.now()}`}
                                             options={{
                                                 chart: { 
                                                     type: 'donut', 
                                                     height: 300,
-                                                    background: 'transparent'
+                                                    background: 'transparent',
+                                                    animations: {
+                                                        enabled: true,
+                                                        easing: 'easeinout',
+                                                        speed: 800,
+                                                        animateGradually: {
+                                                            enabled: true,
+                                                            delay: 150
+                                                        },
+                                                        dynamicAnimation: {
+                                                            enabled: true,
+                                                            speed: 350
+                                                        }
+                                                    },
+                                                    redrawOnParentResize: true,
+                                                    redrawOnWindowResize: true,
+                                                    fontFamily: 'inherit'
                                                 },
                                                 theme: {
                                                     mode: layoutColor === 'dark' ? 'dark' : 'light'
                                                 },
-                                                labels: dashboardData.voucherSummary.map(item => item._id || 'Unknown'),
+                                                labels: validateChartLabels(dashboardData.voucherSummary),
                                                 colors: getChartTheme().colors,
                                                 legend: { 
                                                     position: 'bottom',
+                                                    horizontalAlign: 'center',
+                                                    floating: false,
+                                                    fontSize: '14px',
+                                                    fontFamily: 'inherit',
+                                                    fontWeight: 400,
                                                     labels: {
-                                                        colors: getChartTheme().textColor
+                                                        colors: getChartTheme().textColor,
+                                                        useSeriesColors: false
+                                                    },
+                                                    markers: {
+                                                        width: 12,
+                                                        height: 12,
+                                                        strokeWidth: 0,
+                                                        radius: 12
+                                                    },
+                                                    itemMargin: {
+                                                        horizontal: 10,
+                                                        vertical: 5
                                                     }
                                                 },
                                                 plotOptions: {
                                                     pie: {
+                                                        startAngle: -90,
+                                                        endAngle: 270,
                                                         donut: {
-                                                            size: '60%',
+                                                            size: '65%',
+                                                            background: 'transparent',
                                                             labels: {
                                                                 show: true,
                                                                 name: {
                                                                     show: true,
-                                                                    color: getChartTheme().textColor
+                                                                    fontSize: '16px',
+                                                                    fontFamily: 'inherit',
+                                                                    fontWeight: 600,
+                                                                    color: getChartTheme().textColor,
+                                                                    offsetY: -10,
+                                                                    formatter: function (val) {
+                                                                        return val;
+                                                                    }
                                                                 },
                                                                 value: {
                                                                     show: true,
+                                                                    fontSize: '14px',
+                                                                    fontFamily: 'inherit',
+                                                                    fontWeight: 400,
                                                                     color: getChartTheme().textColor,
+                                                                    offsetY: 10,
                                                                     formatter: function (val) {
-                                                                        return '₹' + parseFloat(val).toLocaleString();
+                                                                        const numVal = parseFloat(val);
+                                                                        if (isNaN(numVal) || numVal <= 0) return '₹0';
+                                                                        return '₹' + numVal.toLocaleString('en-IN', {
+                                                                            maximumFractionDigits: 0
+                                                                        });
                                                                     }
                                                                 },
                                                                 total: {
                                                                     show: true,
-                                                                    showAlways: false,
+                                                                    showAlways: true,
+                                                                    label: 'Total Amount',
+                                                                    fontSize: '16px',
+                                                                    fontFamily: 'inherit',
+                                                                    fontWeight: 600,
                                                                     color: getChartTheme().textColor,
                                                                     formatter: function (w) {
-                                                                        const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                                                        return '₹' + total.toLocaleString();
+                                                                        try {
+                                                                            const total = w.globals.seriesTotals.reduce((a, b) => {
+                                                                                const numA = parseFloat(a) || 0;
+                                                                                const numB = parseFloat(b) || 0;
+                                                                                return numA + numB;
+                                                                            }, 0);
+                                                                            return total > 0 ? '₹' + total.toLocaleString('en-IN', {
+                                                                                maximumFractionDigits: 0
+                                                                            }) : '₹0';
+                                                                        } catch (error) {
+                                                                            console.warn('Chart total calculation error:', error);
+                                                                            return '₹0';
+                                                                        }
                                                                     }
                                                                 }
                                                             }
-                                                        }
+                                                        },
+                                                        expandOnClick: false
                                                     }
                                                 },
                                                 dataLabels: {
                                                     enabled: true,
                                                     style: {
+                                                        fontSize: '12px',
+                                                        fontFamily: 'inherit',
+                                                        fontWeight: 'bold',
                                                         colors: ['#fff']
                                                     },
+                                                    background: {
+                                                        enabled: false
+                                                    },
+                                                    dropShadow: {
+                                                        enabled: false
+                                                    },
                                                     formatter: function (val, opts) {
-                                                        return val.toFixed(1) + '%';
+                                                        try {
+                                                            const percentage = parseFloat(val);
+                                                            if (isNaN(percentage) || percentage <= 0) return '';
+                                                            return percentage > 5 ? percentage.toFixed(1) + '%' : '';
+                                                        } catch (error) {
+                                                            return '';
+                                                        }
                                                     }
                                                 },
                                                 tooltip: {
+                                                    enabled: true,
                                                     theme: layoutColor === 'dark' ? 'dark' : 'light',
+                                                    style: {
+                                                        fontSize: '14px',
+                                                        fontFamily: 'inherit'
+                                                    },
                                                     y: {
-                                                        formatter: function(val) {
-                                                            return '₹' + val.toLocaleString();
+                                                        formatter: function(val, opts) {
+                                                            try {
+                                                                const numVal = parseFloat(val);
+                                                                if (isNaN(numVal) || numVal <= 0) return '₹0';
+                                                                
+                                                                const seriesIndex = opts.seriesIndex;
+                                                                const voucherType = opts.w.globals.labels[seriesIndex];
+                                                                const voucherData = dashboardData.voucherSummary.find(item => item._id === voucherType);
+                                                                const count = voucherData ? voucherData.count || 0 : 0;
+                                                                const avgAmount = count > 0 ? (numVal / count) : 0;
+                                                                
+                                                                return `Amount: ₹${numVal.toLocaleString('en-IN')}
+Count: ${count} vouchers
+Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+                                                            } catch (error) {
+                                                                console.warn('Tooltip formatting error:', error);
+                                                                return '₹0';
+                                                            }
                                                         }
+                                                    }
+                                                },
+                                                responsive: [{
+                                                    breakpoint: 768,
+                                                    options: {
+                                                        chart: {
+                                                            height: 250
+                                                        },
+                                                        legend: {
+                                                            position: 'bottom',
+                                                            fontSize: '12px'
+                                                        },
+                                                        plotOptions: {
+                                                            pie: {
+                                                                donut: {
+                                                                    size: '70%',
+                                                                    labels: {
+                                                                        value: {
+                                                                            fontSize: '12px'
+                                                                        },
+                                                                        total: {
+                                                                            fontSize: '14px'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }],
+                                                stroke: {
+                                                    show: false,
+                                                    width: 0
+                                                },
+                                                fill: {
+                                                    type: 'gradient',
+                                                    gradient: {
+                                                        shade: 'light',
+                                                        type: 'horizontal',
+                                                        shadeIntensity: 0.5,
+                                                        gradientToColors: undefined,
+                                                        inverseColors: true,
+                                                        opacityFrom: 1,
+                                                        opacityTo: 1,
+                                                        stops: [0, 50, 100]
                                                     }
                                                 }
                                             }}
-                                            series={dashboardData.voucherSummary.map(item => item.totalAmount || 0)}
+                                            series={validateChartData(dashboardData.voucherSummary, 'amount')}
                                             type="donut"
                                             height={300}
                                         />

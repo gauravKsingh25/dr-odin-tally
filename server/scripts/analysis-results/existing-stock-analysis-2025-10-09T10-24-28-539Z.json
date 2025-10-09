@@ -1,0 +1,178 @@
+{
+  "statistics": {
+    "totalStockItems": 882,
+    "activeStockItems": 882,
+    "stockItemsWithQty": 492,
+    "stockItemsWithValue": 14,
+    "voucherCount": 7154,
+    "stockRelatedVouchers": 7154
+  },
+  "fieldQuality": {
+    "highQualityFields": [
+      "name",
+      "additionalUnits",
+      "aliasName",
+      "baseUnits",
+      "batchWiseDetails",
+      "category",
+      "costingMethod",
+      "denominator",
+      "gstApplicable",
+      "gstTypeOfSupply",
+      "guid",
+      "isActive",
+      "masterId",
+      "numerator",
+      "parent",
+      "priceDetails",
+      "rawData",
+      "stockGroup",
+      "stockStatus",
+      "taxClassification",
+      "valuationMethod",
+      "year"
+    ],
+    "mediumQualityFields": [
+      "closingQty",
+      "closingValue",
+      "costPrice",
+      "openingRate",
+      "sellingPrice"
+    ],
+    "lowQualityFields": [
+      "companyId",
+      "conversionFactor",
+      "createdAt",
+      "description",
+      "godownDetails",
+      "gstDetails",
+      "hsnCode",
+      "lastUpdated",
+      "maximumLevel",
+      "minimumLevel",
+      "openingBalance",
+      "openingQty",
+      "rateOfInward",
+      "rateOfOutward",
+      "reorderLevel",
+      "standardCostPrice",
+      "standardRateOfInward",
+      "standardRateOfOutward",
+      "standardSellingPrice",
+      "stockItemCode",
+      "updatedAt",
+      "vatDetails"
+    ]
+  },
+  "topItems": {
+    "byValue": [
+      {
+        "_id": "68e77cbefeb7f1d4362ee40d",
+        "name": "DR ODIN NEBULIZER KITS",
+        "baseUnits": "PCS",
+        "closingQty": -377,
+        "closingValue": 13485.4
+      },
+      {
+        "_id": "68e77cfafeb7f1d4362ee53a",
+        "name": "OC HAPP FILTER",
+        "baseUnits": "PCS",
+        "closingQty": -19,
+        "closingValue": 13186
+      },
+      {
+        "_id": "68e77cb1feb7f1d4362ee32a",
+        "name": "ANTI BEDSORE AIR MATTRESS OAM003 TUBULAR",
+        "baseUnits": "PCS",
+        "closingQty": -2,
+        "closingValue": 4827.8
+      },
+      {
+        "_id": "68e77cf2feb7f1d4362ee49e",
+        "name": "INFRARED THERMOMETER AOJ20D",
+        "baseUnits": "PCS",
+        "closingQty": 3,
+        "closingValue": 4169.55
+      },
+      {
+        "_id": "68e77cdffeb7f1d4362ee444",
+        "name": "ELECTRIC ORTHO JOINT HEATING PAD",
+        "baseUnits": "PCS",
+        "closingQty": -8,
+        "closingValue": 4000
+      }
+    ],
+    "byQuantity": [
+      {
+        "_id": "68e77cbcfeb7f1d4362ee3e8",
+        "name": "DIGITAL THERMOMETER (R)",
+        "baseUnits": "PCS",
+        "closingQty": 100000,
+        "closingValue": -4500000
+      },
+      {
+        "_id": "68e77cb7feb7f1d4362ee390",
+        "name": "CLINICAL THERMOMETER OVAL",
+        "baseUnits": "PCS",
+        "closingQty": 91380,
+        "closingValue": -4980210
+      },
+      {
+        "_id": "68e77cbcfeb7f1d4362ee3e9",
+        "name": "DIGITAL THERMOMETERS (DMT101)",
+        "baseUnits": "PCS",
+        "closingQty": 84223,
+        "closingValue": -3875424.68
+      },
+      {
+        "_id": "68e77cbafeb7f1d4362ee3d2",
+        "name": "DIGITAL TEHRMOMETER ODT311",
+        "baseUnits": "PCS",
+        "closingQty": 61999,
+        "closingValue": -2048826.61
+      },
+      {
+        "_id": "68e77cbcfeb7f1d4362ee3f6",
+        "name": "DR ODIN ALCHOL PREPADS",
+        "baseUnits": "BOX",
+        "closingQty": 35419,
+        "closingValue": -885490.23
+      }
+    ]
+  },
+  "stockStatusDistribution": [
+    {
+      "_id": "Critical Stock",
+      "count": 492
+    },
+    {
+      "_id": "Out of Stock",
+      "count": 390
+    }
+  ],
+  "uiSuggestions": {
+    "dashboard": [
+      "Stock alerts system",
+      "Top movers display",
+      "Status distribution chart",
+      "Recent movements",
+      "Quick search/filters"
+    ],
+    "manageStocks": [
+      "Expandable rows",
+      "Action buttons",
+      "Bulk operations",
+      "Advanced filtering",
+      "Movement tracking"
+    ],
+    "detailedView": [
+      "Movement history",
+      "Pricing trends",
+      "Vendor information",
+      "Batch details",
+      "Tax information",
+      "Reorder suggestions"
+    ]
+  },
+  "timestamp": "2025-10-09T10:24:28.539Z"
+}

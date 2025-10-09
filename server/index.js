@@ -40,6 +40,9 @@ require("./routes/productReport.routes")(app);
 require("./routes/revenue.routes")(app);
 require("./routes/saleExecutive.routes")(app);
 
+// Enhanced Stock Management Routes
+app.use("/api/stock", require("./routes/enhancedStock.routes"));
+
 // Serve React app for any non-API routes (must be after all API routes)
 app.get('*', (req, res) => {
     // Only serve React app for non-API routes

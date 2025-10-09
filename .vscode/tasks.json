@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Test Enhanced Full Sync API",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-X",
+				"POST",
+				"http://localhost:3000/api/tally/sync/full-enhanced",
+				"-H",
+				"Authorization: Bearer <your_token_here>"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test Enhanced Full Sync API",
+			"type": "shell",
+			"command": "Invoke-WebRequest",
+			"args": [
+				"-Uri",
+				"http://localhost:3000/api/tally/sync/full-enhanced",
+				"-Method",
+				"POST",
+				"-Headers",
+				"@{Authorization='Bearer <your_token_here>'}"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
