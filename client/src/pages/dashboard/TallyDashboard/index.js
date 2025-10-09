@@ -122,15 +122,29 @@ const TallyDashboard = () => {
         layoutColor: state.Layout.layoutColor,
     }));
     
-    // Theme-aware chart colors
+    // Enhanced theme-aware chart colors with professional gradients
     const getChartTheme = () => {
         const isDark = layoutColor === 'dark';
         return {
-            colors: isDark ? ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'] 
-                          : ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'],
-            textColor: isDark ? '#e3e6f0' : '#6c757d',
-            gridColor: isDark ? '#404954' : '#f1f3fa',
-            backgroundColor: isDark ? 'transparent' : 'transparent'
+            colors: isDark ? [
+                '#667eea', '#f093fb', '#4facfe', '#43e97b', '#ffa726', '#f06292',
+                '#ba68c8', '#64b5f6', '#4db6ac', '#ffb74d', '#f8bbd9', '#90caf9'
+            ] : [
+                '#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe',
+                '#43e97b', '#ffa726', '#ab47bc', '#26c6da', '#66bb6a', '#ffca28'
+            ],
+            gradientColors: isDark ? [
+                ['#667eea', '#764ba2'], ['#f093fb', '#f5576c'], ['#4facfe', '#00f2fe'],
+                ['#43e97b', '#38d9a9'], ['#ffa726', '#ff7043'], ['#f06292', '#ec407a']
+            ] : [
+                ['#667eea', '#764ba2'], ['#f093fb', '#f5576c'], ['#4facfe', '#00f2fe'],
+                ['#43e97b', '#38d9a9'], ['#ffa726', '#ff7043'], ['#f06292', '#ec407a']
+            ],
+            textColor: isDark ? '#e3e6f0' : '#495057',
+            secondaryTextColor: isDark ? '#adb5bd' : '#6c757d',
+            gridColor: isDark ? '#404954' : '#e9ecef',
+            backgroundColor: isDark ? 'transparent' : 'transparent',
+            chartBackground: isDark ? '#2b3446' : '#ffffff'
         };
     };
 
@@ -1148,24 +1162,31 @@ const TallyDashboard = () => {
                                             options={{
                                                 chart: { 
                                                     type: 'pie', 
-                                                    height: 300,
+                                                    height: 320,
                                                     background: 'transparent',
                                                     animations: {
                                                         enabled: true,
                                                         easing: 'easeinout',
-                                                        speed: 800,
+                                                        speed: 1000,
                                                         animateGradually: {
                                                             enabled: true,
-                                                            delay: 150
+                                                            delay: 200
                                                         },
                                                         dynamicAnimation: {
                                                             enabled: true,
-                                                            speed: 350
+                                                            speed: 400
                                                         }
                                                     },
                                                     redrawOnParentResize: true,
                                                     redrawOnWindowResize: true,
-                                                    fontFamily: 'inherit'
+                                                    fontFamily: 'inherit',
+                                                    dropShadow: {
+                                                        enabled: true,
+                                                        top: 2,
+                                                        left: 2,
+                                                        blur: 8,
+                                                        opacity: 0.1
+                                                    }
                                                 },
                                                 theme: {
                                                     mode: layoutColor === 'dark' ? 'dark' : 'light'
@@ -1176,29 +1197,43 @@ const TallyDashboard = () => {
                                                     position: 'bottom',
                                                     horizontalAlign: 'center',
                                                     floating: false,
-                                                    fontSize: '14px',
+                                                    fontSize: '13px',
                                                     fontFamily: 'inherit',
-                                                    fontWeight: 400,
+                                                    fontWeight: 500,
                                                     labels: {
                                                         colors: getChartTheme().textColor,
-                                                        useSeriesColors: false
+                                                        useSeriesColors: true
                                                     },
                                                     markers: {
-                                                        width: 12,
-                                                        height: 12,
-                                                        strokeWidth: 0,
-                                                        radius: 12
+                                                        width: 14,
+                                                        height: 14,
+                                                        strokeWidth: 2,
+                                                        strokeColor: '#fff',
+                                                        radius: 14,
+                                                        offsetX: 0,
+                                                        offsetY: 0
                                                     },
                                                     itemMargin: {
-                                                        horizontal: 10,
-                                                        vertical: 5
+                                                        horizontal: 12,
+                                                        vertical: 6
                                                     }
                                                 },
                                                 plotOptions: {
                                                     pie: {
                                                         startAngle: -90,
                                                         endAngle: 270,
-                                                        expandOnClick: false
+                                                        expandOnClick: true,
+                                                        offsetX: 0,
+                                                        offsetY: 0,
+                                                        customScale: 1,
+                                                        dataLabels: {
+                                                            offset: 0,
+                                                            minAngleToShowLabel: 15
+                                                        },
+                                                        donut: {
+                                                            size: '0%',
+                                                            background: 'transparent'
+                                                        }
                                                     }
                                                 },
                                                 dataLabels: {
@@ -1206,14 +1241,32 @@ const TallyDashboard = () => {
                                                     style: {
                                                         fontSize: '12px',
                                                         fontFamily: 'inherit',
-                                                        fontWeight: 'bold',
+                                                        fontWeight: '600',
                                                         colors: ['#fff']
                                                     },
                                                     background: {
-                                                        enabled: false
+                                                        enabled: true,
+                                                        foreColor: '#fff',
+                                                        borderRadius: 4,
+                                                        padding: 4,
+                                                        opacity: 0.9,
+                                                        borderWidth: 1,
+                                                        borderColor: '#fff',
+                                                        dropShadow: {
+                                                            enabled: true,
+                                                            top: 1,
+                                                            left: 1,
+                                                            blur: 1,
+                                                            color: '#000',
+                                                            opacity: 0.2
+                                                        }
                                                     },
                                                     dropShadow: {
-                                                        enabled: false
+                                                        enabled: true,
+                                                        top: 1,
+                                                        left: 1,
+                                                        blur: 2,
+                                                        opacity: 0.3
                                                     },
                                                     formatter: function (val, opts) {
                                                         try {
@@ -1221,7 +1274,10 @@ const TallyDashboard = () => {
                                                             if (seriesIndex >= 0 && seriesIndex < dashboardData.voucherSummary.length) {
                                                                 const count = dashboardData.voucherSummary[seriesIndex].count || 0;
                                                                 const percentage = parseFloat(val);
-                                                                return percentage > 5 ? count.toString() : '';
+                                                                if (percentage > 8) {
+                                                                    return percentage >= 15 ? `${count}\n(${percentage.toFixed(1)}%)` : `${percentage.toFixed(1)}%`;
+                                                                }
+                                                                return '';
                                                             }
                                                             return '';
                                                         } catch (error) {
@@ -1234,28 +1290,32 @@ const TallyDashboard = () => {
                                                     enabled: true,
                                                     theme: layoutColor === 'dark' ? 'dark' : 'light',
                                                     style: {
-                                                        fontSize: '14px',
+                                                        fontSize: '13px',
                                                         fontFamily: 'inherit'
                                                     },
-                                                    y: {
-                                                        formatter: function(val, opts) {
-                                                            try {
-                                                                const seriesIndex = opts.seriesIndex;
-                                                                if (seriesIndex >= 0 && seriesIndex < dashboardData.voucherSummary.length) {
-                                                                    const summary = dashboardData.voucherSummary[seriesIndex];
-                                                                    const count = summary.count || 0;
-                                                                    const amount = summary.totalAmount || 0;
-                                                                    const avgAmount = count > 0 ? (amount / count) : 0;
-                                                                    
-                                                                    return `Count: ${count}
-Amount: ₹${amount.toLocaleString('en-IN')}
-Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
-                                                                }
-                                                                return `Count: ${val}`;
-                                                            } catch (error) {
-                                                                console.warn('Tooltip formatting error:', error);
-                                                                return `Count: ${val}`;
-                                                            }
+                                                    fillSeriesColor: false,
+                                                    custom: function({series, seriesIndex, dataPointIndex, w}) {
+                                                        try {
+                                                            const summary = dashboardData.voucherSummary[seriesIndex];
+                                                            const count = summary.count || 0;
+                                                            const amount = summary.totalAmount || 0;
+                                                            const avgAmount = count > 0 ? (amount / count) : 0;
+                                                            const percentage = ((count / series.reduce((a, b) => a + b, 0)) * 100);
+                                                            
+                                                            return `
+                                                            <div class="custom-tooltip">
+                                                                <div class="tooltip-header" style="background: ${getChartTheme().colors[seriesIndex]}; color: white; padding: 8px 12px; margin: -8px -8px 8px -8px; font-weight: bold;">
+                                                                    ${summary._id || 'Unknown Type'}
+                                                                </div>
+                                                                <div class="tooltip-body" style="padding: 4px 0;">
+                                                                    <div style="margin: 4px 0;"><strong>Count:</strong> ${count.toLocaleString()} vouchers</div>
+                                                                    <div style="margin: 4px 0;"><strong>Percentage:</strong> ${percentage.toFixed(1)}%</div>
+                                                                    <div style="margin: 4px 0;"><strong>Total Amount:</strong> ₹${amount.toLocaleString('en-IN')}</div>
+                                                                    <div style="margin: 4px 0;"><strong>Avg Amount:</strong> ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}</div>
+                                                                </div>
+                                                            </div>`;
+                                                        } catch (error) {
+                                                            return `<div class="custom-tooltip">Count: ${series[seriesIndex]}</div>`;
                                                         }
                                                     }
                                                 },
@@ -1263,35 +1323,56 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                     breakpoint: 768,
                                                     options: {
                                                         chart: {
-                                                            height: 250
+                                                            height: 280
                                                         },
                                                         legend: {
                                                             position: 'bottom',
                                                             fontSize: '12px'
+                                                        },
+                                                        dataLabels: {
+                                                            style: {
+                                                                fontSize: '11px'
+                                                            }
                                                         }
                                                     }
                                                 }],
                                                 stroke: {
-                                                    show: false,
-                                                    width: 0
+                                                    show: true,
+                                                    width: 2,
+                                                    colors: ['#fff']
                                                 },
                                                 fill: {
                                                     type: 'gradient',
                                                     gradient: {
-                                                        shade: 'light',
-                                                        type: 'horizontal',
-                                                        shadeIntensity: 0.5,
-                                                        gradientToColors: undefined,
-                                                        inverseColors: true,
+                                                        shade: layoutColor === 'dark' ? 'dark' : 'light',
+                                                        type: 'radial',
+                                                        shadeIntensity: 0.8,
+                                                        gradientToColors: getChartTheme().gradientColors.map(colors => colors[1]),
+                                                        inverseColors: false,
                                                         opacityFrom: 1,
-                                                        opacityTo: 1,
-                                                        stops: [0, 50, 100]
+                                                        opacityTo: 0.7,
+                                                        stops: [0, 100]
+                                                    }
+                                                },
+                                                states: {
+                                                    hover: {
+                                                        filter: {
+                                                            type: 'lighten',
+                                                            value: 0.1
+                                                        }
+                                                    },
+                                                    active: {
+                                                        allowMultipleDataPointsSelection: false,
+                                                        filter: {
+                                                            type: 'darken',
+                                                            value: 0.7
+                                                        }
                                                     }
                                                 }
                                             }}
                                             series={validateChartData(dashboardData.voucherSummary, 'count')}
                                             type="pie"
-                                            height={300}
+                                            height={320}
                                         />
                                     ) : (
                                         <div className="text-center text-muted py-5">
@@ -1328,8 +1409,40 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                             options={{
                                                 chart: { 
                                                     type: 'bar', 
-                                                    height: 300,
-                                                    background: 'transparent'
+                                                    height: 320,
+                                                    background: 'transparent',
+                                                    animations: {
+                                                        enabled: true,
+                                                        easing: 'easeinout',
+                                                        speed: 1000,
+                                                        animateGradually: {
+                                                            enabled: true,
+                                                            delay: 100
+                                                        },
+                                                        dynamicAnimation: {
+                                                            enabled: true,
+                                                            speed: 400
+                                                        }
+                                                    },
+                                                    dropShadow: {
+                                                        enabled: true,
+                                                        top: 2,
+                                                        left: 2,
+                                                        blur: 6,
+                                                        opacity: 0.1
+                                                    },
+                                                    toolbar: {
+                                                        show: true,
+                                                        tools: {
+                                                            download: true,
+                                                            selection: false,
+                                                            zoom: true,
+                                                            zoomin: true,
+                                                            zoomout: true,
+                                                            pan: false,
+                                                            reset: true
+                                                        }
+                                                    }
                                                 },
                                                 theme: {
                                                     mode: layoutColor === 'dark' ? 'dark' : 'light'
@@ -1338,39 +1451,180 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                     categories: dashboardData.groupSummary.map(item => item._id || 'Other'),
                                                     labels: {
                                                         style: {
-                                                            colors: getChartTheme().textColor
-                                                        }
+                                                            colors: getChartTheme().textColor,
+                                                            fontSize: '12px',
+                                                            fontWeight: 500
+                                                        },
+                                                        rotate: -45,
+                                                        rotateAlways: true,
+                                                        maxHeight: 80
+                                                    },
+                                                    axisBorder: {
+                                                        show: true,
+                                                        color: getChartTheme().gridColor,
+                                                        height: 1,
+                                                        width: '100%',
+                                                        offsetX: 0,
+                                                        offsetY: 0
+                                                    },
+                                                    axisTicks: {
+                                                        show: true,
+                                                        borderType: 'solid',
+                                                        color: getChartTheme().gridColor,
+                                                        height: 6,
+                                                        offsetX: 0,
+                                                        offsetY: 0
                                                     }
                                                 },
                                                 yaxis: {
                                                     labels: {
                                                         style: {
-                                                            colors: getChartTheme().textColor
+                                                            colors: getChartTheme().textColor,
+                                                            fontSize: '12px',
+                                                            fontWeight: 500
+                                                        },
+                                                        formatter: function (val) {
+                                                            return val.toFixed(0);
+                                                        }
+                                                    },
+                                                    title: {
+                                                        text: 'Number of Groups',
+                                                        style: {
+                                                            color: getChartTheme().textColor,
+                                                            fontSize: '13px',
+                                                            fontWeight: 600
                                                         }
                                                     }
                                                 },
-                                                colors: [getChartTheme().colors[0]],
+                                                colors: [getChartTheme().colors[1]],
                                                 plotOptions: {
                                                     bar: {
                                                         horizontal: false,
-                                                        columnWidth: '50%',
+                                                        columnWidth: '60%',
+                                                        endingShape: 'rounded',
+                                                        borderRadius: 4,
+                                                        distributed: false,
+                                                        rangeBarOverlap: true,
+                                                        dataLabels: {
+                                                            position: 'top'
+                                                        }
                                                     }
                                                 },
                                                 dataLabels: {
                                                     enabled: true,
+                                                    formatter: function (val) {
+                                                        return val > 0 ? val.toString() : '';
+                                                    },
+                                                    offsetY: -20,
                                                     style: {
-                                                        colors: ['#fff']
+                                                        fontSize: '12px',
+                                                        colors: [getChartTheme().textColor],
+                                                        fontWeight: 600
+                                                    },
+                                                    background: {
+                                                        enabled: true,
+                                                        foreColor: getChartTheme().textColor,
+                                                        borderRadius: 2,
+                                                        padding: 4,
+                                                        opacity: 0.9,
+                                                        borderWidth: 1,
+                                                        borderColor: getChartTheme().gridColor,
+                                                        dropShadow: {
+                                                            enabled: true,
+                                                            top: 1,
+                                                            left: 1,
+                                                            blur: 1,
+                                                            color: '#000',
+                                                            opacity: 0.1
+                                                        }
                                                     }
                                                 },
                                                 grid: {
-                                                    borderColor: getChartTheme().gridColor
+                                                    borderColor: getChartTheme().gridColor,
+                                                    strokeDashArray: 3,
+                                                    position: 'back',
+                                                    xaxis: {
+                                                        lines: {
+                                                            show: false
+                                                        }
+                                                    },
+                                                    yaxis: {
+                                                        lines: {
+                                                            show: true
+                                                        }
+                                                    },
+                                                    row: {
+                                                        colors: undefined,
+                                                        opacity: 0.5
+                                                    },
+                                                    column: {
+                                                        colors: undefined,
+                                                        opacity: 0.5
+                                                    },
+                                                    padding: {
+                                                        top: 0,
+                                                        right: 0,
+                                                        bottom: 0,
+                                                        left: 0
+                                                    }
+                                                },
+                                                fill: {
+                                                    type: 'gradient',
+                                                    gradient: {
+                                                        shade: layoutColor === 'dark' ? 'dark' : 'light',
+                                                        type: 'vertical',
+                                                        shadeIntensity: 0.5,
+                                                        gradientToColors: [getChartTheme().colors[2]],
+                                                        inverseColors: false,
+                                                        opacityFrom: 1,
+                                                        opacityTo: 0.8,
+                                                        stops: [0, 100]
+                                                    }
                                                 },
                                                 tooltip: {
+                                                    enabled: true,
                                                     theme: layoutColor === 'dark' ? 'dark' : 'light',
-                                                    y: {
-                                                        formatter: function(val, opts) {
-                                                            const group = dashboardData.groupSummary[opts.dataPointIndex];
-                                                            return `Groups: ${val}<br/>Opening: ₹${group.totalOpeningBalance?.toLocaleString() || 0}<br/>Closing: ₹${group.totalClosingBalance?.toLocaleString() || 0}`;
+                                                    style: {
+                                                        fontSize: '13px',
+                                                        fontFamily: 'inherit'
+                                                    },
+                                                    custom: function({series, seriesIndex, dataPointIndex, w}) {
+                                                        try {
+                                                            const group = dashboardData.groupSummary[dataPointIndex];
+                                                            const groupCount = series[seriesIndex][dataPointIndex];
+                                                            const openingBalance = group.totalOpeningBalance || 0;
+                                                            const closingBalance = group.totalClosingBalance || 0;
+                                                            const netChange = closingBalance - openingBalance;
+                                                            
+                                                            return `
+                                                            <div class="custom-tooltip">
+                                                                <div class="tooltip-header" style="background: ${getChartTheme().colors[1]}; color: white; padding: 8px 12px; margin: -8px -8px 8px -8px; font-weight: bold;">
+                                                                    ${group._id || 'Other'}
+                                                                </div>
+                                                                <div class="tooltip-body" style="padding: 4px 0;">
+                                                                    <div style="margin: 4px 0;"><strong>Groups:</strong> ${groupCount} groups</div>
+                                                                    <div style="margin: 4px 0;"><strong>Opening Balance:</strong> ₹${openingBalance.toLocaleString('en-IN')}</div>
+                                                                    <div style="margin: 4px 0;"><strong>Closing Balance:</strong> ₹${closingBalance.toLocaleString('en-IN')}</div>
+                                                                    <div style="margin: 4px 0; color: ${netChange >= 0 ? '#28a745' : '#dc3545'};"><strong>Net Change:</strong> ₹${netChange.toLocaleString('en-IN')}</div>
+                                                                </div>
+                                                            </div>`;
+                                                        } catch (error) {
+                                                            return `<div class="custom-tooltip">Groups: ${series[seriesIndex][dataPointIndex]}</div>`;
+                                                        }
+                                                    }
+                                                },
+                                                states: {
+                                                    hover: {
+                                                        filter: {
+                                                            type: 'lighten',
+                                                            value: 0.1
+                                                        }
+                                                    },
+                                                    active: {
+                                                        allowMultipleDataPointsSelection: false,
+                                                        filter: {
+                                                            type: 'darken',
+                                                            value: 0.7
                                                         }
                                                     }
                                                 }
@@ -1380,7 +1634,7 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                 data: dashboardData.groupSummary.map(item => item.count)
                                             }]}
                                             type="bar"
-                                            height={300}
+                                            height={320}
                                         />
                                     ) : (
                                         <div className="text-center text-muted py-5">
@@ -1420,8 +1674,40 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                             options={{
                                                 chart: { 
                                                     type: 'bar', 
-                                                    height: 350,
-                                                    background: 'transparent'
+                                                    height: 380,
+                                                    background: 'transparent',
+                                                    animations: {
+                                                        enabled: true,
+                                                        easing: 'easeinout',
+                                                        speed: 1200,
+                                                        animateGradually: {
+                                                            enabled: true,
+                                                            delay: 150
+                                                        },
+                                                        dynamicAnimation: {
+                                                            enabled: true,
+                                                            speed: 400
+                                                        }
+                                                    },
+                                                    dropShadow: {
+                                                        enabled: true,
+                                                        top: 3,
+                                                        left: 2,
+                                                        blur: 8,
+                                                        opacity: 0.12
+                                                    },
+                                                    toolbar: {
+                                                        show: true,
+                                                        tools: {
+                                                            download: true,
+                                                            selection: false,
+                                                            zoom: true,
+                                                            zoomin: true,
+                                                            zoomout: true,
+                                                            pan: false,
+                                                            reset: true
+                                                        }
+                                                    }
                                                 },
                                                 theme: {
                                                     mode: layoutColor === 'dark' ? 'dark' : 'light'
@@ -1430,66 +1716,229 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                     categories: dashboardData.stockSummary.slice(0, 10).map(item => item._id || 'Uncategorized'),
                                                     labels: {
                                                         style: {
-                                                            colors: getChartTheme().textColor
-                                                        }
+                                                            colors: getChartTheme().textColor,
+                                                            fontSize: '11px',
+                                                            fontWeight: 500
+                                                        },
+                                                        rotate: -45,
+                                                        rotateAlways: true,
+                                                        maxHeight: 100,
+                                                        trim: true
+                                                    },
+                                                    axisBorder: {
+                                                        show: true,
+                                                        color: getChartTheme().gridColor,
+                                                        height: 1,
+                                                        width: '100%'
+                                                    },
+                                                    axisTicks: {
+                                                        show: true,
+                                                        borderType: 'solid',
+                                                        color: getChartTheme().gridColor,
+                                                        height: 6
                                                     }
                                                 },
-                                                colors: [getChartTheme().colors[2], getChartTheme().colors[3]],
+                                                colors: [getChartTheme().colors[2], getChartTheme().colors[4]],
                                                 plotOptions: {
                                                     bar: {
                                                         horizontal: false,
-                                                        columnWidth: '60%',
+                                                        columnWidth: '65%',
+                                                        endingShape: 'rounded',
+                                                        borderRadius: 3,
+                                                        dataLabels: {
+                                                            position: 'top'
+                                                        },
+                                                        distributed: false
                                                     }
                                                 },
                                                 dataLabels: {
                                                     enabled: true,
-                                                    style: {
-                                                        colors: ['#fff']
-                                                    },
-                                                    formatter: function (val) {
+                                                    enabledOnSeries: [0],
+                                                    formatter: function (val, opts) {
+                                                        if (opts.seriesIndex === 0) {
+                                                            return val > 0 ? val.toString() : '';
+                                                        }
                                                         return val > 1000000 ? (val/1000000).toFixed(1) + 'M' : 
-                                                               val > 1000 ? (val/1000).toFixed(1) + 'K' : val;
+                                                               val > 1000 ? (val/1000).toFixed(1) + 'K' : 
+                                                               val > 0 ? val.toString() : '';
+                                                    },
+                                                    offsetY: -20,
+                                                    style: {
+                                                        fontSize: '11px',
+                                                        colors: [getChartTheme().textColor],
+                                                        fontWeight: 600
+                                                    },
+                                                    background: {
+                                                        enabled: true,
+                                                        foreColor: getChartTheme().textColor,
+                                                        borderRadius: 2,
+                                                        padding: 3,
+                                                        opacity: 0.8,
+                                                        borderWidth: 1,
+                                                        borderColor: getChartTheme().gridColor
                                                     }
                                                 },
                                                 grid: {
-                                                    borderColor: getChartTheme().gridColor
+                                                    borderColor: getChartTheme().gridColor,
+                                                    strokeDashArray: 3,
+                                                    position: 'back',
+                                                    xaxis: {
+                                                        lines: {
+                                                            show: false
+                                                        }
+                                                    },
+                                                    yaxis: {
+                                                        lines: {
+                                                            show: true
+                                                        }
+                                                    },
+                                                    padding: {
+                                                        top: 0,
+                                                        right: 0,
+                                                        bottom: 0,
+                                                        left: 0
+                                                    }
                                                 },
                                                 yaxis: [{
+                                                    seriesName: 'Item Count',
+                                                    axisTicks: {
+                                                        show: true,
+                                                    },
+                                                    axisBorder: {
+                                                        show: true,
+                                                        color: getChartTheme().colors[2]
+                                                    },
                                                     title: { 
                                                         text: 'Item Count',
                                                         style: {
-                                                            color: getChartTheme().textColor
+                                                            color: getChartTheme().colors[2],
+                                                            fontSize: '13px',
+                                                            fontWeight: 600
                                                         }
                                                     },
                                                     labels: {
                                                         style: {
-                                                            colors: getChartTheme().textColor
+                                                            colors: getChartTheme().colors[2],
+                                                            fontSize: '12px',
+                                                            fontWeight: 500
+                                                        },
+                                                        formatter: function (val) {
+                                                            return val.toFixed(0);
                                                         }
                                                     }
                                                 }, {
+                                                    seriesName: 'Total Value (₹)',
                                                     opposite: true,
+                                                    axisTicks: {
+                                                        show: true,
+                                                    },
+                                                    axisBorder: {
+                                                        show: true,
+                                                        color: getChartTheme().colors[4]
+                                                    },
                                                     title: { 
                                                         text: 'Total Value (₹)',
                                                         style: {
-                                                            color: getChartTheme().textColor
+                                                            color: getChartTheme().colors[4],
+                                                            fontSize: '13px',
+                                                            fontWeight: 600
                                                         }
                                                     },
                                                     labels: {
                                                         style: {
-                                                            colors: getChartTheme().textColor
+                                                            colors: getChartTheme().colors[4],
+                                                            fontSize: '12px',
+                                                            fontWeight: 500
+                                                        },
+                                                        formatter: function (val) {
+                                                            return val > 1000000 ? (val/1000000).toFixed(1) + 'M' : 
+                                                                   val > 1000 ? (val/1000).toFixed(1) + 'K' : 
+                                                                   val.toFixed(0);
                                                         }
                                                     }
                                                 }],
+                                                fill: {
+                                                    type: 'gradient',
+                                                    gradient: {
+                                                        shade: layoutColor === 'dark' ? 'dark' : 'light',
+                                                        type: 'vertical',
+                                                        shadeIntensity: 0.4,
+                                                        gradientToColors: [getChartTheme().colors[3], getChartTheme().colors[5]],
+                                                        inverseColors: false,
+                                                        opacityFrom: 1,
+                                                        opacityTo: 0.8,
+                                                        stops: [0, 100]
+                                                    }
+                                                },
+                                                legend: {
+                                                    position: 'top',
+                                                    horizontalAlign: 'center',
+                                                    floating: false,
+                                                    fontSize: '13px',
+                                                    fontFamily: 'inherit',
+                                                    fontWeight: 500,
+                                                    labels: {
+                                                        colors: getChartTheme().textColor,
+                                                        useSeriesColors: true
+                                                    },
+                                                    markers: {
+                                                        width: 12,
+                                                        height: 12,
+                                                        strokeWidth: 2,
+                                                        strokeColor: '#fff',
+                                                        radius: 6
+                                                    },
+                                                    itemMargin: {
+                                                        horizontal: 15,
+                                                        vertical: 5
+                                                    }
+                                                },
                                                 tooltip: {
+                                                    enabled: true,
                                                     theme: layoutColor === 'dark' ? 'dark' : 'light',
-                                                    y: {
-                                                        formatter: function(val, opts) {
-                                                            const stock = dashboardData.stockSummary[opts.dataPointIndex];
-                                                            if (opts.seriesIndex === 0) {
-                                                                return `Items: ${val}<br/>Total Qty: ${stock.totalQty?.toLocaleString() || 0}`;
-                                                            } else {
-                                                                return `Value: ₹${val.toLocaleString()}<br/>Avg Value: ₹${(val / stock.itemCount).toFixed(2)}`;
-                                                            }
+                                                    style: {
+                                                        fontSize: '13px',
+                                                        fontFamily: 'inherit'
+                                                    },
+                                                    shared: true,
+                                                    intersect: false,
+                                                    custom: function({series, seriesIndex, dataPointIndex, w}) {
+                                                        try {
+                                                            const stock = dashboardData.stockSummary[dataPointIndex];
+                                                            const itemCount = series[0][dataPointIndex];
+                                                            const totalValue = series[1][dataPointIndex];
+                                                            const avgValue = itemCount > 0 ? (totalValue / itemCount) : 0;
+                                                            const totalQty = stock.totalQty || 0;
+                                                            
+                                                            return `
+                                                            <div class="custom-tooltip">
+                                                                <div class="tooltip-header" style="background: linear-gradient(45deg, ${getChartTheme().colors[2]}, ${getChartTheme().colors[4]}); color: white; padding: 8px 12px; margin: -8px -8px 8px -8px; font-weight: bold;">
+                                                                    ${stock._id || 'Uncategorized'}
+                                                                </div>
+                                                                <div class="tooltip-body" style="padding: 4px 0;">
+                                                                    <div style="margin: 4px 0; color: ${getChartTheme().colors[2]};"><strong>Item Count:</strong> ${itemCount.toLocaleString()} items</div>
+                                                                    <div style="margin: 4px 0;"><strong>Total Quantity:</strong> ${totalQty.toLocaleString()} units</div>
+                                                                    <div style="margin: 4px 0; color: ${getChartTheme().colors[4]};"><strong>Total Value:</strong> ₹${totalValue.toLocaleString('en-IN')}</div>
+                                                                    <div style="margin: 4px 0;"><strong>Avg Value/Item:</strong> ₹${avgValue.toLocaleString('en-IN', {maximumFractionDigits: 2})}</div>
+                                                                </div>
+                                                            </div>`;
+                                                        } catch (error) {
+                                                            return `<div class="custom-tooltip">Stock Category Data</div>`;
+                                                        }
+                                                    }
+                                                },
+                                                states: {
+                                                    hover: {
+                                                        filter: {
+                                                            type: 'lighten',
+                                                            value: 0.1
+                                                        }
+                                                    },
+                                                    active: {
+                                                        allowMultipleDataPointsSelection: false,
+                                                        filter: {
+                                                            type: 'darken',
+                                                            value: 0.7
                                                         }
                                                     }
                                                 }
@@ -1497,7 +1946,8 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                             series={[
                                                 {
                                                     name: 'Item Count',
-                                                    data: dashboardData.stockSummary.slice(0, 10).map(item => item.itemCount)
+                                                    data: dashboardData.stockSummary.slice(0, 10).map(item => item.itemCount),
+                                                    yAxisIndex: 0
                                                 },
                                                 {
                                                     name: 'Total Value (₹)',
@@ -1506,7 +1956,7 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                 }
                                             ]}
                                             type="bar"
-                                            height={350}
+                                            height={380}
                                         />
                                     ) : (
                                         <div className="text-center text-muted py-5">
@@ -1740,24 +2190,31 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                             options={{
                                                 chart: { 
                                                     type: 'donut', 
-                                                    height: 300,
+                                                    height: 340,
                                                     background: 'transparent',
                                                     animations: {
                                                         enabled: true,
                                                         easing: 'easeinout',
-                                                        speed: 800,
+                                                        speed: 1000,
                                                         animateGradually: {
                                                             enabled: true,
-                                                            delay: 150
+                                                            delay: 200
                                                         },
                                                         dynamicAnimation: {
                                                             enabled: true,
-                                                            speed: 350
+                                                            speed: 400
                                                         }
                                                     },
                                                     redrawOnParentResize: true,
                                                     redrawOnWindowResize: true,
-                                                    fontFamily: 'inherit'
+                                                    fontFamily: 'inherit',
+                                                    dropShadow: {
+                                                        enabled: true,
+                                                        top: 3,
+                                                        left: 3,
+                                                        blur: 10,
+                                                        opacity: 0.15
+                                                    }
                                                 },
                                                 theme: {
                                                     mode: layoutColor === 'dark' ? 'dark' : 'light'
@@ -1768,30 +2225,41 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                     position: 'bottom',
                                                     horizontalAlign: 'center',
                                                     floating: false,
-                                                    fontSize: '14px',
+                                                    fontSize: '13px',
                                                     fontFamily: 'inherit',
-                                                    fontWeight: 400,
+                                                    fontWeight: 500,
                                                     labels: {
                                                         colors: getChartTheme().textColor,
-                                                        useSeriesColors: false
+                                                        useSeriesColors: true
                                                     },
                                                     markers: {
-                                                        width: 12,
-                                                        height: 12,
-                                                        strokeWidth: 0,
-                                                        radius: 12
+                                                        width: 14,
+                                                        height: 14,
+                                                        strokeWidth: 2,
+                                                        strokeColor: '#fff',
+                                                        radius: 14,
+                                                        offsetX: 0,
+                                                        offsetY: 0
                                                     },
                                                     itemMargin: {
-                                                        horizontal: 10,
-                                                        vertical: 5
+                                                        horizontal: 12,
+                                                        vertical: 6
                                                     }
                                                 },
                                                 plotOptions: {
                                                     pie: {
                                                         startAngle: -90,
                                                         endAngle: 270,
+                                                        expandOnClick: true,
+                                                        offsetX: 0,
+                                                        offsetY: 0,
+                                                        customScale: 1,
+                                                        dataLabels: {
+                                                            offset: 0,
+                                                            minAngleToShowLabel: 10
+                                                        },
                                                         donut: {
-                                                            size: '65%',
+                                                            size: '68%',
                                                             background: 'transparent',
                                                             labels: {
                                                                 show: true,
@@ -1803,29 +2271,31 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                                     color: getChartTheme().textColor,
                                                                     offsetY: -10,
                                                                     formatter: function (val) {
-                                                                        return val;
+                                                                        return val.length > 12 ? val.substring(0, 12) + '...' : val;
                                                                     }
                                                                 },
                                                                 value: {
                                                                     show: true,
-                                                                    fontSize: '14px',
+                                                                    fontSize: '20px',
                                                                     fontFamily: 'inherit',
-                                                                    fontWeight: 400,
+                                                                    fontWeight: 700,
                                                                     color: getChartTheme().textColor,
-                                                                    offsetY: 10,
+                                                                    offsetY: 5,
                                                                     formatter: function (val) {
                                                                         const numVal = parseFloat(val);
                                                                         if (isNaN(numVal) || numVal <= 0) return '₹0';
-                                                                        return '₹' + numVal.toLocaleString('en-IN', {
-                                                                            maximumFractionDigits: 0
-                                                                        });
+                                                                        return numVal > 1000000 ? 
+                                                                            '₹' + (numVal/1000000).toFixed(1) + 'M' :
+                                                                            numVal > 1000 ?
+                                                                            '₹' + (numVal/1000).toFixed(1) + 'K' :
+                                                                            '₹' + numVal.toLocaleString('en-IN', {maximumFractionDigits: 0});
                                                                     }
                                                                 },
                                                                 total: {
                                                                     show: true,
                                                                     showAlways: true,
                                                                     label: 'Total Amount',
-                                                                    fontSize: '16px',
+                                                                    fontSize: '14px',
                                                                     fontFamily: 'inherit',
                                                                     fontWeight: 600,
                                                                     color: getChartTheme().textColor,
@@ -1836,9 +2306,12 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                                                 const numB = parseFloat(b) || 0;
                                                                                 return numA + numB;
                                                                             }, 0);
-                                                                            return total > 0 ? '₹' + total.toLocaleString('en-IN', {
-                                                                                maximumFractionDigits: 0
-                                                                            }) : '₹0';
+                                                                            if (total <= 0) return '₹0';
+                                                                            return total > 10000000 ? 
+                                                                                '₹' + (total/10000000).toFixed(1) + 'Cr' :
+                                                                                total > 100000 ?
+                                                                                '₹' + (total/100000).toFixed(1) + 'L' :
+                                                                                '₹' + total.toLocaleString('en-IN', {maximumFractionDigits: 0});
                                                                         } catch (error) {
                                                                             console.warn('Chart total calculation error:', error);
                                                                             return '₹0';
@@ -1846,30 +2319,60 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                                     }
                                                                 }
                                                             }
-                                                        },
-                                                        expandOnClick: false
+                                                        }
                                                     }
                                                 },
                                                 dataLabels: {
                                                     enabled: true,
                                                     style: {
-                                                        fontSize: '12px',
+                                                        fontSize: '11px',
                                                         fontFamily: 'inherit',
-                                                        fontWeight: 'bold',
+                                                        fontWeight: '600',
                                                         colors: ['#fff']
                                                     },
                                                     background: {
-                                                        enabled: false
+                                                        enabled: true,
+                                                        foreColor: '#fff',
+                                                        borderRadius: 4,
+                                                        padding: 4,
+                                                        opacity: 0.9,
+                                                        borderWidth: 1,
+                                                        borderColor: '#fff',
+                                                        dropShadow: {
+                                                            enabled: true,
+                                                            top: 1,
+                                                            left: 1,
+                                                            blur: 2,
+                                                            color: '#000',
+                                                            opacity: 0.3
+                                                        }
                                                     },
                                                     dropShadow: {
-                                                        enabled: false
+                                                        enabled: true,
+                                                        top: 1,
+                                                        left: 1,
+                                                        blur: 3,
+                                                        opacity: 0.4
                                                     },
                                                     formatter: function (val, opts) {
                                                         try {
                                                             const percentage = parseFloat(val);
                                                             if (isNaN(percentage) || percentage <= 0) return '';
-                                                            return percentage > 5 ? percentage.toFixed(1) + '%' : '';
+                                                            
+                                                            const seriesIndex = opts.seriesIndex;
+                                                            const amount = dashboardData.voucherSummary[seriesIndex]?.totalAmount || 0;
+                                                            
+                                                            if (percentage > 10) {
+                                                                const shortAmount = amount > 1000000 ? 
+                                                                    '₹' + (amount/1000000).toFixed(1) + 'M' :
+                                                                    amount > 1000 ?
+                                                                    '₹' + (amount/1000).toFixed(1) + 'K' :
+                                                                    '₹' + amount.toFixed(0);
+                                                                return percentage >= 20 ? `${shortAmount}\n${percentage.toFixed(1)}%` : `${percentage.toFixed(1)}%`;
+                                                            }
+                                                            return '';
                                                         } catch (error) {
+                                                            console.warn('DataLabel formatting error:', error);
                                                             return '';
                                                         }
                                                     }
@@ -1878,28 +2381,33 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                     enabled: true,
                                                     theme: layoutColor === 'dark' ? 'dark' : 'light',
                                                     style: {
-                                                        fontSize: '14px',
+                                                        fontSize: '13px',
                                                         fontFamily: 'inherit'
                                                     },
-                                                    y: {
-                                                        formatter: function(val, opts) {
-                                                            try {
-                                                                const numVal = parseFloat(val);
-                                                                if (isNaN(numVal) || numVal <= 0) return '₹0';
-                                                                
-                                                                const seriesIndex = opts.seriesIndex;
-                                                                const voucherType = opts.w.globals.labels[seriesIndex];
-                                                                const voucherData = dashboardData.voucherSummary.find(item => item._id === voucherType);
-                                                                const count = voucherData ? voucherData.count || 0 : 0;
-                                                                const avgAmount = count > 0 ? (numVal / count) : 0;
-                                                                
-                                                                return `Amount: ₹${numVal.toLocaleString('en-IN')}
-Count: ${count} vouchers
-Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
-                                                            } catch (error) {
-                                                                console.warn('Tooltip formatting error:', error);
-                                                                return '₹0';
-                                                            }
+                                                    fillSeriesColor: false,
+                                                    custom: function({series, seriesIndex, dataPointIndex, w}) {
+                                                        try {
+                                                            const voucherData = dashboardData.voucherSummary[seriesIndex];
+                                                            const amount = voucherData.totalAmount || 0;
+                                                            const count = voucherData.count || 0;
+                                                            const avgAmount = count > 0 ? (amount / count) : 0;
+                                                            const percentage = ((amount / series.reduce((a, b) => a + b, 0)) * 100);
+                                                            
+                                                            return `
+                                                            <div class="custom-tooltip">
+                                                                <div class="tooltip-header" style="background: ${getChartTheme().colors[seriesIndex]}; color: white; padding: 10px 14px; margin: -8px -8px 10px -8px; font-weight: bold; border-radius: 6px 6px 0 0;">
+                                                                    ${voucherData._id || 'Unknown Type'}
+                                                                </div>
+                                                                <div class="tooltip-body" style="padding: 6px 2px;">
+                                                                    <div style="margin: 6px 0; display: flex; justify-content: space-between;"><span><strong>Total Amount:</strong></span><span style="color: ${getChartTheme().colors[seriesIndex]}; font-weight: bold;">₹${amount.toLocaleString('en-IN')}</span></div>
+                                                                    <div style="margin: 6px 0; display: flex; justify-content: space-between;"><span><strong>Percentage:</strong></span><span>${percentage.toFixed(1)}%</span></div>
+                                                                    <div style="margin: 6px 0; display: flex; justify-content: space-between;"><span><strong>Voucher Count:</strong></span><span>${count.toLocaleString()} vouchers</span></div>
+                                                                    <div style="margin: 6px 0; display: flex; justify-content: space-between;"><span><strong>Avg Amount:</strong></span><span>₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}</span></div>
+                                                                </div>
+                                                            </div>`;
+                                                        } catch (error) {
+                                                            console.warn('Tooltip formatting error:', error);
+                                                            return `<div class="custom-tooltip">Amount: ₹${series[seriesIndex]}</div>`;
                                                         }
                                                     }
                                                 },
@@ -1907,7 +2415,7 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                     breakpoint: 768,
                                                     options: {
                                                         chart: {
-                                                            height: 250
+                                                            height: 300
                                                         },
                                                         legend: {
                                                             position: 'bottom',
@@ -1919,38 +2427,59 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                                     size: '70%',
                                                                     labels: {
                                                                         value: {
-                                                                            fontSize: '12px'
+                                                                            fontSize: '16px'
                                                                         },
                                                                         total: {
-                                                                            fontSize: '14px'
+                                                                            fontSize: '12px'
                                                                         }
                                                                     }
                                                                 }
+                                                            }
+                                                        },
+                                                        dataLabels: {
+                                                            style: {
+                                                                fontSize: '10px'
                                                             }
                                                         }
                                                     }
                                                 }],
                                                 stroke: {
-                                                    show: false,
-                                                    width: 0
+                                                    show: true,
+                                                    width: 3,
+                                                    colors: ['#fff']
                                                 },
                                                 fill: {
                                                     type: 'gradient',
                                                     gradient: {
-                                                        shade: 'light',
-                                                        type: 'horizontal',
-                                                        shadeIntensity: 0.5,
-                                                        gradientToColors: undefined,
-                                                        inverseColors: true,
+                                                        shade: layoutColor === 'dark' ? 'dark' : 'light',
+                                                        type: 'radial',
+                                                        shadeIntensity: 0.6,
+                                                        gradientToColors: getChartTheme().gradientColors.map(colors => colors[1]),
+                                                        inverseColors: false,
                                                         opacityFrom: 1,
-                                                        opacityTo: 1,
-                                                        stops: [0, 50, 100]
+                                                        opacityTo: 0.8,
+                                                        stops: [0, 100]
+                                                    }
+                                                },
+                                                states: {
+                                                    hover: {
+                                                        filter: {
+                                                            type: 'lighten',
+                                                            value: 0.15
+                                                        }
+                                                    },
+                                                    active: {
+                                                        allowMultipleDataPointsSelection: false,
+                                                        filter: {
+                                                            type: 'darken',
+                                                            value: 0.7
+                                                        }
                                                     }
                                                 }
                                             }}
                                             series={validateChartData(dashboardData.voucherSummary, 'amount')}
                                             type="donut"
-                                            height={300}
+                                            height={340}
                                         />
                                     </Card.Body>
                                 </Card>
@@ -1972,6 +2501,10 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                     <span className="insight-value">
                                                         {dashboardData.summary?.vouchers?.toLocaleString() || '0'}
                                                     </span>
+                                                    <span className="insight-trend">
+                                                        <i className="mdi mdi-trending-up text-success"></i>
+                                                        Active
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div className="insight-item">
@@ -1981,7 +2514,18 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                 <div className="insight-content">
                                                     <span className="insight-label">Total Amount</span>
                                                     <span className="insight-value">
-                                                        ₹{dashboardData.voucherSummary.reduce((acc, item) => acc + (item.totalAmount || 0), 0).toLocaleString()}
+                                                        {(() => {
+                                                            const total = dashboardData.voucherSummary.reduce((acc, item) => acc + (item.totalAmount || 0), 0);
+                                                            return total > 10000000 ? 
+                                                                '₹' + (total/10000000).toFixed(1) + 'Cr' :
+                                                                total > 100000 ?
+                                                                '₹' + (total/100000).toFixed(1) + 'L' :
+                                                                '₹' + total.toLocaleString();
+                                                        })()}
+                                                    </span>
+                                                    <span className="insight-trend">
+                                                        <i className="mdi mdi-chart-line text-success"></i>
+                                                        Growth
                                                     </span>
                                                 </div>
                                             </div>
@@ -1992,8 +2536,19 @@ Avg: ₹${avgAmount.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
                                                 <div className="insight-content">
                                                     <span className="insight-label">Avg. per Voucher</span>
                                                     <span className="insight-value">
-                                                        ₹{(dashboardData.voucherSummary.reduce((acc, item) => acc + (item.totalAmount || 0), 0) / 
-                                                           dashboardData.voucherSummary.reduce((acc, item) => acc + (item.count || 0), 0) || 0).toFixed(0)}
+                                                        {(() => {
+                                                            const avg = (dashboardData.voucherSummary.reduce((acc, item) => acc + (item.totalAmount || 0), 0) / 
+                                                                       dashboardData.voucherSummary.reduce((acc, item) => acc + (item.count || 0), 0) || 0);
+                                                            return avg > 100000 ? 
+                                                                '₹' + (avg/100000).toFixed(1) + 'L' :
+                                                                avg > 1000 ?
+                                                                '₹' + (avg/1000).toFixed(1) + 'K' :
+                                                                '₹' + avg.toFixed(0);
+                                                        })()}
+                                                    </span>
+                                                    <span className="insight-trend">
+                                                        <i className="mdi mdi-calculator text-info"></i>
+                                                        Average
                                                     </span>
                                                 </div>
                                             </div>

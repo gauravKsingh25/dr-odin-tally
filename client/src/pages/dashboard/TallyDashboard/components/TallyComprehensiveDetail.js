@@ -126,33 +126,307 @@ const TallyComprehensiveDetail = () => {
         }).format(amount || 0);
     };
 
-    // Chart configurations
+    // Enhanced chart configurations with professional styling
     const getChartConfig = (title, labels, colors) => ({
-        chart: { type: 'pie', height: 350 },
+        chart: { 
+            type: 'pie', 
+            height: 380,
+            background: 'transparent',
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 1000,
+                animateGradually: {
+                    enabled: true,
+                    delay: 150
+                },
+                dynamicAnimation: {
+                    enabled: true,
+                    speed: 400
+                }
+            },
+            dropShadow: {
+                enabled: true,
+                top: 3,
+                left: 3,
+                blur: 8,
+                opacity: 0.12
+            }
+        },
         labels: labels,
         colors: colors,
-        legend: { position: 'bottom' },
-        title: { text: title, align: 'center' },
+        legend: { 
+            position: 'bottom',
+            horizontalAlign: 'center',
+            fontSize: '13px',
+            fontFamily: 'inherit',
+            fontWeight: 500,
+            labels: {
+                colors: getChartTheme().textColor,
+                useSeriesColors: true
+            },
+            markers: {
+                width: 14,
+                height: 14,
+                strokeWidth: 2,
+                strokeColor: '#fff',
+                radius: 14
+            },
+            itemMargin: {
+                horizontal: 12,
+                vertical: 6
+            }
+        },
+        title: { 
+            text: title, 
+            align: 'center',
+            style: {
+                fontSize: '18px',
+                fontWeight: 600,
+                color: getChartTheme().textColor
+            },
+            margin: 20
+        },
         dataLabels: {
             enabled: true,
+            style: {
+                fontSize: '12px',
+                fontFamily: 'inherit',
+                fontWeight: '600',
+                colors: ['#fff']
+            },
+            background: {
+                enabled: true,
+                foreColor: '#fff',
+                borderRadius: 4,
+                padding: 4,
+                opacity: 0.9,
+                borderWidth: 1,
+                borderColor: '#fff'
+            },
+            dropShadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 2,
+                opacity: 0.3
+            },
             formatter: function (val) {
-                return val.toFixed(1) + '%'
+                return val > 8 ? val.toFixed(1) + '%' : '';
+            }
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['#fff']
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: layoutColor === 'dark' ? 'dark' : 'light',
+                type: 'radial',
+                shadeIntensity: 0.6,
+                gradientToColors: colors.map(color => color + '80'),
+                inverseColors: false,
+                opacityFrom: 1,
+                opacityTo: 0.8,
+                stops: [0, 100]
+            }
+        },
+        states: {
+            hover: {
+                filter: {
+                    type: 'lighten',
+                    value: 0.15
+                }
+            },
+            active: {
+                allowMultipleDataPointsSelection: false,
+                filter: {
+                    type: 'darken',
+                    value: 0.7
+                }
+            }
+        },
+        tooltip: {
+            enabled: true,
+            theme: layoutColor === 'dark' ? 'dark' : 'light',
+            style: {
+                fontSize: '13px',
+                fontFamily: 'inherit'
             }
         }
     });
 
     const barChartConfig = (categories, title) => ({
-        chart: { type: 'bar', height: 350 },
-        xaxis: { categories: categories },
-        title: { text: title, align: 'center' },
-        colors: ['#727cf5', '#0acf97', '#fa5c7c', '#ffbc00'],
+        chart: { 
+            type: 'bar', 
+            height: 380,
+            background: 'transparent',
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 1000,
+                animateGradually: {
+                    enabled: true,
+                    delay: 100
+                },
+                dynamicAnimation: {
+                    enabled: true,
+                    speed: 400
+                }
+            },
+            dropShadow: {
+                enabled: true,
+                top: 2,
+                left: 2,
+                blur: 6,
+                opacity: 0.1
+            },
+            toolbar: {
+                show: true,
+                tools: {
+                    download: true,
+                    selection: false,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: false,
+                    reset: true
+                }
+            }
+        },
+        xaxis: { 
+            categories: categories,
+            labels: {
+                style: {
+                    colors: getChartTheme().textColor,
+                    fontSize: '12px',
+                    fontWeight: 500
+                },
+                rotate: -45,
+                rotateAlways: true,
+                maxHeight: 80
+            },
+            axisBorder: {
+                show: true,
+                color: getChartTheme().gridColor,
+                height: 1,
+                width: '100%'
+            },
+            axisTicks: {
+                show: true,
+                borderType: 'solid',
+                color: getChartTheme().gridColor,
+                height: 6
+            }
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: getChartTheme().textColor,
+                    fontSize: '12px',
+                    fontWeight: 500
+                },
+                formatter: function (val) {
+                    return val.toFixed(0);
+                }
+            }
+        },
+        title: { 
+            text: title, 
+            align: 'center',
+            style: {
+                fontSize: '18px',
+                fontWeight: 600,
+                color: getChartTheme().textColor
+            },
+            margin: 20
+        },
+        colors: getChartTheme().colors.slice(0, 4),
         plotOptions: {
             bar: {
                 horizontal: false,
-                columnWidth: '50%',
+                columnWidth: '60%',
+                endingShape: 'rounded',
+                borderRadius: 4,
+                dataLabels: {
+                    position: 'top'
+                }
             }
         },
-        dataLabels: { enabled: true }
+        dataLabels: { 
+            enabled: true,
+            formatter: function (val) {
+                return val > 0 ? val.toString() : '';
+            },
+            offsetY: -20,
+            style: {
+                fontSize: '12px',
+                colors: [getChartTheme().textColor],
+                fontWeight: 600
+            },
+            background: {
+                enabled: true,
+                foreColor: getChartTheme().textColor,
+                borderRadius: 2,
+                padding: 4,
+                opacity: 0.9,
+                borderWidth: 1,
+                borderColor: getChartTheme().gridColor
+            }
+        },
+        grid: {
+            borderColor: getChartTheme().gridColor,
+            strokeDashArray: 3,
+            position: 'back',
+            xaxis: {
+                lines: {
+                    show: false
+                }
+            },
+            yaxis: {
+                lines: {
+                    show: true
+                }
+            }
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: layoutColor === 'dark' ? 'dark' : 'light',
+                type: 'vertical',
+                shadeIntensity: 0.5,
+                gradientToColors: getChartTheme().colors.slice(0, 4).map(color => color + '80'),
+                inverseColors: false,
+                opacityFrom: 1,
+                opacityTo: 0.8,
+                stops: [0, 100]
+            }
+        },
+        states: {
+            hover: {
+                filter: {
+                    type: 'lighten',
+                    value: 0.1
+                }
+            },
+            active: {
+                allowMultipleDataPointsSelection: false,
+                filter: {
+                    type: 'darken',
+                    value: 0.7
+                }
+            }
+        },
+        tooltip: {
+            enabled: true,
+            theme: layoutColor === 'dark' ? 'dark' : 'light',
+            style: {
+                fontSize: '13px',
+                fontFamily: 'inherit'
+            }
+        }
     });
 
     return (
