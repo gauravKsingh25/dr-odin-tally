@@ -51,6 +51,7 @@ const TallyComprehensiveDetail = React.lazy(() => import('../pages/dashboard/Tal
 // uploads 
 const UploadDashBoardPage = React.lazy(() => import('../pages/uploads/upload'));
 const VoucherUploadPage = React.lazy(() => import('../pages/uploads/VoucherUpload'));
+const ManualVoucherUploadPage = React.lazy(() => import('../pages/uploads/ManualVoucherUpload'));
 // staff managment
 const UploadStaffManagmentPage = React.lazy(() => import('../pages/staff managments/staff managment'));
 const EmployeeInfoPage = React.lazy(() => import('../pages/staff managments/staff managment/EmployeeInfo'));
@@ -351,6 +352,10 @@ const AllRoutes = () => {
                 {
                     path : 'upload/vouchers',
                     element:<LoadComponent component={VoucherUploadPage}/>
+                },
+                {
+                    path : 'upload/manual',
+                    element:<LoadComponent component={ManualVoucherUploadPage}/>
                 },
                 {
                     path : 'staffmanagment',

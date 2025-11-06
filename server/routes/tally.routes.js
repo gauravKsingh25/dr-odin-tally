@@ -287,4 +287,11 @@ module.exports = function (app) {
     // Voucher Excel Upload
     safeRoute('post', "/api/tally/upload/vouchers", verifyToken, upload.single('file'), tallyController.uploadVoucherExcel);
     safeRoute('post', "/api/tally/verify/vouchers", verifyToken, tallyController.verifyVoucherNumbers);
+    
+    // Manual Voucher CRUD Operations
+    safeRoute('post', "/api/tally/voucher/manual", verifyToken, tallyController.createManualVoucher);
+    safeRoute('get', "/api/tally/voucher/manual/list", verifyToken, tallyController.getManualVouchersList);
+    safeRoute('get', "/api/tally/voucher/manual/:id", verifyToken, tallyController.getManualVoucher);
+    safeRoute('put', "/api/tally/voucher/manual/:id", verifyToken, tallyController.updateManualVoucher);
+    safeRoute('delete', "/api/tally/voucher/manual/:id", verifyToken, tallyController.deleteManualVoucher);
 };

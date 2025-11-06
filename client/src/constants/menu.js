@@ -66,6 +66,12 @@ const MENU_ITEMS = [
                 url: '/upload/vouchers',
                 parentKey: 'upload',
             },
+            {
+                key: 'upload-manual',
+                label: 'Manual Voucher',
+                url: '/upload/manual',
+                parentKey: 'upload',
+            },
         ],
     },
     {

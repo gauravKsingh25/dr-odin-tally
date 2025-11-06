@@ -1596,8 +1596,14 @@ exports.getTallyVouchers = async (req, res) => {
         const voucherType = req.query.voucherType || '';
         const fromDate = req.query.fromDate;
         const toDate = req.query.toDate;
+        const year = req.query.year; // Optional year filter
 
-        const query = { companyId, year: currentYear };
+        const query = { companyId };
+        
+        // Only filter by year if explicitly provided, otherwise show all years
+        if (year) {
+            query.year = parseInt(year);
+        }
         
         if (voucherType) {
             query.voucherType = voucherType;
@@ -3194,6 +3200,313 @@ exports.verifyVoucherNumbers = async (req, res) => {
         res.status(500).json({
             status: 500,
             message: "Failed to verify voucher numbers",
+            error: error.message
+        });
+    }
+};
+
+// ==========================================
+// MANUAL VOUCHER CRUD OPERATIONS
+// ==========================================
+
+/**
+ * Create a new voucher manually
+ * POST /api/tally/voucher/manual
+ */
+exports.createManualVoucher = async (req, res) => {
+    try {
+        const voucherData = req.body;
+        
+        console.log('📝 Creating manual voucher:', voucherData.voucherNumber);
+        
+        // Validate required fields
+        if (!voucherData.date || !voucherData.voucherNumber || !voucherData.voucherType) {
+            return res.status(400).json({
+                status: 400,
+                message: "Missing required fields: date, voucherNumber, and voucherType are required"
+            });
+        }
+        
+        // Check for duplicate voucher number
+        const existingVoucher = await TallyVoucher.findOne({
+            voucherNumber: voucherData.voucherNumber.trim(),
+            companyId: voucherData.companyId || null
+        });
+        
+        if (existingVoucher) {
+            return res.status(409).json({
+                status: 409,
+                message: `Voucher number ${voucherData.voucherNumber} already exists`,
+                data: {
+                    existingVoucher: {
+                        _id: existingVoucher._id,
+                        date: existingVoucher.date,
+                        voucherType: existingVoucher.voucherType,
+                        amount: existingVoucher.amount
+                    }
+                }
+            });
+        }
+        
+        // Prepare voucher data with metadata
+        const newVoucherData = {
+            ...voucherData,
+            uploadSource: 'MANUAL',
+            uploadBatch: `MANUAL_${new Date().toISOString()}`,
+            manualEntry: true,
+            createdAt: new Date(),
+            lastUpdated: new Date()
+        };
+        
+        // Create new voucher
+        const newVoucher = new TallyVoucher(newVoucherData);
+        const savedVoucher = await newVoucher.save();
+        
+        console.log('✅ Manual voucher created:', savedVoucher.voucherNumber);
+        
+        res.status(201).json({
+            status: 201,
+            message: "Voucher created successfully",
+            data: {
+                voucher: savedVoucher
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Error creating manual voucher:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to create voucher",
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Get a single voucher by ID
+ * GET /api/tally/voucher/manual/:id
+ */
+exports.getManualVoucher = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        console.log('🔍 Fetching voucher:', id);
+        
+        const voucher = await TallyVoucher.findById(id);
+        
+        if (!voucher) {
+            return res.status(404).json({
+                status: 404,
+                message: "Voucher not found"
+            });
+        }
+        
+        res.status(200).json({
+            status: 200,
+            message: "Voucher retrieved successfully",
+            data: {
+                voucher
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Error fetching voucher:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to fetch voucher",
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Update an existing voucher
+ * PUT /api/tally/voucher/manual/:id
+ */
+exports.updateManualVoucher = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+        
+        console.log('✏️ Updating voucher:', id);
+        
+        const existingVoucher = await TallyVoucher.findById(id);
+        
+        if (!existingVoucher) {
+            return res.status(404).json({
+                status: 404,
+                message: "Voucher not found"
+            });
+        }
+        
+        // If voucher number is being changed, check for duplicates
+        if (updateData.voucherNumber && updateData.voucherNumber !== existingVoucher.voucherNumber) {
+            const duplicate = await TallyVoucher.findOne({
+                voucherNumber: updateData.voucherNumber.trim(),
+                companyId: updateData.companyId || existingVoucher.companyId,
+                _id: { $ne: id }
+            });
+            
+            if (duplicate) {
+                return res.status(409).json({
+                    status: 409,
+                    message: `Voucher number ${updateData.voucherNumber} already exists`
+                });
+            }
+        }
+        
+        // Update lastUpdated timestamp
+        updateData.lastUpdated = new Date();
+        
+        // Perform update
+        const updatedVoucher = await TallyVoucher.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true, runValidators: true }
+        );
+        
+        console.log('✅ Voucher updated:', updatedVoucher.voucherNumber);
+        
+        res.status(200).json({
+            status: 200,
+            message: "Voucher updated successfully",
+            data: {
+                voucher: updatedVoucher
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Error updating voucher:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to update voucher",
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Delete a voucher
+ * DELETE /api/tally/voucher/manual/:id
+ */
+exports.deleteManualVoucher = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        console.log('🗑️ Deleting voucher:', id);
+        
+        const voucher = await TallyVoucher.findById(id);
+        
+        if (!voucher) {
+            return res.status(404).json({
+                status: 404,
+                message: "Voucher not found"
+            });
+        }
+        
+        // Delete the voucher
+        await TallyVoucher.findByIdAndDelete(id);
+        
+        console.log('✅ Voucher deleted:', voucher.voucherNumber);
+        
+        res.status(200).json({
+            status: 200,
+            message: "Voucher deleted successfully",
+            data: {
+                deletedVoucher: {
+                    _id: voucher._id,
+                    voucherNumber: voucher.voucherNumber,
+                    date: voucher.date,
+                    voucherType: voucher.voucherType
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Error deleting voucher:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to delete voucher",
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Get all manually created vouchers with filtering
+ * GET /api/tally/voucher/manual/list
+ */
+exports.getManualVouchersList = async (req, res) => {
+    try {
+        const { 
+            page = 1, 
+            limit = 20, 
+            voucherType, 
+            party, 
+            startDate, 
+            endDate,
+            search 
+        } = req.query;
+        
+        console.log('📋 Fetching manual vouchers list');
+        
+        // Build query
+        const query = { manualEntry: true };
+        
+        if (voucherType) {
+            query.voucherType = new RegExp(voucherType, 'i');
+        }
+        
+        if (party) {
+            query.party = new RegExp(party, 'i');
+        }
+        
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) query.date.$gte = new Date(startDate);
+            if (endDate) query.date.$lte = new Date(endDate);
+        }
+        
+        if (search) {
+            query.$or = [
+                { voucherNumber: new RegExp(search, 'i') },
+                { party: new RegExp(search, 'i') },
+                { narration: new RegExp(search, 'i') },
+                { reference: new RegExp(search, 'i') }
+            ];
+        }
+        
+        // Execute query with pagination
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        
+        const [vouchers, total] = await Promise.all([
+            TallyVoucher.find(query)
+                .sort({ date: -1, createdAt: -1 })
+                .skip(skip)
+                .limit(parseInt(limit))
+                .select('-__v'),
+            TallyVoucher.countDocuments(query)
+        ]);
+        
+        res.status(200).json({
+            status: 200,
+            message: "Manual vouchers retrieved successfully",
+            data: {
+                vouchers,
+                pagination: {
+                    total,
+                    page: parseInt(page),
+                    limit: parseInt(limit),
+                    totalPages: Math.ceil(total / parseInt(limit))
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.error('❌ Error fetching manual vouchers:', error);
+        res.status(500).json({
+            status: 500,
+            message: "Failed to fetch manual vouchers",
             error: error.message
         });
     }

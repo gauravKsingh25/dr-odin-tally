@@ -180,7 +180,11 @@ exports.UpdateEmployee = async (req, res) => {
                 city:data?.city,
                 zoneId:data.zoneId,
                 rmId:data?.rmId,
-                
+            }
+            
+            // Include party field if provided
+            if (data.party !== undefined) {
+                empObj.party = Array.isArray(data.party) ? data.party : [];
             }
 
             const insert_resp = await empInfoModel.findByIdAndUpdate({ _id: data.employId }, empObj, { new: true });
@@ -376,9 +380,23 @@ exports.getEmployeeDetail = async (req, res) => {
         allParties = [...new Set(allParties.filter(party => party && party.trim() !== '' && party !== 'Party A' && party !== 'Party B'))];
         console.log(`[DEBUG] Total valid parties for ${employee.empName}:`, allParties.length, allParties.slice(0, 5));
 
-        // Fetch invoices for all parties
+        // Fetch invoices for all parties - separating self and subordinate vouchers
         const TallyVoucher = require("../models/tallyVoucher.model");
         let invoices = [];
+        let selfVouchers = [];
+        let subordinateVouchers = [];
+        
+        // Get employee's own parties
+        const employeeParties = Array.isArray(employee.party) ? employee.party : [];
+        
+        // Get subordinates' parties
+        const subordinateParties = [];
+        for (const sub of allSubordinates) {
+            if (Array.isArray(sub.party)) {
+                subordinateParties.push(...sub.party);
+            }
+        }
+        
         if (allParties.length > 0) {
             // Query both party and partyledgername fields to ensure we catch all vouchers
             const rawInvoices = await TallyVoucher.find({
@@ -387,9 +405,10 @@ exports.getEmployeeDetail = async (req, res) => {
                     { party: { $in: allParties } },
                     { partyledgername: { $in: allParties } }
                 ]
-            }).sort({ date: -1 }).limit(1000); // Limit to prevent excessive data
+            }).sort({ date: -1 }).limit(2000); // Increased limit to accommodate more data
             
             // Process invoices to add debit/credit information and transaction nature
+            // Also categorize vouchers as self or subordinate
             invoices = rawInvoices.map(invoice => {
                 // Determine if this is income or expense based on voucher type and amount
                 let transactionType = 'Unknown';
@@ -411,26 +430,57 @@ exports.getEmployeeDetail = async (req, res) => {
                     debitCreditType = 'Dr';
                 }
                 
+                // Determine if this voucher belongs to employee or subordinate
+                const voucherParty = invoice.party || invoice.partyledgername;
+                const isSubordinateVoucher = !employeeParties.includes(voucherParty) && subordinateParties.includes(voucherParty);
+                
+                // Find which subordinate this voucher belongs to
+                let subordinateInfo = null;
+                if (isSubordinateVoucher) {
+                    const subordinate = allSubordinates.find(sub => 
+                        Array.isArray(sub.party) && sub.party.includes(voucherParty)
+                    );
+                    if (subordinate) {
+                        subordinateInfo = {
+                            empId: subordinate.empId,
+                            empName: subordinate.empName,
+                            designation: subordinate.designation
+                        };
+                    }
+                }
+                
                 // Convert to plain object and add our fields
                 const invoiceObj = invoice.toObject();
-                return {
+                const processedInvoice = {
                     ...invoiceObj,
                     transactionType,
                     debitCreditType,
-                    // Add a computed field for display
                     displayAmount: Math.abs(invoice.amount || 0),
-                    isPositive: (invoice.amount || 0) >= 0
+                    isPositive: (invoice.amount || 0) >= 0,
+                    voucherOwnerType: isSubordinateVoucher ? 'subordinate' : 'self',
+                    subordinateInfo: subordinateInfo
                 };
+                
+                // Categorize into self or subordinate arrays
+                if (isSubordinateVoucher) {
+                    subordinateVouchers.push(processedInvoice);
+                } else {
+                    selfVouchers.push(processedInvoice);
+                }
+                
+                return processedInvoice;
             });
             
-            console.log(`[DEBUG] Found ${invoices.length} invoices for ${employee.empName}`);
+            console.log(`[DEBUG] Found ${invoices.length} total invoices for ${employee.empName}`);
+            console.log(`[DEBUG] Self vouchers: ${selfVouchers.length}, Subordinate vouchers: ${subordinateVouchers.length}`);
             if (invoices.length > 0) {
                 console.log(`[DEBUG] Sample invoice details:`, invoices.slice(0, 2).map(inv => ({
                     voucherNumber: inv.voucherNumber,
                     party: inv.party || inv.partyledgername,
                     amount: inv.amount,
                     transactionType: inv.transactionType,
-                    debitCreditType: inv.debitCreditType
+                    debitCreditType: inv.debitCreditType,
+                    voucherOwnerType: inv.voucherOwnerType
                 })));
             }
         }
@@ -448,9 +498,17 @@ exports.getEmployeeDetail = async (req, res) => {
                     empId: e.empId,
                     empName: e.empName,
                     designation: e.designation,
+                    party: Array.isArray(e.party) ? e.party : [] // Include party information
                 })),
                 parties: allParties,
-                invoices,
+                invoices, // All invoices combined
+                selfVouchers, // Only employee's own vouchers
+                subordinateVouchers, // Only subordinates' vouchers
+                voucherStats: {
+                    total: invoices.length,
+                    self: selfVouchers.length,
+                    subordinate: subordinateVouchers.length
+                }
             },
         });
     } catch (error) {
